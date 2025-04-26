@@ -2,7 +2,7 @@ import { json } from "@remix-run/node";
 import { createClient } from '@sanity/client';
 
 const sanityClient = createClient({
-  projectId: process.env.SANITY_PROJECT_ID || 'uxddufsz',
+  projectId: process.env.SANITY_PROJECT_ID || 'usq45pnh',
   dataset: process.env.SANITY_DATASET || 'production',
   useCdn: process.env.NODE_ENV === 'production',
   apiVersion: '2023-05-03',
@@ -20,7 +20,8 @@ export async function loader() {
       throw new Error('Sanity configuration error: Missing project ID');
     }
 
-    const query = `*[_type == "project"]{
+    // Fetch projects
+    const projectsQuery = `*[_type == "project"]{
       _id,
       title,
       "slug": slug.current,
@@ -31,14 +32,28 @@ export async function loader() {
       "mainImageUrl": mainImage.asset->url
     }`;
     
-    const projects = await sanityClient.fetch(query);
+    const projects = await sanityClient.fetch(projectsQuery);
+    
+    // Fetch hero data
+    const heroQuery = `*[_type == "hero"][0]{
+      title,
+      contactText,
+      "taglineIconUrl": taglineIcon.asset->url,
+      tagline,
+      subTagline,
+      projectsLinkText
+    }`;
+    
+    const hero = await sanityClient.fetch(heroQuery);
     
     if (!projects) {
       console.warn('No projects found in Sanity');
-      return json([]);
     }
 
-    return json(projects);
+    return json({
+      projects: projects || [],
+      hero: hero || null
+    });
   } catch (error) {
     console.error('Error in Sanity API route:', {
       message: error instanceof Error ? error.message : 'Unknown error occurred',
@@ -49,7 +64,7 @@ export async function loader() {
     return json({
       error: 'Failed to fetch projects',
       details: error instanceof Error ? error.message : 'Unknown error occurred',
-      projectId: process.env.SANITY_PROJECT_ID || 'uxddufsz'
+      projectId: process.env.SANITY_PROJECT_ID || 'usq45pnh'
     }, { status: 500 });
   }
 }

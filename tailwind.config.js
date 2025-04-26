@@ -4,7 +4,14 @@ module.exports = {
     "./app/**/*.{js,jsx,ts,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        'hero-white': '#fff',
+      },
+      fontSize: {
+        'nav': '20px',
+      },
+    },
   },
   plugins: [],
 }

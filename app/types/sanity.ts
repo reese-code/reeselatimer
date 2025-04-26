@@ -8,3 +8,12 @@ export interface Project {
   technologies?: string[];
   mainImageUrl?: string;
 }
+
+export interface Hero {
+  title: string;
+  contactText: string;
+  taglineIconUrl?: string;
+  tagline: string;
+  subTagline: string;
+  projectsLinkText: string;
+}
