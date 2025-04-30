@@ -5,6 +5,10 @@ module.exports = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        montreal: ['neue montreal'],
+        editorial: ['editroial new']
+      },
       colors: {
         'hero-white': '#fff',
       },
