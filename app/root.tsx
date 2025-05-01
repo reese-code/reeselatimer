@@ -8,12 +8,10 @@ import {
 } from "@remix-run/react";
 import type { LinksFunction } from "@remix-run/node";
 
-import tailwindStyles from "./styles/tailwind.css?url";
-import fontStyles from "./styles/index.css?url";
+import styles from "./styles/tailwind.css?url";
 
 export const links: LinksFunction = () => [
-  { rel: "stylesheet", href: tailwindStyles },
-  { rel: "stylesheet", href: fontStyles },
+  { rel: "stylesheet", href: styles },
 ];
 
 export default function App() {

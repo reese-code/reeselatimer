@@ -1,6 +1,8 @@
 import type { MetaFunction, LoaderFunction } from "@remix-run/node";
 import { useLoaderData, Link } from "@remix-run/react";
 import type { Project, Hero } from "~/types/sanity";
+import { useEffect } from "react";
+import WavesBackground from "~/components/AWaves.jsx";
 
 export const meta: MetaFunction = () => {
   return [
@@ -46,9 +48,12 @@ export default function Index() {
   return (
     <div className="min-h-screen bg-white">
       {/* Hero Section */}
-      <section className="relative h-screen flex flex-col px-10 bg-black">
+      <section className="relative h-screen flex flex-col px-10 ">
+        {/* Interactive Background */}
+        <WavesBackground />
+        
         {/* Top Navigation */}
-        <div className="flex justify-between items-center pt-4">
+        <div className="flex justify-between items-center pt-4 relative z-10">
           <p className="text-nav text-hero-white">{heroContent.title}</p>
           <Link to="/contact" className="text-nav text-hero-white">
             {heroContent.contactText}
@@ -56,11 +61,11 @@ export default function Index() {
         </div>
 
         {/* Horizontal Lines */}
-        <div className="w-full h-px bg-hero-white mt-4"></div>
+        <div className="w-full h-px bg-hero-white mt-4 relative z-10"></div>
        
 
         {/* Bottom Content */}
-        <div className="mt-auto flex justify-between items-end pb-8">
+        <div className="mt-auto flex justify-between items-end pb-8 relative z-10">
           {/* Tagline */}
           <div className="flex flex-col items-end">
             <div className=" flex items-center gap-2 mb-2">
