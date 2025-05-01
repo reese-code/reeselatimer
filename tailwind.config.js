@@ -4,16 +4,18 @@ module.exports = {
     "./app/**/*.{js,jsx,ts,tsx}",
   ],
   theme: {
+    fontFamily: {
+      sans: ['neue montreal', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+      neue: ['neue montreal'],
+      editorial: ['editorial new']
+    },
     extend: {
-      fontFamily: {
-        montreal: ['neue montreal'],
-        editorial: ['editroial new']
-      },
       colors: {
         'hero-white': '#fff',
       },
       fontSize: {
         'nav': '20px',
+        'nav-big': '40px',
       },
     },
   },

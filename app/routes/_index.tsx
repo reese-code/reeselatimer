@@ -44,11 +44,11 @@ export default function Index() {
   };
 
   return (
-    <div className="min-h-screen bg-black">
+    <div className="min-h-screen bg-white">
       {/* Hero Section */}
-      <section className="relative h-screen flex flex-col p-8">
+      <section className="relative h-screen flex flex-col px-10 bg-black">
         {/* Top Navigation */}
-        <div className="flex justify-between items-center pt-8">
+        <div className="flex justify-between items-center pt-4">
           <p className="text-nav text-hero-white">{heroContent.title}</p>
           <Link to="/contact" className="text-nav text-hero-white">
             {heroContent.contactText}
@@ -56,24 +56,24 @@ export default function Index() {
         </div>
 
         {/* Horizontal Lines */}
-        <div className="w-full h-px bg-hero-white/20 mt-4"></div>
-        <div className="absolute top-[72px] left-0 right-0 w-full h-px bg-hero-white/20"></div>
+        <div className="w-full h-px bg-hero-white mt-4"></div>
+       
 
         {/* Bottom Content */}
-        <div className="mt-auto flex justify-between items-end pb-16">
+        <div className="mt-auto flex justify-between items-end pb-8">
           {/* Tagline */}
-          <div className="max-w-md">
-            <div className="flex items-center gap-2 mb-2">
+          <div className="flex flex-col items-end">
+            <div className=" flex items-center gap-2 mb-2">
               {hero?.taglineIconUrl && (
                 <img 
                   src={hero.taglineIconUrl} 
                   alt="Icon" 
-                  className="w-6 h-6 text-hero-white"
+                  className="w-9 h-9 text-hero-white"
                 />
               )}
-              <p className="text-nav text-hero-white font-light">{heroContent.tagline}</p>
+              <p className="text-nav-big font-editorial text-hero-white font-light">{heroContent.tagline}</p>
             </div>
-            <p className="text-nav text-hero-white font-light">{heroContent.subTagline}</p>
+            <p className="text-nav-big font-editorial text-hero-white font-light">{heroContent.subTagline}</p>
           </div>
 
           {/* Projects Link */}

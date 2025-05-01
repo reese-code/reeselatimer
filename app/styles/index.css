@@ -1,13 +1,13 @@
 @font-face {
     font-family: 'neue montreal';
-    src: url('/fonts/neuemontreal-medium.otf') format('woff2');
+    src: url('./fonts/neuemontreal-medium.otf') format('opentype');
     font-weight: 400;
     font-style: normal;
   }
 
 @font-face {
     font-family: 'editorial new';
-    src: url('/fonts/PPEditorialNew-Ultralight.otf') format('woff2');
+    src: url('./fonts/PPEditorialNew-Ultralight.otf') format('opentype');
     font-weight: 400;
     font-style: normal;
   }
