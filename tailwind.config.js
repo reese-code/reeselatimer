@@ -5,9 +5,9 @@ module.exports = {
   ],
   theme: {
     fontFamily: {
-      sans: ['neue montreal', 'ui-sans-serif', 'system-ui', 'sans-serif'],
-      neue: ['neue montreal'],
-      editorial: ['editorial new']
+      sans: ['"neue montreal"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+      neue: ['"neue montreal"'],
+      editorial: ['"editorial new"']
     },
     extend: {
       colors: {

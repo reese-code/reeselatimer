@@ -46,7 +46,7 @@ const WavesBackground = () => {
         }
         const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
         path.classList.add('a__line', 'js-line');
-        path.setAttribute('stroke-width', '0.5'); // thinner line
+        path.setAttribute('stroke-width', '1'); // thinner line
         path.setAttribute('stroke', 'white');
         path.setAttribute('fill', 'none');
         svg.appendChild(path);

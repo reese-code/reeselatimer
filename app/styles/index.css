@@ -1,16 +1,24 @@
 @font-face {
-    font-family: 'neue montreal';
-    src: url('./fonts/neuemontreal-medium.otf') format('opentype');
-    font-weight: 400;
-    font-style: normal;
-  }
+  font-family: '"neue montreal"';
+  src: url('/fonts/neuemontreal-medium.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+}
 
 @font-face {
-    font-family: 'editorial new';
-    src: url('./fonts/PPEditorialNew-Ultralight.otf') format('opentype');
-    font-weight: 400;
-    font-style: normal;
-  }
+  font-family: '"editorial new"';
+  src: url('/fonts/PPEditorialNew-Ultralight.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+}
+
+.editorial {
+  font-family: "editorial new";
+}
+
+body {
+  font-family: "editorial new";
+}
 
 /* Interactive Waves Background */
 .a-waves {
@@ -45,5 +53,26 @@
 .a-waves svg path {
   fill: none;
   stroke: rgba(255, 255, 255, 1);
-  stroke-width: 1px;
+  stroke-width: 4px;
+}
+
+/* Hero overlay start */
+
+.gradient-overlay {
+  width: 100vw;
+  height: 50vh;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0));
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+}
+
+/* square designs */
+
+.square-design {
+  width: 7px;
+  height: 7px;
+  transform: rotate(45px);
+  background-color: #fff;
 }
