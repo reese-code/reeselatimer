@@ -46,9 +46,9 @@ export default function Index() {
   };
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="relative h-screen flex flex-col px-10 ">
+      <section className="relative z-10 h-screen flex flex-col px-10 bg-black">
         {/* Interactive Background */}
         <WavesBackground />
         
