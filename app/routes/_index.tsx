@@ -55,16 +55,17 @@ export default function Index() {
         <div className="absolute bottom-0 left-0 w-screen h-[50vh] bg-gradient-to-b from-transparent to-black/80 z-[5] pointer-events-none"></div>
 
         {/* Top Navigation */}
+        
         <div className="flex justify-between items-center pt-4 relative z-10">
           <p className="text-nav text-hero-white">{heroContent.title}</p>
           <Link to="/contact" className="text-nav text-hero-white">
             {heroContent.contactText}
           </Link>
-          <div className="square-design absolute top-0 left-0 z-10"></div>
+          
         </div>
 
         {/* Divider Line */}
-        <div className="w-full h-px bg-hero-white mt-4 relative z-10"></div>
+        <div className="w-full h-px bg-hero-white mt-4 relative z-10"><div className="square-design absolute left-0 z-10"></div></div>
 
         {/* Hero Tagline & Link */}
         <div className="mt-auto flex justify-between items-end pb-8 relative z-10">
