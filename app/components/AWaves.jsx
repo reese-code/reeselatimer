@@ -78,9 +78,14 @@ const WavesBackground = () => {
     const movePoints = (time) => {
       lines.forEach((points) => {
         points.forEach((p) => {
-          const move = noise.perlin2((p.x + time * 0.0125) * 0.002, (p.y + time * 0.005) * 0.0015) * 12;
-          p.wave.x = Math.cos(move) * 32;
-          p.wave.y = Math.sin(move) * 16;
+          /* speed change start */
+          const move = noise.perlin2((p.x + time * 0.0225) * 0.002, (p.y + time * 0.0175) * 0.0015) * 12;
+          /* speed change end */
+
+          /* waviness start */
+          p.wave.x = Math.cos(move) * 35;
+          p.wave.y = Math.sin(move) * 20;
+          /* waviness end */
 
           const dx = p.x - mouse.sx, dy = p.y - mouse.sy, d = Math.hypot(dx, dy), l = Math.max(175, mouse.vs);
           if (d < l) {
