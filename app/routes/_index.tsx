@@ -52,7 +52,7 @@ export default function Index() {
 
         {/* Gradient Overlay: black to transparent, positioned above waves but below content */}
         <div className="absolute top-0 left-0 w-screen h-[50vh] bg-gradient-to-b from-black/80 to-transparent z-[5] pointer-events-none"></div>
-        <div className="absolute bottom-0 left-0 w-screen h-[50vh] bg-gradient-to-b from-transparent to-white/100 z-[5] pointer-events-none"></div>
+        <div className="absolute bottom-0 left-0 w-screen h-[50vh] bg-gradient-to-b from-transparent to-black/80 z-[5] pointer-events-none"></div>
 
         {/* Top Navigation */}
         <div className="flex justify-between items-center pt-4 relative z-10">
@@ -77,11 +77,11 @@ export default function Index() {
                   className="w-9 h-9 text-hero-white"
                 />
               )}
-              <p className="text-nav-big font-editorial editorial text-hero-black font-light leading-none">
+              <p className="text-nav-big font-editorial editorial text-hero-white font-light leading-none">
                 {heroContent.tagline}
               </p>
             </div>
-            <p className="text-nav-big font-editorial editorial text-hero-black font-light leading-none">
+            <p className="text-nav-big font-editorial editorial text-hero-white font-light leading-none">
               {heroContent.subTagline}
             </p>
           </div>
