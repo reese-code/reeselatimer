@@ -16,6 +16,9 @@ module.exports = {
       fontSize: {
         'nav': '20px',
         'nav-big': '40px',
+        'projects-heading': '96px',
+        'projects-subheading': '32px',
+        'project-title': '72px',
       },
     },
   },

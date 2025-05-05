@@ -52,6 +52,51 @@ export default defineType({
       },
     }),
     defineField({
+      name: 'secondaryImage',
+      title: 'Secondary image',
+      type: 'image',
+      options: {
+        hotspot: true,
+      },
+    }),
+    defineField({
+      name: 'description',
+      title: 'Description',
+      type: 'text',
+      rows: 6,
+    }),
+    defineField({
+      name: 'websiteUrl',
+      title: 'Website URL',
+      type: 'url',
+    }),
+    defineField({
+      name: 'tags',
+      title: 'Tags',
+      type: 'array',
+      of: [{type: 'string'}],
+    }),
+    defineField({
+      name: 'buttons',
+      title: 'Buttons',
+      type: 'array',
+      of: [{
+        type: 'object',
+        fields: [
+          {
+            name: 'text',
+            title: 'Button Text',
+            type: 'string',
+          },
+          {
+            name: 'url',
+            title: 'Button URL',
+            type: 'url',
+          }
+        ]
+      }],
+    }),
+    defineField({
       name: 'body',
       title: 'Body',
       type: 'array',

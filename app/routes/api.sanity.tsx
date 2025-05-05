@@ -29,7 +29,12 @@ export async function loader() {
       client,
       projectDate,
       technologies,
-      "mainImageUrl": mainImage.asset->url
+      "mainImageUrl": mainImage.asset->url,
+      "secondaryImageUrl": secondaryImage.asset->url,
+      description,
+      websiteUrl,
+      tags,
+      buttons
     }`;
     
     const projects = await sanityClient.fetch(projectsQuery);

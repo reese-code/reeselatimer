@@ -69,3 +69,11 @@
   transform: rotate(45deg);
   background-color: #fff;
 }
+
+.nav-detail {
+  bottom: -2.5px;
+}
+
+body {
+  max-width: 100%; 
+}

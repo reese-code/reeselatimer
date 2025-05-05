@@ -7,6 +7,14 @@ export interface Project {
   projectDate?: string;
   technologies?: string[];
   mainImageUrl?: string;
+  secondaryImageUrl?: string;
+  description?: string;
+  websiteUrl?: string;
+  tags?: string[];
+  buttons?: {
+    text: string;
+    url?: string;
+  }[];
 }
 
 export interface Hero {
