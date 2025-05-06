@@ -3,6 +3,7 @@ import { useLoaderData, Link } from "@remix-run/react";
 import type { Project, Hero } from "~/types/sanity";
 import WavesBackground from "~/components/AWaves.jsx";
 import TargetIcon from "~/components/TargetIcon.jsx";
+import PixelizeImage from "~/components/PixelizeImage.jsx";
 
 export const meta: MetaFunction = () => {
   return [
@@ -115,7 +116,7 @@ export default function Index() {
         {/* Featured Project */}
         {projects.length > 0 && (
           <div className="mb-16 flex flex-col gap-5">
-            <img 
+            <PixelizeImage 
               src={projects[0].mainImageUrl || 'https://via.placeholder.com/1200x600'} 
               alt={projects[0].title || "Project image"} 
               className="w-full h-auto object-cover rounded-[20px]"
@@ -131,7 +132,7 @@ export default function Index() {
                     {projects[0].title || "Ship Your Car Safely"}
                   </h3>
                   {projects[0].iconSvgUrl ? (
-                    <img 
+                    <PixelizeImage 
                       src={projects[0].iconSvgUrl} 
                       alt="Project Icon" 
                       className="w-8 h-8"
@@ -190,16 +191,18 @@ export default function Index() {
               {/* Secondary and Tertiary Images */}
               <div className="space-y-6">
                 {/* Secondary Image */}
-                <img 
+                <PixelizeImage 
                   src="/images/car_card_port.png" 
+                  alt="Car card"
                   className="w-full h-auto object-cover rounded-[20px]"
                 />
                 </div>
                 </div>
                 
                 {/* Tertiary Image */}
-                  <img 
+                  <PixelizeImage 
                     src="/images/car_mobile_port.png"
+                    alt="Car mobile"
                     className="w-full h-auto object-cover rounded-[20px]"
                   />
                   
