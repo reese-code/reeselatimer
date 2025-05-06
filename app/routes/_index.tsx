@@ -100,6 +100,8 @@ export default function Index() {
 
 
 
+
+
       {/* Projects Section */}
       <section id="work" className="px-10 py-16 bg-white">
         {error && <p className="text-red-500 mb-4">Error: {error}</p>}
@@ -112,25 +114,35 @@ export default function Index() {
         
         {/* Featured Project */}
         {projects.length > 0 && (
-          <div className="mb-16">
+          <div className="mb-16 flex flex-col gap-5">
             <img 
               src={projects[0].mainImageUrl || 'https://via.placeholder.com/1200x600'} 
-              alt={projects[0].title} 
-              className="w-full h-auto object-cover mb-16 rounded-[20px]"
+              alt={projects[0].title || "Project image"} 
+              className="w-full h-auto object-cover rounded-[20px]"
             />
+            <div className="flex flex-row-reverse">
+            <div className="flex flex-row gap-5 items-start">
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="flex flex-col-reverse w-full">
               {/* Project Details */}
               <div>
                 <div className="flex items-center mb-6">
                   <h3 className="text-project-title font-editorial font-light text-black mr-2">
                     {projects[0].title || "Ship Your Car Safely"}
                   </h3>
-                  <TargetIcon className="w-8 h-8 text-black" />
+                  {projects[0].iconSvgUrl ? (
+                    <img 
+                      src={projects[0].iconSvgUrl} 
+                      alt="Project Icon" 
+                      className="w-8 h-8"
+                    />
+                  ) : (
+                    <TargetIcon className="w-8 h-8 text-black" />
+                  )}
                 </div>
                 
                 {/* Tags */}
-                <div className="flex flex-wrap gap-4 mb-6">
+                <div className="flex flex-wrap gap-2 mb-2">
                   {(projects[0].tags || ["Development lead", "Design assistant", "Digital assets"]).map((tag: string, index: number) => (
                     <span 
                       key={index} 
@@ -142,14 +154,14 @@ export default function Index() {
                 </div>
                 
                 {/* Buttons */}
-                <div className="flex gap-4 mb-6">
+                <div className="flex gap-2 mb-6">
                   {(projects[0].buttons || [
                     { text: "View project" },
                     { text: "Work together" }
                   ]).map((button: { text: string; url?: string }, index: number) => (
                     <button 
                       key={index} 
-                      className="px-6 py-3 bg-black text-white rounded-full"
+                      className="px-6 py-2 bg-black text-white rounded-full"
                       onClick={() => button.url && window.open(button.url, '_blank')}
                     >
                       {button.text}
@@ -175,16 +187,27 @@ export default function Index() {
                 )}
               </div>
               
-              {/* Secondary Image */}
-              <div>
+              {/* Secondary and Tertiary Images */}
+              <div className="space-y-6">
+                {/* Secondary Image */}
                 <img 
-                  src={projects[0].secondaryImageUrl || 'https://via.placeholder.com/600x800'} 
-                  alt={`${projects[0].title} detail`} 
-                  className="w-full h-auto object-cover"
+                  src="/images/car_card_port.png" 
+                  className="w-full h-auto object-cover rounded-[20px]"
                 />
+                </div>
+                </div>
+                
+                {/* Tertiary Image */}
+                  <img 
+                    src="/images/car_mobile_port.png"
+                    className="w-full h-auto object-cover rounded-[20px]"
+                  />
+                  
+                
+              </div>
               </div>
             </div>
-          </div>
+          
         )}
         
         {/* Additional Projects */}

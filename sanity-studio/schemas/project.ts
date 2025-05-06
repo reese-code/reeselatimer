@@ -50,6 +50,7 @@ export default defineType({
       options: {
         hotspot: true,
       },
+      fields: [],
     }),
     defineField({
       name: 'secondaryImage',
@@ -58,6 +59,27 @@ export default defineType({
       options: {
         hotspot: true,
       },
+      fields: [],
+    }),
+    defineField({
+      name: 'tertiaryImage',
+      title: 'Tertiary image',
+      type: 'image',
+      options: {
+        hotspot: true,
+      },
+      fields: [],
+    }),
+    defineField({
+      name: 'iconSvg',
+      title: 'Icon SVG',
+      type: 'image',
+      description: 'SVG icon to display next to the project title',
+      options: {
+        accept: 'image/svg+xml',
+        hotspot: true,
+      },
+      fields: [],
     }),
     defineField({
       name: 'description',

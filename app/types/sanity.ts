@@ -8,6 +8,8 @@ export interface Project {
   technologies?: string[];
   mainImageUrl?: string;
   secondaryImageUrl?: string;
+  tertiaryImageUrl?: string;
+  iconSvgUrl?: string;
   description?: string;
   websiteUrl?: string;
   tags?: string[];

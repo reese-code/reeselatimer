@@ -31,11 +31,13 @@ export async function loader() {
       technologies,
       "mainImageUrl": mainImage.asset->url,
       "secondaryImageUrl": secondaryImage.asset->url,
+      "tertiaryImageUrl": tertiaryImage.asset->url,
+      "iconSvgUrl": iconSvg.asset->url,
       description,
       websiteUrl,
       tags,
       buttons
-    }`;
+    } | order(_createdAt desc)`;
     
     const projects = await sanityClient.fetch(projectsQuery);
     
