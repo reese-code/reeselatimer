@@ -17,6 +17,7 @@ module.exports = {
         'nav': '20px',
         'nav-big': '40px',
         'projects-heading': '96px',
+        'projects-heading-small': "50px",
         'projects-subheading': '32px',
         'project-title': '72px',
       },

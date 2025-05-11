@@ -4,6 +4,7 @@ import type { Project, Hero } from "~/types/sanity";
 import WavesBackground from "~/components/AWaves.jsx";
 import TargetIcon from "~/components/TargetIcon.jsx";
 import PixelizeImage from "~/components/PixelizeImage.jsx";
+import NavBar from "~/components/NavBar";
 
 export const meta: MetaFunction = () => {
   return [
@@ -47,8 +48,15 @@ export default function Index() {
 
   return (
     <div className="min-h-screen">
+      {/* NavBar Component */}
+      <NavBar 
+        title={heroContent.title}
+        contactText={heroContent.contactText}
+        isHomePage={true}
+      />
+
       {/* Hero Section */}
-      <section className="relative z-10 h-screen flex flex-col px-10 bg-black">
+      <section id="hero" className="relative z-10 h-screen flex flex-col px-3 sm:px-10 bg-black">
         {/* Background */}
         <WavesBackground />
 
@@ -56,24 +64,8 @@ export default function Index() {
         <div className="absolute top-0 left-0 w-full h-[50vh] bg-gradient-to-b from-black/80 to-transparent z-[5] pointer-events-none"></div>
         <div className="absolute bottom-0 left-0 w-full h-[50vh] bg-gradient-to-b from-transparent to-black/80 z-[5] pointer-events-none"></div>
 
-        {/* Top Navigation */}
-        
-        <div className="flex justify-between items-center pt-4 relative z-10">
-          <p className="text-nav text-hero-white">{heroContent.title}</p>
-          <Link to="/contact" className="text-nav text-hero-white">
-            {heroContent.contactText}
-          </Link>
-          
-        </div>
-
-        {/* Divider Line */}
-        <div className="w-full h-px bg-hero-white mt-4 relative z-10">
-          <div className="square-design absolute left-0 z-10 nav-detail"></div>
-          <div className="square-design absolute right-0 z-10 nav-detail"></div>
-        </div>
-
         {/* Hero Tagline & Link */}
-        <div className="mt-auto flex justify-between items-end pb-8 relative z-10">
+        <div className="mt-auto flex sm:flex-row flex-col justify-between items-center gap-4 pb-8 relative z-10">
           <div className="flex flex-col items-end gap-0">
             <div className="flex items-center gap-2 mb-2">
               {hero?.taglineIconUrl && (
@@ -83,11 +75,11 @@ export default function Index() {
                   className="w-9 h-9 text-hero-white"
                 />
               )}
-              <p className="text-nav-big font-editorial editorial text-hero-white font-light leading-none">
+              <p className="sm:text-nav-big text-[30px] font-editorial editorial text-hero-white font-light leading-none">
                 {heroContent.tagline}
               </p>
             </div>
-            <p className="text-nav-big font-editorial editorial text-hero-white font-light leading-none">
+            <p className="sm:text-nav-big text-[30px]  font-editorial editorial text-hero-white font-light leading-none">
               {heroContent.subTagline}
             </p>
           </div>
@@ -109,7 +101,7 @@ export default function Index() {
         
         {/* Projects Header */}
         <div className="flex items-start mb-8 border-b border-black pb-4 justify-center">
-          <h2 className="text-projects-heading font-editorial font-light text-black mr-4">Projects</h2>
+          <h2 className="text-projects-heading-small sm:text-projects-heading font-editorial font-light text-black mr-4">Projects</h2>
           <span className="text-projects-subheading font-editorial font-light text-black">01</span>
         </div>
         
