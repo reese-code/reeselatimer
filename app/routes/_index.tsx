@@ -96,13 +96,13 @@ export default function Index() {
 
 
       {/* Projects Section */}
-      <section id="work" className="px-10 py-16 bg-white">
+      <section id="work" className="px-3 sm:px-10 py-16 bg-white">
         {error && <p className="text-red-500 mb-4">Error: {error}</p>}
         
         {/* Projects Header */}
         <div className="flex items-start mb-8 border-b border-black pb-4 justify-center">
           <h2 className="text-projects-heading-small sm:text-projects-heading font-editorial font-light text-black mr-4">Projects</h2>
-          <span className="text-projects-subheading font-editorial font-light text-black">01</span>
+          <span className="sm:text-projects-subheading text-projects-subheading-small font-editorial font-light text-black">01</span>
         </div>
         
         {/* Featured Project */}
@@ -114,24 +114,18 @@ export default function Index() {
               className="w-full h-auto object-cover rounded-[20px]"
             />
             <div className="flex flex-row-reverse">
-            <div className="flex flex-row gap-5 items-start">
+            <div className="flex flex-col-reverse sm:flex-row gap-5 items-start">
             
               <div className="flex flex-col-reverse w-full">
               {/* Project Details */}
               <div>
-                <div className="flex items-center mb-6">
-                  <h3 className="text-project-title font-editorial font-light text-black mr-2">
+                <div className="flex items-center mb-6 mt-3 sm:mt-10">
+                  <h3 className="text-project-title-small sm:text-project-title font-editorial font-light text-black mr-2">
                     {projects[0].title || "Ship Your Car Safely"}
                   </h3>
-                  {projects[0].iconSvgUrl ? (
-                    <PixelizeImage 
-                      src={projects[0].iconSvgUrl} 
-                      alt="Project Icon" 
-                      className="w-8 h-8"
-                    />
-                  ) : (
-                    <TargetIcon className="w-8 h-8 text-black" />
-                  )}
+                  
+              
+                 
                 </div>
                 
                 {/* Tags */}
