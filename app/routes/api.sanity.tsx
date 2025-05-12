@@ -57,9 +57,26 @@ export async function loader() {
       console.warn('No projects found in Sanity');
     }
 
+    // Fetch services
+    const servicesQuery = `*[_type == "service"]{
+      _id,
+      title,
+      "slug": slug.current,
+      description,
+      tags,
+      order
+    } | order(order asc)`;
+    
+    const services = await sanityClient.fetch(servicesQuery);
+    
+    if (!services) {
+      console.warn('No services found in Sanity');
+    }
+
     return json({
       projects: projects || [],
-      hero: hero || null
+      hero: hero || null,
+      services: services || []
     });
   } catch (error) {
     console.error('Error in Sanity API route:', {

@@ -19,6 +19,15 @@ export interface Project {
   }[];
 }
 
+export interface Service {
+  _id: string;
+  title: string;
+  slug: string;
+  description: string;
+  tags: string[];
+  order: number;
+}
+
 export interface Hero {
   title: string;
   contactText: string;
