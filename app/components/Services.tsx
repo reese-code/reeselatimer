@@ -26,37 +26,51 @@ export default function Services({ services, error }: ServicesProps) {
 
     counterElement.innerHTML = '';
 
-    // Create container to hold all numbers
-    const numberList = document.createElement('div');
-    numberList.style.position = 'absolute';
-    numberList.style.top = '0';
-    numberList.style.left = '0';
-    numberList.style.width = '100%';
+    // Create fixed "0" element
+    const fixedZero = document.createElement('div');
+    fixedZero.textContent = '0';
+    fixedZero.style.position = 'absolute';
+    fixedZero.style.top = '0';
+    fixedZero.style.left = '0';
+    fixedZero.style.height = '250px';
+    fixedZero.style.fontSize = '200px';
+    fixedZero.style.fontFamily = 'editorial new, serif';
+    fixedZero.style.fontWeight = '300';
+    fixedZero.style.display = 'flex';
+    fixedZero.style.alignItems = 'center';
+    fixedZero.style.justifyContent = 'flex-start';
+    counterElement.appendChild(fixedZero);
 
-    // Create numbers 1 to 3 regardless of service.number
+    // Create container to hold scrolling digits
+    const digitList = document.createElement('div');
+    digitList.style.position = 'absolute';
+    digitList.style.top = '0';
+    digitList.style.left = '100px'; // Position after the "0"
+    digitList.style.width = '100%';
+
+    // Create digits 1 to 3
     for (let i = 1; i <= 3; i++) {
-      const numberItem = document.createElement('div');
-      numberItem.textContent = String(i).padStart(2, '0');
-      numberItem.style.height = '250px';
-      numberItem.style.fontSize = '200px';
-      numberItem.style.fontFamily = 'editorial new, serif';
-      numberItem.style.fontWeight = '300';
-      numberItem.style.opacity = '1';
-      numberItem.style.display = 'flex';
-      numberItem.style.alignItems = 'center';
-      numberItem.style.justifyContent = 'flex-start';
-      numberList.appendChild(numberItem);
-      
+      const digitItem = document.createElement('div');
+      digitItem.textContent = String(i);
+      digitItem.style.height = '250px';
+      digitItem.style.fontSize = '200px';
+      digitItem.style.fontFamily = 'editorial new, serif';
+      digitItem.style.fontWeight = '300';
+      digitItem.style.opacity = '1';
+      digitItem.style.display = 'flex';
+      digitItem.style.alignItems = 'center';
+      digitItem.style.justifyContent = 'flex-start';
+      digitList.appendChild(digitItem);
     }
 
-    counterElement.appendChild(numberList);
+    counterElement.appendChild(digitList);
 
-    gsap.to(numberList, {
-      y: () => `-${2 * 200}px`, // 2 because we're going from 1 to 3 (2 transitions)
-      ease: "linear",
+    gsap.to(digitList, {
+      y: () => `-${2 * 250}px`, // 2 because we're going from 1 to 3 (2 transitions)
+      ease: "power1.inOut",
       scrollTrigger: {
-        trigger: sectionRef.current,
-        start: "top top", // Start when the section enters the viewport
+        trigger: serviceCards[0], // Start when the first card hits the top
+        start: "top top", 
         endTrigger: serviceCards[serviceCards.length - 1], // Target the last service card
         end: "top top", // End when the last card hits the top of the viewport
         scrub: 0.8,
@@ -80,14 +94,14 @@ export default function Services({ services, error }: ServicesProps) {
       {/* Services Content */}
       <div className="flex flex-col sm:flex-row gap-8 sm:gap-16">
         {/* Fixed Counter */}
-        <div className="sm:sticky sm:top-20 sm:self-start sm:w-1/3">
+        <div className="sm:sticky sm:top-20 sm:self-start sm:w-1/2">
           <div className="relative overflow-hidden h-[250px]">
-            <div ref={counterRef} className="absolute top-0 left-0 w-full">0</div>
+            <div ref={counterRef} className="absolute top-0 left-0 w-full flex"></div>
           </div>
         </div>
 
         {/* Service Cards */}
-        <div ref={cardsRef} className="flex-1 space-y-12 sm:w-2/3">
+        <div ref={cardsRef} className="flex-1 space-y-12 sm:w-1/2">
           {services.length > 0 ? (
             services.map((service) => (
               <div key={service._id} className="border-b border-black pb-8">
