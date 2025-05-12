@@ -65,17 +65,18 @@ export default function Services({ services, error }: ServicesProps) {
 
     counterElement.appendChild(digitList);
 
+    // Create scroll animation for the digits
     gsap.to(digitList, {
       y: () => `-${2 * 250}px`, // 2 because we're going from 1 to 3 (2 transitions)
       ease: "power1.inOut",
       scrollTrigger: {
         trigger: serviceCards[0], // Start when the first card hits the top
-        start: "top top", 
-        endTrigger: serviceCards[serviceCards.length - 1], // Target the last service card
-        end: "top top", // End when the last card hits the top of the viewport
+        start: "top 80px", // Start when the first card is 80px from the top
+        endTrigger: serviceCards[serviceCards.length - 1], // End at the last card
+        end: "top 80px", // End when the last card is 80px from the top
         scrub: 0.8,
-        markers: true, // Set to true for debugging
-      },
+        markers: true,
+      }
     });
 
     return () => ScrollTrigger.getAll().forEach(trigger => trigger.kill());
