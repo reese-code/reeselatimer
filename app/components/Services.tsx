@@ -83,7 +83,7 @@ export default function Services({ services, error }: ServicesProps) {
   }, [services]);
 
   return (
-    <section ref={sectionRef} id="services" className="px-3 sm:px-10 py-16 bg-white mb-[1000px]">
+    <section ref={sectionRef} id="services" className="px-3 sm:px-10 py-16 bg-white">
       {error && <p className="text-red-500 mb-4">Error: {error}</p>}
 
       {/* Services Header */}
@@ -95,7 +95,7 @@ export default function Services({ services, error }: ServicesProps) {
       {/* Services Content */}
       <div className="flex flex-col sm:flex-row gap-8 sm:gap-16">
         {/* Fixed Counter */}
-        <div className="sm:sticky sm:top-20 sm:self-start sm:w-1/2">
+        <div className="sm:sticky sm:top-20 sm:self-start sm:w-1/2 hidden sm:block">
           <div className="relative overflow-hidden h-[250px]">
             <div ref={counterRef} className="absolute top-0 left-0 w-full flex"></div>
           </div>
