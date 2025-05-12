@@ -1,12 +1,13 @@
 import type { MetaFunction, LoaderFunction } from "@remix-run/node";
 import { useLoaderData, Link } from "@remix-run/react";
-import type { Project, Hero, Service } from "~/types/sanity";
+import type { Project, Hero, Service, About as AboutType } from "~/types/sanity";
 import WavesBackground from "~/components/AWaves.jsx";
 import TargetIcon from "~/components/TargetIcon.jsx";
 import PixelizeImage from "~/components/PixelizeImage.jsx";
 import NavBar from "~/components/NavBar";
 import Projects from "~/components/Projects";
 import Services from "~/components/Services";
+import About from "~/components/About";
 
 export const meta: MetaFunction = () => {
   return [
@@ -26,6 +27,7 @@ export const loader: LoaderFunction = async ({ request }) => {
       projects: data.projects || [], 
       hero: data.hero || null,
       services: data.services || [],
+      about: data.about || null,
       error: null 
     };
   } catch (error: unknown) {
@@ -34,13 +36,14 @@ export const loader: LoaderFunction = async ({ request }) => {
       projects: [], 
       hero: null,
       services: [],
+      about: null,
       error: (error as Error).message || 'Failed to fetch data' 
     };
   }
 };
 
 export default function Index() {
-  const { projects, hero, services, error } = useLoaderData<typeof loader>();
+  const { projects, hero, services, about, error } = useLoaderData<typeof loader>();
 
   const heroContent = hero || {
     title: "Reese Latimer •",
@@ -104,6 +107,9 @@ export default function Index() {
       
       {/* Services Component */}
       <Services services={services} error={error} />
+      
+      {/* About Component */}
+      <About about={about} error={error} />
     </div>
   );
 }

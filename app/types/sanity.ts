@@ -36,3 +36,13 @@ export interface Hero {
   subTagline: string;
   projectsLinkText: string;
 }
+
+export interface About {
+  _id: string;
+  title: string;
+  mainImageUrl: string;
+  svgIconUrl?: string;
+  mainText: string;
+  firstParagraph: string;
+  secondParagraph: string;
+}

@@ -73,10 +73,28 @@ export async function loader() {
       console.warn('No services found in Sanity');
     }
 
+    // Fetch about data
+    const aboutQuery = `*[_type == "about"][0]{
+      _id,
+      title,
+      "mainImageUrl": mainImage.asset->url,
+      "svgIconUrl": svgIcon.asset->url,
+      mainText,
+      firstParagraph,
+      secondParagraph
+    }`;
+    
+    const about = await sanityClient.fetch(aboutQuery);
+    
+    if (!about) {
+      console.warn('No about data found in Sanity');
+    }
+
     return json({
       projects: projects || [],
       hero: hero || null,
-      services: services || []
+      services: services || [],
+      about: about || null
     });
   } catch (error) {
     console.error('Error in Sanity API route:', {
