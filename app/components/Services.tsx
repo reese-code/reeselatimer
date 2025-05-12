@@ -1,14 +1,11 @@
 import { useEffect, useRef } from "react";
 import type { Service } from "~/types/sanity";
 import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 interface ServicesProps {
   services: Service[];
   error: string | null;
 }
-
-gsap.registerPlugin(ScrollTrigger);
 
 export default function Services({ services, error }: ServicesProps) {
   const sectionRef = useRef<HTMLElement>(null);
@@ -20,66 +17,79 @@ export default function Services({ services, error }: ServicesProps) {
       return;
     }
 
-    const counterElement = counterRef.current;
-    const cardsElement = cardsRef.current;
-    const serviceCards = cardsElement.querySelectorAll(':scope > div');
+    let ScrollTrigger: any;
 
-    counterElement.innerHTML = '';
+    // Dynamic import to avoid build issues with CommonJS modules
+    import("gsap/ScrollTrigger").then((mod) => {
+      ScrollTrigger = mod.ScrollTrigger || mod.default || mod;
+      gsap.registerPlugin(ScrollTrigger);
 
-    // Create fixed "0" element
-    const fixedZero = document.createElement('div');
-    fixedZero.textContent = '0';
-    fixedZero.style.position = 'absolute';
-    fixedZero.style.top = '0';
-    fixedZero.style.left = '0';
-    fixedZero.style.height = '250px';
-    fixedZero.style.fontSize = '200px';
-    fixedZero.style.fontFamily = 'editorial new, serif';
-    fixedZero.style.fontWeight = '300';
-    fixedZero.style.display = 'flex';
-    fixedZero.style.alignItems = 'center';
-    fixedZero.style.justifyContent = 'flex-start';
-    counterElement.appendChild(fixedZero);
+      const counterElement = counterRef.current!;
+      const cardsElement = cardsRef.current!;
+      const serviceCards = cardsElement.querySelectorAll(':scope > div');
 
-    // Create container to hold scrolling digits
-    const digitList = document.createElement('div');
-    digitList.style.position = 'absolute';
-    digitList.style.top = '0';
-    digitList.style.left = '100px'; // Position after the "0"
-    digitList.style.width = '100%';
+      counterElement.innerHTML = '';
 
-    // Create digits 1 to 3
-    for (let i = 1; i <= 3; i++) {
-      const digitItem = document.createElement('div');
-      digitItem.textContent = String(i);
-      digitItem.style.height = '250px';
-      digitItem.style.fontSize = '200px';
-      digitItem.style.fontFamily = 'editorial new, serif';
-      digitItem.style.fontWeight = '300';
-      digitItem.style.opacity = '1';
-      digitItem.style.display = 'flex';
-      digitItem.style.alignItems = 'center';
-      digitItem.style.justifyContent = 'flex-start';
-      digitList.appendChild(digitItem);
-    }
+      // Create fixed "0" element
+      const fixedZero = document.createElement('div');
+      fixedZero.textContent = '0';
+      fixedZero.style.position = 'absolute';
+      fixedZero.style.top = '0';
+      fixedZero.style.left = '0';
+      fixedZero.style.height = '250px';
+      fixedZero.style.fontSize = '200px';
+      fixedZero.style.fontFamily = 'editorial new, serif';
+      fixedZero.style.fontWeight = '300';
+      fixedZero.style.display = 'flex';
+      fixedZero.style.alignItems = 'center';
+      fixedZero.style.justifyContent = 'flex-start';
+      counterElement.appendChild(fixedZero);
 
-    counterElement.appendChild(digitList);
+      // Create container to hold scrolling digits
+      const digitList = document.createElement('div');
+      digitList.style.position = 'absolute';
+      digitList.style.top = '0';
+      digitList.style.left = '100px'; // Position after the "0"
+      digitList.style.width = '100%';
 
-    // Create scroll animation for the digits
-    gsap.to(digitList, {
-      y: () => `-${2 * 250}px`, // 2 because we're going from 1 to 3 (2 transitions)
-      ease: "power1.inOut",
-      scrollTrigger: {
-        trigger: serviceCards[0], // Start when the first card hits the top
-        start: "top 80px", // Start when the first card is 80px from the top
-        endTrigger: serviceCards[serviceCards.length - 1], // End at the last card
-        end: "top 80px", // End when the last card is 80px from the top
-        scrub: 0.8,
-        markers: true,
+      // Create digits 1 to 3
+      for (let i = 1; i <= 3; i++) {
+        const digitItem = document.createElement('div');
+        digitItem.textContent = String(i);
+        digitItem.style.height = '250px';
+        digitItem.style.fontSize = '200px';
+        digitItem.style.fontFamily = 'editorial new, serif';
+        digitItem.style.fontWeight = '300';
+        digitItem.style.opacity = '1';
+        digitItem.style.display = 'flex';
+        digitItem.style.alignItems = 'center';
+        digitItem.style.justifyContent = 'flex-start';
+        digitList.appendChild(digitItem);
       }
+
+      counterElement.appendChild(digitList);
+
+      // Create scroll animation for the digits
+      gsap.to(digitList, {
+        y: `-${2 * 250}px`, // 2 because we're going from 1 to 3 (2 transitions)
+        ease: "power1.inOut",
+        scrollTrigger: {
+          trigger: serviceCards[0], // Start when the first card hits the top
+          start: "top 80px",
+          endTrigger: serviceCards[serviceCards.length - 1],
+          end: "top 80px",
+          scrub: 0.8,
+          markers: true,
+        }
+      });
     });
 
-    return () => ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+    return () => {
+      if (typeof window !== "undefined" && gsap?.core?.globals()?.ScrollTrigger) {
+        const triggers = gsap.core.globals().ScrollTrigger.getAll?.() || [];
+        triggers.forEach(trigger => trigger.kill());
+      }
+    };
   }, [services]);
 
   return (
