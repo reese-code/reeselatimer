@@ -22,6 +22,7 @@ module.exports = {
         'projects-subheading-small': '20px',
         'project-title': '72px',
         'project-title-small': '40px',
+        'type-small': '20px',
       },
     },
   },

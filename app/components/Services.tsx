@@ -79,7 +79,7 @@ export default function Services({ services, error }: ServicesProps) {
           endTrigger: serviceCards[serviceCards.length - 1],
           end: "top 80px",
           scrub: 0.8,
-          markers: true,
+          markers: false,
         }
       });
     });
@@ -106,7 +106,7 @@ export default function Services({ services, error }: ServicesProps) {
       <div className="flex flex-col sm:flex-row gap-8 sm:gap-16">
         {/* Fixed Counter */}
         <div className="sm:sticky sm:top-20 sm:self-start sm:w-1/2 hidden sm:block">
-          <div className="relative overflow-hidden h-[250px]">
+          <div className="relative overflow-hidden h-[180px]">
             <div ref={counterRef} className="absolute top-0 left-0 w-full flex"></div>
           </div>
         </div>
@@ -122,7 +122,7 @@ export default function Services({ services, error }: ServicesProps) {
                 <p className="text-[20px] mb-6">{service.description}</p>
                 <div className="flex flex-wrap gap-2 mb-2">
                   {service.tags.map((tag, tagIndex) => (
-                    <span key={tagIndex} className="px-4 py-2 border border-black rounded-full text-sm">
+                    <span key={tagIndex} className="px-4 py-2 border border-[#9F9F9F] text-[#9F9F9F] rounded-full text-type-small">
                       {tag}
                     </span>
                   ))}

@@ -61,7 +61,7 @@ export default function Projects({ projects, error }: ProjectsProps) {
                 {(projects[0].tags || ["Development lead", "Design assistant", "Digital assets"]).map((tag: string, index: number) => (
                   <span 
                     key={index} 
-                    className="px-4 py-2 border border-black rounded-full text-sm"
+                    className="px-4 py-2 border border-[#9F9F9F] text-[#9F9F9F] rounded-full text-type-small"
                   >
                     {tag}
                   </span>
@@ -76,7 +76,7 @@ export default function Projects({ projects, error }: ProjectsProps) {
                 ]).map((button: { text: string; url?: string }, index: number) => (
                   <button 
                     key={index} 
-                    className="px-6 py-2 bg-black text-white rounded-full"
+                    className="px-6 py-2 bg-black text-white rounded-full text-type-small"
                     onClick={() => button.url && window.open(button.url, '_blank')}
                   >
                     {button.text}
@@ -150,7 +150,7 @@ export default function Projects({ projects, error }: ProjectsProps) {
                   {secondProject.tags.map((tag: string, index: number) => (
                     <span 
                       key={index} 
-                      className="px-4 py-2 border border-black rounded-full text-sm"
+                      className="px-4 py-2 border border-[#9F9F9F] text-[#9F9F9F] rounded-full text-type-small"
                     >
                       {tag}
                     </span>
@@ -162,7 +162,7 @@ export default function Projects({ projects, error }: ProjectsProps) {
                   {secondProject.buttons.map((button: { text: string; url?: string }, index: number) => (
                     <button 
                       key={index} 
-                      className="px-6 py-2 bg-black text-white rounded-full"
+                      className="px-6 py-2 bg-black text-white rounded-full text-type-small"
                       onClick={() => button.url && window.open(button.url, '_blank')}
                     >
                       {button.text}
