@@ -10,7 +10,6 @@ interface AboutProps {
 export default function About({ about, error }: AboutProps) {
   const sectionRef = useRef<HTMLElement>(null);
 
-  // Default content in case Sanity data is not available
   const defaultAbout = {
     title: "About",
     mainImageUrl: "/images/about-image.png",
@@ -20,7 +19,6 @@ export default function About({ about, error }: AboutProps) {
     secondParagraph: "When I'm not designing and developing, you can find me spending time working out, hiking, and playing my guitar."
   };
 
-  // Use Sanity data if available, otherwise use default content
   const content = about || defaultAbout;
 
   return (
@@ -36,7 +34,7 @@ export default function About({ about, error }: AboutProps) {
       {/* About Content */}
       <div className="flex flex-col sm:flex-row gap-8">
         {/* Left Column - Image */}
-        <div className="sm:w-1/2">
+        <div className="sm:w-1/3">
           <PixelizeImage 
             src={content.mainImageUrl} 
             alt="About image" 
@@ -45,24 +43,20 @@ export default function About({ about, error }: AboutProps) {
         </div>
 
         {/* Right Column - Text Content */}
-        <div className="sm:w-1/2">
-          <div className="flex items-start mb-6">
-            {/* SVG Icon */}
-            {content.svgIconUrl && (
-              <div className="mr-3 mt-2">
-                <img 
-                  src={content.svgIconUrl} 
-                  alt="Info icon" 
-                  className="w-12 h-12"
-                />
-              </div>
-            )}
-            
-            {/* Main Text */}
-            <h3 className="text-project-title-small sm:text-project-title font-editorial font-light text-black">
-              {content.mainText}
-            </h3>
-          </div>
+        <div className="sm:w-2/3 relative">
+          {/* SVG Icon */}
+          {content.svgIconUrl && (
+            <img 
+              src={content.svgIconUrl} 
+              alt="Info icon" 
+              className="absolute top-[2px] left-0 w-[46.5px] sm:w-[85px] h-auto"
+            />
+          )}
+
+          {/* Main Text - only indent the first line */}
+          <h3 className="indent-[46px] sm:indent-[83px] text-project-title-small sm:text-project-title font-editorial font-light text-black mb-6 leading-tight">
+            {content.mainText}
+          </h3>
 
           {/* Paragraphs */}
           <div className="space-y-6">
