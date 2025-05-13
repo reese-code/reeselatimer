@@ -1,6 +1,28 @@
 import { json } from "@remix-run/node";
 import { createClient } from '@sanity/client';
 
+// Export individual query functions for direct use in components
+export async function getAbout() {
+  return await sanityClient.fetch(`*[_type == "about"][0]`);
+}
+
+export async function getProjects() {
+  return await sanityClient.fetch(`*[_type == "project"] | order(_createdAt desc)`);
+}
+
+export async function getServices() {
+  return await sanityClient.fetch(`*[_type == "service"] | order(order asc)`);
+}
+
+export async function getFooter() {
+  return await sanityClient.fetch(`*[_type == "footer"][0] {
+    socialLinks[] {
+      platform,
+      url
+    }
+  }`);
+}
+
 const sanityClient = createClient({
   projectId: process.env.SANITY_PROJECT_ID || 'usq45pnh',
   dataset: process.env.SANITY_DATASET || 'production',
@@ -90,11 +112,26 @@ export async function loader() {
       console.warn('No about data found in Sanity');
     }
 
+    // Fetch footer data
+    const footerQuery = `*[_type == "footer"][0]{
+      socialLinks[] {
+        platform,
+        url
+      }
+    }`;
+    
+    const footer = await sanityClient.fetch(footerQuery);
+    
+    if (!footer) {
+      console.warn('No footer data found in Sanity');
+    }
+
     return json({
       projects: projects || [],
       hero: hero || null,
       services: services || [],
-      about: about || null
+      about: about || null,
+      footer: footer || { socialLinks: [] }
     });
   } catch (error) {
     console.error('Error in Sanity API route:', {

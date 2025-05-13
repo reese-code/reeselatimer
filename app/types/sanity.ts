@@ -46,3 +46,12 @@ export interface About {
   firstParagraph: string;
   secondParagraph: string;
 }
+
+export interface SocialLink {
+  platform: string;
+  url: string;
+}
+
+export interface Footer {
+  socialLinks: SocialLink[];
+}
