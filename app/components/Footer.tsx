@@ -28,15 +28,15 @@ export default function Footer({ socialLinks: propSocialLinks }: FooterProps) {
 
   return (
     <footer className="py-16 px-4 sm:px-10 ">
-      <div className="flex w-full gap-8 mb-16">
+      <div className="flex w-full gap-10 mb-16">
         {/* Menu Links */}
         <div className="w-1/3">
           <h3 className="text-xl mb-4 border-b border-black pb-2">Menu</h3>
-          <ul className="space-y-4">
+          <ul className="flex flex-col gap-[10px]">
             <li>
               <button 
                 onClick={() => scrollToSection('work')}
-                className="text-lg font-light hover:underline"
+                className="text-type-small font-light hover:underline"
               >
                 Work
               </button>
@@ -44,7 +44,7 @@ export default function Footer({ socialLinks: propSocialLinks }: FooterProps) {
             <li>
               <Link 
                 to="/contact" 
-                className="text-lg font-light hover:underline"
+                className="text-type-small font-light hover:underline"
               >
                 Contact
               </Link>
@@ -52,7 +52,7 @@ export default function Footer({ socialLinks: propSocialLinks }: FooterProps) {
             <li>
               <button 
                 onClick={() => scrollToSection('about')}
-                className="text-lg font-light hover:underline"
+                className="text-type-small font-light hover:underline"
               >
                 About
               </button>
@@ -63,14 +63,14 @@ export default function Footer({ socialLinks: propSocialLinks }: FooterProps) {
         {/* Social Links */}
         <div className="w-1/3">
           <h3 className="text-xl mb-4 border-b border-black pb-2 ">Socials</h3>
-          <ul className="space-y-4">
+          <ul className="flex flex-col gap-[10px]">
             {socialLinks && socialLinks.map((link, index) => (
               <li key={index}>
                 <a 
                   href={link.url} 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="text-lg font-light hover:underline"
+                  className="text-type-small font-light hover:underline"
                 >
                   {link.platform}
                 </a>
@@ -81,7 +81,7 @@ export default function Footer({ socialLinks: propSocialLinks }: FooterProps) {
       </div>
 
       {/* Bottom Section */}
-      <div className="space-y-12">
+      <div className="flex w-auto flex-col">
         {/* First Line */}
         <div className="flex items-center flex-wrap gap-6">
           <img src="/images/mountain.svg" alt="Mountain" className="w-[78px] h-auto" />
