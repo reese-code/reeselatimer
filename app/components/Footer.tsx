@@ -108,22 +108,18 @@ export default function Footer({ socialLinks: propSocialLinks }: FooterProps) {
 
         {/* Second Line */}
         <div className="flex items-center flex-wrap gap-6 border-b pb-6">
-          <div className="group">
-            <Link to="/about" className=" font-light inline-block text-[65px] font-editorial">
-              Creative Studio <span className="font-light font-neue text-[23px]">BY</span> Reese Latimer
-              <span className="block max-w-0 group-hover:max-w-full transition-all duration-500 h-0.5 bg-black"></span>
-            </Link>
-          </div>
+          <Link to="/about" className="group font-light inline-block text-[65px] font-editorial transition-all duration-300 hover:underline">
+            Creative Studio <span className="font-light font-neue text-[23px]">BY</span> Reese Latimer
+          </Link>
 
           {/* Star SVG */}
           <img src="/images/Star.svg" alt="Star" className="w-[52px] h-auto font-[65px] " />
 
           {/* Work Together */}
-          <Link to="/contact" className="group flex items-center gap-2 text-[65px] font-editorial font-light hover:underline transition-all duration-300">
+          <Link to="/contact" className="flex items-start gap-2 text-[65px] font-editorial font-light hover:underline transition-all duration-300">
             <span>work</span>
             <img src="/images/connecting_arrow.svg" alt="Connecting Arrow" className="w-[66px] h-auto" />
             <span>together</span>
-            <span className="block max-w-0 group-hover:max-w-full transition-all duration-500 h-0.5 bg-black"></span>
           </Link>
 
           <div className="ml-auto">
