@@ -1,4 +1,4 @@
-import { Link } from '@remix-run/react';
+import { Link, useLocation } from '@remix-run/react';
 import { useEffect, useState } from 'react';
 
 interface SocialLink {
@@ -19,6 +19,9 @@ export default function Footer({ socialLinks: propSocialLinks }: FooterProps) {
     }
   }, [propSocialLinks]);
 
+  const location = useLocation();
+  const isHomePage = location.pathname === '/';
+
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
     if (element) {
@@ -27,19 +30,45 @@ export default function Footer({ socialLinks: propSocialLinks }: FooterProps) {
   };
 
   return (
-    <footer className="py-16 px-4 sm:px-10 ">
+    <footer className="py-16 px-4 md:px-10 ">
       <div className="flex w-full gap-5 md:gap-10 mb-16">
         {/* Menu Links */}
         <div className="w-1/2 md:w-1/3">
           <h3 className="text-xl mb-4 border-b border-black pb-2">Menu</h3>
           <ul className="flex flex-col gap-[10px]">
             <li>
-              <button 
-                onClick={() => scrollToSection('work')}
-                className="text-type-small font-light hover:underline"
-              >
-                Work
-              </button>
+              {isHomePage ? (
+                <button 
+                  onClick={() => scrollToSection('hero')}
+                  className="text-type-small font-light hover:underline"
+                >
+                  Index
+                </button>
+              ) : (
+                <Link 
+                  to="/#hero" 
+                  className="text-type-small font-light hover:underline"
+                >
+                  Index
+                </Link>
+              )}
+            </li>
+            <li>
+              {isHomePage ? (
+                <button 
+                  onClick={() => scrollToSection('work')}
+                  className="text-type-small font-light hover:underline"
+                >
+                  Work
+                </button>
+              ) : (
+                <Link 
+                  to="/#work" 
+                  className="text-type-small font-light hover:underline"
+                >
+                  Work
+                </Link>
+              )}
             </li>
             <li>
               <Link 
@@ -50,12 +79,21 @@ export default function Footer({ socialLinks: propSocialLinks }: FooterProps) {
               </Link>
             </li>
             <li>
-              <button 
-                onClick={() => scrollToSection('about')}
-                className="text-type-small font-light hover:underline"
-              >
-                About
-              </button>
+              {isHomePage ? (
+                <button 
+                  onClick={() => scrollToSection('about')}
+                  className="text-type-small font-light hover:underline"
+                >
+                  About
+                </button>
+              ) : (
+                <Link 
+                  to="/#about" 
+                  className="text-type-small font-light hover:underline"
+                >
+                  About
+                </Link>
+              )}
             </li>
           </ul>
         </div>
@@ -107,10 +145,22 @@ export default function Footer({ socialLinks: propSocialLinks }: FooterProps) {
         </div>
 
         {/* Second Line */}
-        <div className="flex items-center flex-wrap gap-4 border-b pb-6">
-          <Link to="/about" className="group font-light inline-block text-[36px] md:text-[65px] font-editorial transition-all duration-300 hover:underline">
-            Creative Studio <span className="font-light font-neue text-[16px] md:text-[23px]">BY</span> Reese Latimer
-          </Link>
+        <div className="flex items-center flex-wrap gap-4 pb-6">
+          {isHomePage ? (
+            <button 
+              onClick={() => scrollToSection('about')}
+              className="group font-light inline-block text-[36px] md:text-[65px] font-editorial transition-all duration-300 hover:underline"
+            >
+              Creative Studio <span className="font-light font-neue text-[16px] md:text-[23px]">BY</span> Reese Latimer
+            </button>
+          ) : (
+            <Link 
+              to="/#about" 
+              className="group font-light inline-block text-[36px] md:text-[65px] font-editorial transition-all duration-300 hover:underline"
+            >
+              Creative Studio <span className="font-light font-neue text-[16px] md:text-[23px]">BY</span> Reese Latimer
+            </Link>
+          )}
 
           {/* Star SVG */}
           <img src="/images/Star.svg" alt="Star" className="w-[32px] md:w-[52px] h-auto text-[36px] md:text-[65px] " />

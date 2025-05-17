@@ -22,19 +22,19 @@ export default function About({ about, error }: AboutProps) {
   const content = about || defaultAbout;
 
   return (
-    <section ref={sectionRef} id="about" className="px-3 sm:px-10 py-16 bg-white">
+    <section ref={sectionRef} id="about" className="px-3 md:px-10 py-16 bg-white">
       {error && <p className="text-red-500 mb-4">Error: {error}</p>}
 
       {/* About Header */}
       <div className="flex items-start mb-8 border-b border-black pb-4 justify-center">
-        <h2 className="text-projects-heading-small sm:text-projects-heading font-editorial font-light text-black mr-4">About</h2>
-        <span className="sm:text-projects-subheading text-projects-subheading-small font-editorial font-light text-black">03</span>
+        <h2 className="text-projects-heading-small md:text-projects-heading font-editorial font-light text-black mr-4">About</h2>
+        <span className="md:text-projects-subheading text-projects-subheading-small font-editorial font-light text-black">03</span>
       </div>
 
       {/* About Content */}
-      <div className="flex flex-col sm:flex-row gap-8">
+      <div className="flex flex-col md:flex-row gap-8">
         {/* Left Column - Image */}
-        <div className="sm:w-1/3">
+        <div className="md:w-1/3">
           <PixelizeImage 
             src={content.mainImageUrl} 
             alt="About image" 
@@ -43,18 +43,18 @@ export default function About({ about, error }: AboutProps) {
         </div>
 
         {/* Right Column - Text Content */}
-        <div className="sm:w-2/3 relative">
+        <div className="md:w-2/3 relative">
           {/* SVG Icon */}
           {content.svgIconUrl && (
             <img 
               src={content.svgIconUrl} 
               alt="Info icon" 
-              className="absolute top-[2px] left-0 w-[46.5px] sm:w-[85px] h-auto"
+              className="absolute top-[2px] left-0 w-[46.5px] md:w-[85px] h-auto"
             />
           )}
 
           {/* Main Text - only indent the first line */}
-          <h3 className="indent-[46px] sm:indent-[83px] text-project-title-small sm:text-project-title font-editorial font-light text-black mb-6 leading-tight">
+          <h3 className="indent-[46px] md:indent-[83px] text-project-title-small md:text-project-title font-editorial font-light text-black mb-6 leading-tight">
             {content.mainText}
           </h3>
 

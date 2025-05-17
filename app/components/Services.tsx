@@ -93,30 +93,30 @@ export default function Services({ services, error }: ServicesProps) {
   }, [services]);
 
   return (
-    <section ref={sectionRef} id="services" className="px-3 sm:px-10 py-16 bg-white">
+    <section ref={sectionRef} id="services" className="px-3 md:px-10 py-16 bg-white">
       {error && <p className="text-red-500 mb-4">Error: {error}</p>}
 
       {/* Services Header */}
       <div className="flex items-start mb-8 border-b border-black pb-4 justify-center">
-        <h2 className="text-projects-heading-small sm:text-projects-heading font-editorial font-light text-black mr-4">Services</h2>
-        <span className="sm:text-projects-subheading text-projects-subheading-small font-editorial font-light text-black">02</span>
+        <h2 className="text-projects-heading-small md:text-projects-heading font-editorial font-light text-black mr-4">Services</h2>
+        <span className="md:text-projects-subheading text-projects-subheading-small font-editorial font-light text-black">02</span>
       </div>
 
       {/* Services Content */}
-      <div className="flex flex-col sm:flex-row gap-8 sm:gap-16">
+      <div className="flex flex-col md:flex-row gap-8 md:gap-16">
         {/* Fixed Counter */}
-        <div className="sm:sticky sm:top-20 sm:self-start sm:w-1/2 hidden sm:block">
+        <div className="md:sticky md:top-20 md:self-start md:w-1/2 hidden md:block">
           <div className="relative overflow-hidden h-[180px]">
             <div ref={counterRef} className="absolute top-0 left-0 w-full flex"></div>
           </div>
         </div>
 
         {/* Service Cards */}
-        <div ref={cardsRef} className="flex-1 space-y-12 sm:w-1/2">
+        <div ref={cardsRef} className="flex-1 space-y-12 md:w-1/2">
           {services.length > 0 ? (
             services.map((service) => (
               <div key={service._id} className="border-b border-black pb-8">
-                <h3 className="text-project-title-small sm:text-project-title font-editorial font-light text-black mb-4">
+                <h3 className="text-project-title-small md:text-project-title font-editorial font-light text-black mb-4">
                   {service.title}
                 </h3>
                 <p className="text-[20px] mb-6">{service.description}</p>

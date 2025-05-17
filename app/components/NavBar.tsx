@@ -69,7 +69,7 @@ export default function NavBar({
         className="absolute top-0 left-0 w-full bg-white opacity-0 z-0"
       ></div>
       
-      <div className="px-3 sm:px-10">
+      <div className="px-3 md:px-10">
         <div className="flex justify-between items-center pt-4 relative z-10">
           <p className="text-nav nav-text text-hero-white">{title}</p>
           <Link to="/contact" className="text-nav nav-text text-hero-white">

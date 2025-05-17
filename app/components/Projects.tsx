@@ -24,31 +24,31 @@ const secondProject = {
 
 export default function Projects({ projects, error }: ProjectsProps) {
   return (
-    <section id="work" className="px-3 sm:px-10 py-16 bg-white">
+    <section id="work" className="px-3 md:px-10 py-16 bg-white">
       {error && <p className="text-red-500 mb-4">Error: {error}</p>}
       
       {/* Projects Header */}
       <div className="flex items-start mb-8 border-b border-black pb-4 justify-center">
-        <h2 className="text-projects-heading-small sm:text-projects-heading font-editorial font-light text-black mr-4">Projects</h2>
-        <span className="sm:text-projects-subheading text-projects-subheading-small font-editorial font-light text-black">01</span>
+        <h2 className="text-projects-heading-small md:text-projects-heading font-editorial font-light text-black mr-4">Projects</h2>
+        <span className="md:text-projects-subheading text-projects-subheading-small font-editorial font-light text-black">01</span>
       </div>
       
       {/* Featured Project */}
       {projects.length > 0 && (
-        <div className="mb-20 sm:mb-40 flex flex-col gap-5">
+        <div className="mb-20 md:mb-40 flex flex-col gap-5">
           <PixelizeImage 
             src={projects[0].mainImageUrl || 'https://via.placeholder.com/1200x600'} 
             alt={projects[0].title || "Project image"} 
             className="w-full h-auto object-cover rounded-[20px]"
           />
           <div className="flex flex-row-reverse">
-          <div className="flex flex-col-reverse sm:flex-row gap-5 items-start">
+          <div className="flex flex-col-reverse md:flex-row gap-5 items-start">
           
             <div className="flex flex-col-reverse w-full">
             {/* Project Details */}
             <div>
-              <div className="flex items-center mb-6 mt-3 sm:mt-10">
-                <h3 className="text-project-title-small sm:text-project-title font-editorial font-light text-black mr-2">
+              <div className="flex items-center mb-6 mt-3 md:mt-10">
+                <h3 className="text-project-title-small md:text-project-title font-editorial font-light text-black mr-2">
                   {projects[0].title || "Ship Your Car Safely"}
                 </h3>
                 
@@ -135,12 +135,12 @@ export default function Projects({ projects, error }: ProjectsProps) {
           className="w-full h-auto object-cover rounded-[20px]"
         />
         <div className="flex flex-row-reverse">
-          <div className="flex flex-col-reverse sm:flex-row gap-5 items-start">
+          <div className="flex flex-col-reverse md:flex-row gap-5 items-start">
             <div className="flex flex-col-reverse w-full">
               {/* Project Details */}
               <div>
-                <div className="flex items-center mb-6 mt-3 sm:mt-10">
-                  <h3 className="text-project-title-small sm:text-project-title font-editorial font-light text-black mr-2">
+                <div className="flex items-center mb-6 mt-3 md:mt-10">
+                  <h3 className="text-project-title-small md:text-project-title font-editorial font-light text-black mr-2">
                     {secondProject.title}
                   </h3>
                 </div>

@@ -66,7 +66,7 @@ export default function Index() {
       />
 
       {/* Hero Section */}
-      <section id="hero" className="relative z-10 h-screen flex flex-col px-3 sm:px-10 bg-black">
+      <section id="hero" className="relative z-10 h-screen flex flex-col px-3 md:px-10 bg-black">
         {/* Background */}
         <WavesBackground />
 
@@ -75,7 +75,7 @@ export default function Index() {
         <div className="absolute bottom-0 left-0 w-full h-[50vh] bg-gradient-to-b from-transparent to-black/80 z-[5] pointer-events-none"></div>
 
         {/* Hero Tagline & Link */}
-        <div className="mt-auto flex sm:flex-row flex-col justify-between items-center gap-4 pb-8 relative z-10">
+        <div className="mt-auto flex md:flex-row flex-col justify-between items-center gap-4 pb-8 relative z-10">
           <div className="flex flex-col items-end gap-0">
             <div className="flex items-center gap-2 mb-2">
               {hero?.taglineIconUrl && (
@@ -85,11 +85,11 @@ export default function Index() {
                   className="w-9 h-9 text-hero-white"
                 />
               )}
-              <p className="sm:text-nav-big text-[30px] font-editorial editorial text-hero-white font-light leading-none">
+              <p className="md:text-nav-big text-[30px] font-editorial editorial text-hero-white font-light leading-none">
                 {heroContent.tagline}
               </p>
             </div>
-            <p className="sm:text-nav-big text-[30px]  font-editorial editorial text-hero-white font-light leading-none">
+            <p className="md:text-nav-big text-[30px]  font-editorial editorial text-hero-white font-light leading-none">
               {heroContent.subTagline}
             </p>
           </div>
