@@ -16,7 +16,7 @@ const secondProject = {
   tags: ["Design assistant", "Development lead"],
   buttons: [
     { text: "View project", url: "#" },
-    { text: "Source code", url: "#" }
+    { text: "Work together", url: "/contact" }
   ],
   description: "A complete redesign of a portfolio website with a focus on modern design principles, responsive layouts, and optimized performance. The project showcases skills in both design and development, with careful attention to typography, spacing, and user experience.",
   websiteUrl: "#"
@@ -61,7 +61,7 @@ export default function Projects({ projects, error }: ProjectsProps) {
                 {(projects[0].tags || ["Development lead", "Design assistant", "Digital assets"]).map((tag: string, index: number) => (
                   <span 
                     key={index} 
-                    className="px-4 py-2 border border-[#9F9F9F] text-[#9F9F9F] rounded-full text-type-small"
+                    className="px-4 py-2 border border-[#9F9F9F] text-[#9F9F9F] rounded-btn-bdrd text-type-small"
                   >
                     {tag}
                   </span>
@@ -76,7 +76,7 @@ export default function Projects({ projects, error }: ProjectsProps) {
                 ]).map((button: { text: string; url?: string }, index: number) => (
                   <button 
                     key={index} 
-                    className="px-6 py-2 bg-black text-white rounded-full text-type-small"
+                    className="px-6 py-2 bg-black text-white rounded-btn-bdrd text-type-small"
                     onClick={() => button.url && window.open(button.url, '_blank')}
                   >
                     {button.text}
@@ -150,7 +150,7 @@ export default function Projects({ projects, error }: ProjectsProps) {
                   {secondProject.tags.map((tag: string, index: number) => (
                     <span 
                       key={index} 
-                      className="px-4 py-2 border border-[#9F9F9F] text-[#9F9F9F] rounded-full text-type-small"
+                      className="px-4 py-2 border border-[#9F9F9F] text-[#9F9F9F] rounded-btn-bdrd text-type-small"
                     >
                       {tag}
                     </span>
@@ -162,7 +162,7 @@ export default function Projects({ projects, error }: ProjectsProps) {
                   {secondProject.buttons.map((button: { text: string; url?: string }, index: number) => (
                     <button 
                       key={index} 
-                      className="px-6 py-2 bg-black text-white rounded-full text-type-small"
+                      className="px-6 py-2 bg-black text-white rounded-btn-bdrd text-type-small"
                       onClick={() => button.url && window.open(button.url, '_blank')}
                     >
                       {button.text}

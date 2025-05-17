@@ -122,7 +122,7 @@ export default function Services({ services, error }: ServicesProps) {
                 <p className="text-[20px] mb-6">{service.description}</p>
                 <div className="flex flex-wrap gap-2 mb-2">
                   {service.tags.map((tag, tagIndex) => (
-                    <span key={tagIndex} className="px-4 py-2 border border-[#9F9F9F] text-[#9F9F9F] rounded-full text-type-small">
+                    <span key={tagIndex} className="px-4 py-2 border border-[#9F9F9F] text-[#9F9F9F] rounded-btn-bdrd text-type-small">
                       {tag}
                     </span>
                   ))}

@@ -30,7 +30,7 @@ export default function Footer({ socialLinks: propSocialLinks }: FooterProps) {
   };
 
   return (
-    <footer className="py-16 px-4 md:px-10 ">
+    <footer className="pt-16 px-4 md:px-10 ">
       <div className="flex w-full gap-5 md:gap-10 mb-16">
         {/* Menu Links */}
         <div className="w-1/2 md:w-1/3">

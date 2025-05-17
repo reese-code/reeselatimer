@@ -13,6 +13,9 @@ module.exports = {
       colors: {
         'hero-white': '#fff',
       },
+      borderRadius: {
+        'btn-bdrd': '12px', // Full rounded for buttons and tags
+      },
       fontSize: {
         'nav': '20px',
         'nav-big': '40px',
