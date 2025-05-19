@@ -74,9 +74,9 @@ export function TransitionProvider({ children }: { children: React.ReactNode }) 
     return () => window.removeEventListener("resize", createBlocks);
   }, []);
 
-  // Entrance
+  // Entrance - only run when starting a transition from the current page
   useEffect(() => {
-    if (!isTransitioning || blocksRef.current.length === 0) return;
+    if (!isTransitioning || blocksRef.current.length === 0 || hasNavigated) return;
 
     const blocks = blocksRef.current;
     const indices = [...Array(blocks.length).keys()].sort(() => Math.random() - 0.5);
@@ -101,10 +101,12 @@ export function TransitionProvider({ children }: { children: React.ReactNode }) 
       }, 0);
     });
 
-    return () => entranceTl.kill();
+    return () => {
+      entranceTl.kill();
+    };
   }, [isTransitioning, nextPath, navigate, hasNavigated]);
 
-  // Exit
+  // Exit - runs after navigation to hide blocks
   useEffect(() => {
     if (!isTransitioning || !hasNavigated) return;
 
@@ -136,8 +138,25 @@ export function TransitionProvider({ children }: { children: React.ReactNode }) 
       }, 0);
     });
 
-    return () => exitTl.kill();
+    return () => {
+      exitTl.kill();
+    };
   }, [location.pathname, isTransitioning, hasNavigated]);
+
+  // Reset blocks when location changes
+  useEffect(() => {
+    if (!transitionRef.current || blocksRef.current.length === 0) return;
+    
+    // Hide all blocks when a new page is loaded
+    if (!isTransitioning) {
+      blocksRef.current.forEach(block => {
+        gsap.set(block, {
+          opacity: 0,
+          clipPath: "inset(0 0 100% 0)"
+        });
+      });
+    }
+  }, [location.pathname, isTransitioning]);
 
   return (
     <TransitionContext.Provider value={{ startTransition, isTransitioning }}>
