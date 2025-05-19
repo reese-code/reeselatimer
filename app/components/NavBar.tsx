@@ -6,12 +6,14 @@ type NavBarProps = {
   title?: string;
   contactText?: string;
   isHomePage?: boolean;
+  textColor?: string;
 };
 
 export default function NavBar({ 
   title = "Reese Latimer •", 
   contactText = "Let's get in touch",
-  isHomePage = false
+  isHomePage = false,
+  textColor = "text-hero-white"
 }: NavBarProps) {
   const navRef = useRef<HTMLDivElement>(null);
   const gradientRef = useRef<HTMLDivElement>(null);
@@ -22,44 +24,60 @@ export default function NavBar({
 
     // Dynamically load ScrollTrigger
     import("gsap/ScrollTrigger").then((module) => {
-      const ScrollTrigger = module.ScrollTrigger || module.default?.ScrollTrigger || module;
+      const ScrollTrigger = module.default || module;
       gsap.registerPlugin(ScrollTrigger);
       setScrollReady(true);
     });
   }, []);
 
   useEffect(() => {
-    if (!scrollReady || !isHomePage || !navRef.current || !gradientRef.current) return;
+    if (!scrollReady || !navRef.current || !gradientRef.current) return;
 
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: "section#hero",
-        start: "bottom top+=80",
-        end: "bottom top+=80",
-        toggleActions: "play none none reverse",
-        onEnter: () => {
-          gsap.to(".nav-text", { color: "#000", duration: 0.3 });
-          gsap.to(".nav-divider", { backgroundColor: "#000", duration: 0.3 });
-          gsap.to(".square-design", { backgroundColor: "#000", duration: 0.3 });
-        },
-        onLeaveBack: () => {
-          gsap.to(".nav-text", { color: "#fff", duration: 0.3 });
-          gsap.to(".nav-divider", { backgroundColor: "#fff", duration: 0.3 });
-          gsap.to(".square-design", { backgroundColor: "#fff", duration: 0.3 });
+    // Only set up scroll animations on home page
+    if (isHomePage) {
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: "section#hero",
+          start: "bottom top+=80",
+          end: "bottom top+=80",
+          toggleActions: "play none none reverse",
+          onEnter: () => {
+            gsap.to(".nav-text", { color: "#000", duration: 0.3 });
+            gsap.to(".nav-divider", { backgroundColor: "#000", duration: 0.3 });
+            gsap.to(".square-design", { backgroundColor: "#000", duration: 0.3 });
+          },
+          onLeaveBack: () => {
+            gsap.to(".nav-text", { color: "#fff", duration: 0.3 });
+            gsap.to(".nav-divider", { backgroundColor: "#fff", duration: 0.3 });
+            gsap.to(".square-design", { backgroundColor: "#fff", duration: 0.3 });
+          }
         }
+      });
+      
+      tl.fromTo(
+        gradientRef.current,
+        { opacity: 0, height: "0" },
+        { opacity: 1, height: "80px", duration: 0.3 }
+      );
+      
+      return () => {
+        if (tl.scrollTrigger) tl.scrollTrigger.kill();
+        tl.kill();
+      };
+    }
+
+    // For non-home pages, show the white background and set colors based on textColor
+    if (!isHomePage) {
+      gsap.to(gradientRef.current, { opacity: 1, height: "80px", duration: 0 });
+      
+      // Set initial colors based on textColor
+      if (textColor === "text-black") {
+        gsap.set(".nav-text", { color: "#000" });
+        gsap.set(".nav-divider", { backgroundColor: "#000" });
+        gsap.set(".square-design", { backgroundColor: "#000" });
       }
-    });
-
-    tl.fromTo(
-      gradientRef.current,
-      { opacity: 0, height: "0" },
-      { opacity: 1, height: "80px", duration: 0.3 }
-    );
-
-    return () => {
-      if (tl.scrollTrigger) tl.scrollTrigger.kill();
-      tl.kill();
-    };
+    }
+    
   }, [scrollReady, isHomePage]);
 
   return (
@@ -71,15 +89,15 @@ export default function NavBar({
       
       <div className="px-3 md:px-10">
         <div className="flex justify-between items-center pt-4 relative z-10">
-          <p className="text-nav nav-text text-hero-white">{title}</p>
-          <Link to="/contact" className="text-nav nav-text text-hero-white">
+          <Link to="/" className={`text-nav nav-text ${textColor}`}>{title}</Link>
+          <Link to="/contact" className={`text-nav nav-text ${textColor}`}>
             {contactText}
           </Link>
         </div>
 
-        <div className="w-full h-px bg-hero-white mt-4 relative z-10 nav-divider">
-          <div className="square-design absolute left-0 z-10 nav-detail"></div>
-          <div className="square-design absolute right-0 z-10 nav-detail"></div>
+        <div className={`w-full h-px ${textColor === "text-hero-white" ? "bg-hero-white" : "bg-black"} mt-4 relative z-10 nav-divider`}>
+          <div className={`square-design absolute left-0 z-10 nav-detail ${textColor === "text-hero-white" ? "bg-white" : "bg-black"}`}></div>
+          <div className={`square-design absolute right-0 z-10 nav-detail ${textColor === "text-hero-white" ? "bg-white" : "bg-black"}`}></div>
         </div>
       </div>
     </div>
