@@ -84,8 +84,11 @@ export function TransitionProvider({ children }: { children: React.ReactNode }) 
     const entranceTl = gsap.timeline({
       onComplete: () => {
         if (!hasNavigated) {
-          setHasNavigated(true);
-          setTimeout(() => navigate(nextPath), 10);
+          // Add a 0.25 second delay before navigation
+          setTimeout(() => {
+            setHasNavigated(true);
+            navigate(nextPath);
+          }, 250); // 250ms = 0.25 seconds
         }
       }
     });
