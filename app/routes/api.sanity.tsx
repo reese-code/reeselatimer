@@ -1,32 +1,13 @@
 import { json } from "@remix-run/node";
 import { createClient } from '@sanity/client';
+import type { About, Project, Service, Footer, Hero } from "~/types/sanity";
 
-// Export individual query functions for direct use in components
-export async function getAbout() {
-  return await sanityClient.fetch(`*[_type == "about"][0]`);
-}
-
-export async function getProjects() {
-  return await sanityClient.fetch(`*[_type == "project"] | order(_createdAt desc)`);
-}
-
-export async function getServices() {
-  return await sanityClient.fetch(`*[_type == "service"] | order(order asc)`);
-}
-
-export async function getFooter() {
-  return await sanityClient.fetch(`*[_type == "footer"][0] {
-    socialLinks[] {
-      platform,
-      url
-    }
-  }`);
-}
-
+// Create a Sanity client with CDN enabled for development too
+// This helps with performance in local development
 const sanityClient = createClient({
   projectId: process.env.SANITY_PROJECT_ID || 'usq45pnh',
   dataset: process.env.SANITY_DATASET || 'production',
-  useCdn: process.env.NODE_ENV === 'production',
+  useCdn: true, // Always use CDN for better performance
   apiVersion: '2023-05-03',
 });
 
@@ -34,97 +15,136 @@ if (!sanityClient.config().projectId) {
   throw new Error('Sanity Project ID is required');
 }
 
+// Export individual query functions with memoization for direct use in components
+let cachedAbout: About | null = null;
+let cachedProjects: Project[] | null = null;
+let cachedServices: Service[] | null = null;
+let cachedFooter: Footer | null = null;
+let cachedHero: Hero | null = null;
+let cacheTimestamp = 0;
+const CACHE_TTL = 60000; // 1 minute cache TTL
+
+// Helper to check if cache is valid
+const isCacheValid = () => {
+  return Date.now() - cacheTimestamp < CACHE_TTL;
+};
+
+export async function getHero(): Promise<Hero | null> {
+  if (cachedHero && isCacheValid()) return cachedHero;
+  const result = await sanityClient.fetch<Hero | null>(`*[_type == "hero"][0]{
+    title,
+    contactText,
+    "taglineIconUrl": taglineIcon.asset->url,
+    tagline,
+    subTagline,
+    projectsLinkText
+  }`);
+  cachedHero = result;
+  cacheTimestamp = Date.now();
+  return result;
+}
+
+export async function getAbout(): Promise<About | null> {
+  if (cachedAbout && isCacheValid()) return cachedAbout;
+  const result = await sanityClient.fetch<About | null>(`*[_type == "about"][0]`);
+  cachedAbout = result;
+  cacheTimestamp = Date.now();
+  return result;
+}
+
+export async function getProjects(): Promise<Project[]> {
+  if (cachedProjects && isCacheValid()) return cachedProjects;
+  const result = await sanityClient.fetch<Project[]>(`*[_type == "project"] | order(_createdAt desc)`);
+  cachedProjects = result;
+  cacheTimestamp = Date.now();
+  return result;
+}
+
+export async function getServices(): Promise<Service[]> {
+  if (cachedServices && isCacheValid()) return cachedServices;
+  const result = await sanityClient.fetch<Service[]>(`*[_type == "service"] | order(order asc)`);
+  cachedServices = result;
+  cacheTimestamp = Date.now();
+  return result;
+}
+
+export async function getFooter(): Promise<Footer | null> {
+  if (cachedFooter && isCacheValid()) return cachedFooter;
+  const result = await sanityClient.fetch<Footer | null>(`*[_type == "footer"][0] {
+    socialLinks[] {
+      platform,
+      url
+    }
+  }`);
+  cachedFooter = result;
+  cacheTimestamp = Date.now();
+  return result;
+}
+
 export async function loader() {
   try {
-    // Test Sanity connection first
-    const config = sanityClient.config();
-    if (!config.projectId) {
-      throw new Error('Sanity configuration error: Missing project ID');
-    }
+    // Use Promise.all to fetch data in parallel
+    const [projects, hero, services, about, footer] = await Promise.all([
+      sanityClient.fetch(`*[_type == "project"]{
+        _id,
+        title,
+        "slug": slug.current,
+        excerpt,
+        client,
+        projectDate,
+        technologies,
+        "mainImageUrl": mainImage.asset->url,
+        "secondaryImageUrl": secondaryImage.asset->url,
+        "tertiaryImageUrl": tertiaryImage.asset->url,
+        "iconSvgUrl": iconSvg.asset->url,
+        description,
+        websiteUrl,
+        tags,
+        buttons
+      } | order(_createdAt desc)`),
+      
+      sanityClient.fetch(`*[_type == "hero"][0]{
+        title,
+        contactText,
+        "taglineIconUrl": taglineIcon.asset->url,
+        tagline,
+        subTagline,
+        projectsLinkText
+      }`),
+      
+      sanityClient.fetch(`*[_type == "service"]{
+        _id,
+        title,
+        "slug": slug.current,
+        description,
+        tags,
+        order
+      } | order(order asc)`),
+      
+      sanityClient.fetch(`*[_type == "about"][0]{
+        _id,
+        title,
+        "mainImageUrl": mainImage.asset->url,
+        "svgIconUrl": svgIcon.asset->url,
+        mainText,
+        firstParagraph,
+        secondParagraph
+      }`),
+      
+      sanityClient.fetch(`*[_type == "footer"][0]{
+        socialLinks[] {
+          platform,
+          url
+        }
+      }`)
+    ]);
 
-    // Fetch projects
-    const projectsQuery = `*[_type == "project"]{
-      _id,
-      title,
-      "slug": slug.current,
-      excerpt,
-      client,
-      projectDate,
-      technologies,
-      "mainImageUrl": mainImage.asset->url,
-      "secondaryImageUrl": secondaryImage.asset->url,
-      "tertiaryImageUrl": tertiaryImage.asset->url,
-      "iconSvgUrl": iconSvg.asset->url,
-      description,
-      websiteUrl,
-      tags,
-      buttons
-    } | order(_createdAt desc)`;
-    
-    const projects = await sanityClient.fetch(projectsQuery);
-    
-    // Fetch hero data
-    const heroQuery = `*[_type == "hero"][0]{
-      title,
-      contactText,
-      "taglineIconUrl": taglineIcon.asset->url,
-      tagline,
-      subTagline,
-      projectsLinkText
-    }`;
-    
-    const hero = await sanityClient.fetch(heroQuery);
-    
-    if (!projects) {
-      console.warn('No projects found in Sanity');
-    }
-
-    // Fetch services
-    const servicesQuery = `*[_type == "service"]{
-      _id,
-      title,
-      "slug": slug.current,
-      description,
-      tags,
-      order
-    } | order(order asc)`;
-    
-    const services = await sanityClient.fetch(servicesQuery);
-    
-    if (!services) {
-      console.warn('No services found in Sanity');
-    }
-
-    // Fetch about data
-    const aboutQuery = `*[_type == "about"][0]{
-      _id,
-      title,
-      "mainImageUrl": mainImage.asset->url,
-      "svgIconUrl": svgIcon.asset->url,
-      mainText,
-      firstParagraph,
-      secondParagraph
-    }`;
-    
-    const about = await sanityClient.fetch(aboutQuery);
-    
-    if (!about) {
-      console.warn('No about data found in Sanity');
-    }
-
-    // Fetch footer data
-    const footerQuery = `*[_type == "footer"][0]{
-      socialLinks[] {
-        platform,
-        url
-      }
-    }`;
-    
-    const footer = await sanityClient.fetch(footerQuery);
-    
-    if (!footer) {
-      console.warn('No footer data found in Sanity');
-    }
+    // Update cache
+    cachedProjects = projects;
+    cachedServices = services;
+    cachedAbout = about;
+    cachedFooter = footer;
+    cacheTimestamp = Date.now();
 
     return json({
       projects: projects || [],
@@ -141,7 +161,7 @@ export async function loader() {
     });
     
     return json({
-      error: 'Failed to fetch projects',
+      error: 'Failed to fetch data',
       details: error instanceof Error ? error.message : 'Unknown error occurred',
       projectId: process.env.SANITY_PROJECT_ID || 'usq45pnh'
     }, { status: 500 });

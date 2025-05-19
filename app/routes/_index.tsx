@@ -18,19 +18,25 @@ export const meta: MetaFunction = () => {
   ];
 };
 
-export const loader: LoaderFunction = async ({ request }) => {
+import { getProjects, getServices, getAbout, getFooter, getHero } from "./api.sanity";
+
+export const loader: LoaderFunction = async () => {
   try {
-    const response = await fetch(request.url.replace(/\/?$/, '/api/sanity'));
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    const data = await response.json();
+    // Use the cached data fetching functions for all data
+    const [projects, hero, services, about, footer] = await Promise.all([
+      getProjects(),
+      getHero(),
+      getServices(),
+      getAbout(),
+      getFooter()
+    ]);
+    
     return { 
-      projects: data.projects || [], 
-      hero: data.hero || null,
-      services: data.services || [],
-      about: data.about || null,
-      footer: data.footer || { socialLinks: [] },
+      projects: projects || [], 
+      hero: hero || null,
+      services: services || [],
+      about: about || null,
+      footer: footer || { socialLinks: [] },
       error: null 
     };
   } catch (error: unknown) {

@@ -12,15 +12,15 @@ export const meta: MetaFunction = () => {
   ];
 };
 
-export const loader: LoaderFunction = async ({ request }) => {
+import { getFooter } from "./api.sanity";
+
+export const loader: LoaderFunction = async () => {
   try {
-    const response = await fetch(request.url.replace(/\/contact\/?$/, '/api/sanity'));
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    const data = await response.json();
+    // Use the cached footer data
+    const footer = await getFooter();
+    
     return { 
-      footer: data.footer || { socialLinks: [] },
+      footer: footer || { socialLinks: [] },
       error: null 
     };
   } catch (error: unknown) {

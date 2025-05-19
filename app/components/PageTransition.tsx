@@ -1,5 +1,5 @@
 // PageTransition.tsx
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, memo } from "react";
 import { useNavigate, useLocation } from "@remix-run/react";
 import { gsap } from "gsap";
 import React from "react";
@@ -18,95 +18,125 @@ export function TransitionProvider({ children }: { children: React.ReactNode }) 
   const navigate = useNavigate();
   const location = useLocation();
   const transitionRef = useRef<HTMLDivElement>(null);
-  const squaresRef = useRef<HTMLDivElement[]>([]);
+  const blocksRef = useRef<HTMLDivElement[]>([]);
 
   const startTransition = (to: string) => {
+    if (to.startsWith('#') && location.pathname === '/') {
+      const element = document.querySelector(to);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+        return;
+      }
+    }
+
     setIsTransitioning(true);
     setNextPath(to);
     setHasNavigated(false);
   };
 
-  // Build grid
+  // Create blocks once
   useEffect(() => {
     if (!transitionRef.current) return;
-    const updateShapes = () => {
+
+    const createBlocks = () => {
       if (!transitionRef.current) return;
       transitionRef.current.innerHTML = "";
-      squaresRef.current = [];
+      blocksRef.current = [];
+
       const height = window.innerHeight;
       const width = window.innerWidth;
-      const shapeHeight = Math.ceil(height / 8);
-      const shapeWidth = shapeHeight * 1.5;
-      const shapesPerRow = Math.ceil(width / shapeWidth) + 1;
-      for (let y = 0; y < 8; y++) {
-        for (let x = 0; x < shapesPerRow; x++) {
-          const rhombus = document.createElement("div");
-          rhombus.className = "transition-rhombus";
-          rhombus.style.width = `${shapeWidth}px`;
-          rhombus.style.height = `${shapeHeight}px`;
-          rhombus.style.position = "absolute";
-          rhombus.style.backgroundColor = "black";
-          rhombus.style.top = `${y * shapeHeight}px`;
-          rhombus.style.left = `${x * shapeWidth - shapeWidth / 2}px`;
-          rhombus.style.opacity = "0";
-          rhombus.style.transform = "skew(-20deg)";
-          transitionRef.current.appendChild(rhombus);
-          squaresRef.current.push(rhombus);
+      const numRows = 8;
+      const blockHeight = Math.ceil(height / numRows);
+      const blockWidth = blockHeight * 1.5;
+      const numCols = Math.ceil(width / blockWidth) + 1;
+
+      for (let y = 0; y < numRows; y++) {
+        for (let x = 0; x < numCols; x++) {
+          const div = document.createElement("div");
+          div.style.width = `${blockWidth}px`;
+          div.style.height = `${blockHeight}px`;
+          div.style.position = "absolute";
+          div.style.top = `${y * blockHeight}px`;
+          div.style.left = `${x * blockWidth - blockWidth / 2}px`;
+          div.style.backgroundColor = "black";
+          div.style.transform = "skew(-20deg)";
+          div.style.opacity = "0";
+          div.style.clipPath = "inset(0 0 100% 0)";
+
+          transitionRef.current.appendChild(div);
+          blocksRef.current.push(div);
         }
       }
     };
-    updateShapes();
-    window.addEventListener("resize", updateShapes);
-    return () => window.removeEventListener("resize", updateShapes);
+
+    createBlocks();
+    window.addEventListener("resize", createBlocks);
+    return () => window.removeEventListener("resize", createBlocks);
   }, []);
 
-  // Handle entrance animation and navigation
+  // Entrance
   useEffect(() => {
-    if (!isTransitioning || !transitionRef.current) return;
-    const rhombuses = squaresRef.current;
-    const timeline = gsap.timeline({
+    if (!isTransitioning || blocksRef.current.length === 0) return;
+
+    const blocks = blocksRef.current;
+    const indices = [...Array(blocks.length).keys()].sort(() => Math.random() - 0.5);
+
+    const entranceTl = gsap.timeline({
       onComplete: () => {
         if (!hasNavigated) {
           setHasNavigated(true);
-          navigate(nextPath);
+          setTimeout(() => navigate(nextPath), 10);
         }
-      },
+      }
     });
 
-    const indices = [...Array(rhombuses.length).keys()].sort(() => Math.random() - 0.5);
-    indices.forEach((i) => {
-      const el = rhombuses[i];
-      gsap.set(el, { clipPath: "inset(0 0 100% 0)", opacity: 1 });
-      timeline.to(el, {
+    indices.forEach((index) => {
+      const block = blocks[index];
+      gsap.set(block, { clipPath: "inset(0 0 100% 0)", opacity: 1 });
+      entranceTl.to(block, {
         clipPath: "inset(0 0 0% 0)",
-        duration: 0.2,
-        delay: Math.random() * 0.3,
-        ease: "power2.inOut",
+        duration: 0.2 + Math.random() * 0.2,
+        delay: Math.random() * 0.5,
+        ease: "power2.inOut"
       }, 0);
     });
 
-    return () => timeline.kill();
-  }, [isTransitioning]);
+    return () => entranceTl.kill();
+  }, [isTransitioning, nextPath, navigate, hasNavigated]);
 
-  // Exit animation AFTER location change
+  // Exit
   useEffect(() => {
     if (!isTransitioning || !hasNavigated) return;
-    const rhombuses = squaresRef.current;
-    const timeline = gsap.timeline({
-      onComplete: () => setIsTransitioning(false),
+
+    const blocks = blocksRef.current;
+    const indices = [...Array(blocks.length).keys()].sort(() => Math.random() - 0.5);
+
+    const exitTl = gsap.timeline({
+      onComplete: () => {
+        // ✅ Ensure all blocks are hidden after exit animation
+        blocks.forEach(block => {
+          gsap.set(block, {
+            opacity: 0,
+            clipPath: "inset(0 0 100% 0)"
+          });
+        });
+
+        setIsTransitioning(false);
+      }
     });
-    const indices = [...Array(rhombuses.length).keys()].sort(() => Math.random() - 0.5);
-    indices.forEach((i) => {
-      const el = rhombuses[i];
-      gsap.set(el, { clipPath: "inset(0 0 0% 0)", opacity: 1 });
-      timeline.to(el, {
+
+    indices.forEach((index) => {
+      const block = blocks[index];
+      gsap.set(block, { clipPath: "inset(0 0 0% 0)", opacity: 1 });
+      exitTl.to(block, {
         clipPath: "inset(100% 0 0% 0)",
-        duration: 0.2,
-        delay: Math.random() * 0.3,
-        ease: "power2.inOut",
+        duration: 0.2 + Math.random() * 0.2,
+        delay: Math.random() * 0.5,
+        ease: "power2.inOut"
       }, 0);
     });
-    return () => timeline.kill();
+
+    return () => exitTl.kill();
   }, [location.pathname, isTransitioning, hasNavigated]);
 
   return (
@@ -128,22 +158,26 @@ export function TransitionProvider({ children }: { children: React.ReactNode }) 
   );
 }
 
-export function TransitionLink({ to, children, className, ...props }: {
+export const TransitionLink = memo(({ to, children, className, ...props }: {
   to: string;
   children: React.ReactNode;
   className?: string;
   [key: string]: any;
-}) {
+}) => {
   const { startTransition } = useTransition();
   const location = useLocation();
+
   const handleClick = (e: React.MouseEvent) => {
-    if (location.pathname === to) return;
+    if (location.pathname === to && !to.startsWith('#')) return;
     e.preventDefault();
     startTransition(to);
   };
+
   return (
     <a href={to} onClick={handleClick} className={className} {...props}>
       {children}
     </a>
   );
-}
+});
+
+TransitionLink.displayName = 'TransitionLink';
