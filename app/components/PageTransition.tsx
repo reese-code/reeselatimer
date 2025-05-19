@@ -113,36 +113,39 @@ export function TransitionProvider({ children }: { children: React.ReactNode }) 
   useEffect(() => {
     if (!isTransitioning || !hasNavigated) return;
 
-    const blocks = blocksRef.current;
-    const indices = [...Array(blocks.length).keys()].sort(() => Math.random() - 0.5);
+    // Add a 0.25 second delay after page change before starting exit animation
+    const delayTimer = setTimeout(() => {
+      const blocks = blocksRef.current;
+      const indices = [...Array(blocks.length).keys()].sort(() => Math.random() - 0.5);
 
-    const exitTl = gsap.timeline({
-      onComplete: () => {
-        // ✅ Ensure all blocks are hidden after exit animation
-        blocks.forEach(block => {
-          gsap.set(block, {
-            opacity: 0,
-            clipPath: "inset(0 0 100% 0)"
+      const exitTl = gsap.timeline({
+        onComplete: () => {
+          // ✅ Ensure all blocks are hidden after exit animation
+          blocks.forEach(block => {
+            gsap.set(block, {
+              opacity: 0,
+              clipPath: "inset(0 0 100% 0)"
+            });
           });
-        });
 
-        setIsTransitioning(false);
-      }
-    });
+          setIsTransitioning(false);
+        }
+      });
 
-    indices.forEach((index) => {
-      const block = blocks[index];
-      gsap.set(block, { clipPath: "inset(0 0 0% 0)", opacity: 1 });
-      exitTl.to(block, {
-        clipPath: "inset(100% 0 0% 0)",
-        duration: 0.2 + Math.random() * 0.2,
-        delay: Math.random() * 0.5,
-        ease: "power2.inOut"
-      }, 0);
-    });
+      indices.forEach((index) => {
+        const block = blocks[index];
+        gsap.set(block, { clipPath: "inset(0 0 0% 0)", opacity: 1 });
+        exitTl.to(block, {
+          clipPath: "inset(100% 0 0% 0)",
+          duration: 0.2 + Math.random() * 0.2,
+          delay: Math.random() * 0.5,
+          ease: "power2.inOut"
+        }, 0);
+      });
+    }, 250); // 250ms = 0.25 seconds
 
     return () => {
-      exitTl.kill();
+      clearTimeout(delayTimer);
     };
   }, [location.pathname, isTransitioning, hasNavigated]);
 

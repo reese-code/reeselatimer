@@ -64,7 +64,7 @@ export default function Index() {
   };
 
   return (
-    <div className="min-h-screen">
+    <div id="top" className="min-h-screen">
       {/* NavBar Component */}
       <NavBar 
         title={heroContent.title}

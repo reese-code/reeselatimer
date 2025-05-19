@@ -75,6 +75,10 @@ export default function NavBar({
         gsap.set(".nav-text", { color: "#000" });
         gsap.set(".nav-divider", { backgroundColor: "#000" });
         gsap.set(".square-design", { backgroundColor: "#000" });
+      } else if (textColor === "text-hero-white") {
+        gsap.set(".nav-text", { color: "#fff" });
+        gsap.set(".nav-divider", { backgroundColor: "#fff" });
+        gsap.set(".square-design", { backgroundColor: "#fff" });
       }
     }
     
@@ -89,7 +93,9 @@ export default function NavBar({
       
       <div className="px-3 md:px-10">
         <div className="flex justify-between items-center pt-4 relative z-10">
-          <p className={`text-nav nav-text ${textColor}`}>{title}</p>
+          <TransitionLink to={isHomePage ? "#top" : "/"} className={`text-nav nav-text ${textColor}`}>
+            {title}
+          </TransitionLink>
           <TransitionLink to="/contact" className={`text-nav nav-text ${textColor}`}>
             {contactText}
           </TransitionLink>
