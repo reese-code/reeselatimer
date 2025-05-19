@@ -1,4 +1,3 @@
-import { Link } from "@remix-run/react";
 import type { Project } from "~/types/sanity";
 import PixelizeImage from "./PixelizeImage";
 

@@ -1,5 +1,6 @@
 import type { MetaFunction, LoaderFunction } from "@remix-run/node";
-import { useLoaderData, Link } from "@remix-run/react";
+import { useLoaderData } from "@remix-run/react";
+import { TransitionLink } from "~/components/PageTransition";
 import type { Project, Hero, Service, About as AboutType, Footer as FooterType } from "~/types/sanity";
 import WavesBackground from "~/components/AWaves.jsx";
 import TargetIcon from "~/components/TargetIcon.jsx";
@@ -94,9 +95,9 @@ export default function Index() {
             </p>
           </div>
 
-          <Link to="#work" className="text-nav text-hero-white border-b border-hero-white">
+          <TransitionLink to="#work" className="text-nav text-hero-white border-b border-hero-white">
             {heroContent.projectsLinkText}
-          </Link>
+          </TransitionLink>
         </div>
       </section>
 

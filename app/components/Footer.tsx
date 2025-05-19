@@ -1,4 +1,5 @@
-import { Link, useLocation } from '@remix-run/react';
+import { useLocation } from '@remix-run/react';
+import { TransitionLink } from './PageTransition';
 import { useEffect, useState } from 'react';
 
 interface SocialLink {
@@ -45,12 +46,12 @@ export default function Footer({ socialLinks: propSocialLinks }: FooterProps) {
                   Index
                 </button>
               ) : (
-                <Link 
+                <TransitionLink 
                   to="/#hero" 
                   className="text-type-small font-light hover:underline"
                 >
                   Index
-                </Link>
+                </TransitionLink>
               )}
             </li>
             <li>
@@ -62,21 +63,21 @@ export default function Footer({ socialLinks: propSocialLinks }: FooterProps) {
                   Work
                 </button>
               ) : (
-                <Link 
+                <TransitionLink 
                   to="/#work" 
                   className="text-type-small font-light hover:underline"
                 >
                   Work
-                </Link>
+                </TransitionLink>
               )}
             </li>
             <li>
-              <Link 
+              <TransitionLink 
                 to="/contact" 
                 className="text-type-small font-light hover:underline"
               >
                 Contact
-              </Link>
+              </TransitionLink>
             </li>
             <li>
               {isHomePage ? (
@@ -87,12 +88,12 @@ export default function Footer({ socialLinks: propSocialLinks }: FooterProps) {
                   About
                 </button>
               ) : (
-                <Link 
+                <TransitionLink 
                   to="/#about" 
                   className="text-type-small font-light hover:underline"
                 >
                   About
-                </Link>
+                </TransitionLink>
               )}
             </li>
           </ul>
@@ -154,23 +155,23 @@ export default function Footer({ socialLinks: propSocialLinks }: FooterProps) {
               Creative Studio <span className="font-light font-neue text-[16px] md:text-[23px]">BY</span> Reese Latimer
             </button>
           ) : (
-            <Link 
+            <TransitionLink 
               to="/#about" 
               className="group font-light inline-block text-[36px] md:text-[65px] font-editorial transition-all duration-300 hover:underline"
             >
               Creative Studio <span className="font-light font-neue text-[16px] md:text-[23px]">BY</span> Reese Latimer
-            </Link>
+            </TransitionLink>
           )}
 
           {/* Star SVG */}
           <img src="/images/Star.svg" alt="Star" className="w-[32px] md:w-[52px] h-auto text-[36px] md:text-[65px] " />
 
           {/* Work Together */}
-          <Link to="/contact" className="flex items-start gap-2 text-[36px] md:text-[65px] font-editorial font-light hover:underline transition-all duration-300">
+          <TransitionLink to="/contact" className="flex items-start gap-2 text-[36px] md:text-[65px] font-editorial font-light hover:underline transition-all duration-300">
             <span>work</span>
             <img src="/images/connecting_arrow.svg" alt="Connecting Arrow" className="w-[40px] md:w-[66px] h-auto" />
             <span>together</span>
-          </Link>
+          </TransitionLink>
 
           <div className="ml-auto text-type-small">
             <span>©2024</span>

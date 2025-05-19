@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { Link } from "@remix-run/react";
 import { gsap } from "gsap";
+import { TransitionLink } from "./PageTransition";
 
 type NavBarProps = {
   title?: string;
@@ -89,10 +89,10 @@ export default function NavBar({
       
       <div className="px-3 md:px-10">
         <div className="flex justify-between items-center pt-4 relative z-10">
-          <Link to="/" className={`text-nav nav-text ${textColor}`}>{title}</Link>
-          <Link to="/contact" className={`text-nav nav-text ${textColor}`}>
+          <p className={`text-nav nav-text ${textColor}`}>{title}</p>
+          <TransitionLink to="/contact" className={`text-nav nav-text ${textColor}`}>
             {contactText}
-          </Link>
+          </TransitionLink>
         </div>
 
         <div className={`w-full h-px ${textColor === "text-hero-white" ? "bg-hero-white" : "bg-black"} mt-4 relative z-10 nav-divider`}>

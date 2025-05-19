@@ -6,6 +6,7 @@ import {
   Scripts,
   ScrollRestoration,
 } from "@remix-run/react";
+import { TransitionProvider } from "./components/PageTransition";
 import type { LinksFunction } from "@remix-run/node";
 
 import tailwindStyles from "./styles/tailwind.css?url";
@@ -26,7 +27,9 @@ export default function App() {
         <Links />
       </head>
       <body>
-        <Outlet />
+        <TransitionProvider>
+          <Outlet />
+        </TransitionProvider>
         <ScrollRestoration />
         <Scripts />
         <LiveReload />
