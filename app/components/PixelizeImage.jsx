@@ -111,13 +111,8 @@ const PixelizeImage = ({ src, alt, className, disableEffect = false }) => {
 
   return (
     <div ref={containerRef} className={`relative overflow-hidden ${className}`}>
-      {!isLoaded && !error && (
+      {!isLoaded && (
         <div className="absolute inset-0 bg-gray-200 animate-pulse" />
-      )}
-      {error && (
-        <div className="absolute inset-0 bg-red-200 flex items-center justify-center text-red-600">
-          {error}
-        </div>
       )}
       <canvas
         ref={canvasRef}

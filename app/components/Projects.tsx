@@ -36,7 +36,7 @@ export default function Projects({ projects, error }: ProjectsProps) {
       {projects.length > 0 && (
         <div className="mb-20 md:mb-40 flex flex-col gap-5">
           <PixelizeImage 
-            src={projects[0].mainImageUrl || 'https://via.placeholder.com/1200x600'} 
+            src="/images/big_image_car.png" 
             alt={projects[0].title || "Project image"} 
             className="w-full h-auto object-cover rounded-[20px]"
           />
@@ -84,8 +84,8 @@ export default function Projects({ projects, error }: ProjectsProps) {
               </div>
               
               {/* Description */}
-              <p className="mb-6 text-black">
-                {projects[0].description || "Lorem ipsum dolor sit amet consectetur. Facilisis eu rutrum phasellus luctus tempus nisl tellus dictumst. Faucibus lorem pellentesque magna sapien placerat consequat adipiscing convallis quisque. Non erat cursus platea at quis purus. Sed mauris ornare auctor dolor adipiscing in nunc erat gravida. Non tellus tortor nibh felis pellentesque."}
+              <p className="mb-6 text-black text-type-small">
+                {projects[0].description || "From strategy to execution, I delivered end-to-end web development and web design for Ship Your Car Safely, a nationwide auto transport service. The site was built with performance, clarity, and conversion in mind. I integrated AI-powered image generation to create custom visuals tailored to the brand’s identity, enhancing user trust and engagement. The responsive layout ensures a seamless experience across devices, while persistent contact elements—like a sticky phone number and always-accessible quote form—maximize lead capture and make scheduling effortless. The result is a fully optimized, conversion-ready website built to scale."}
               </p>
               
               {/* Website Link */}

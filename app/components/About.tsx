@@ -12,8 +12,8 @@ export default function About({ about, error }: AboutProps) {
 
   const defaultAbout = {
     title: "About",
-    mainImageUrl: "/images/about-image.png",
-    svgIconUrl: "",
+    mainImageUrl: "/images/action_figure_reese.png",
+    svgIconUrl: "/images/about-graphic.svg",
     mainText: "For over half a decade, I have collaborated with multiple brands, teams, and individuals to create high performing interactive web experiences.",
     firstParagraph: "I specialize in optimizing e commerce performance, as well as planning, designing, and programming of web projects. At the the moment, I'm working on freelance and growing my personal portfolio and brand in Denver, Colorado.",
     secondParagraph: "When I'm not designing and developing, you can find me spending time working out, hiking, and playing my guitar."
@@ -36,7 +36,7 @@ export default function About({ about, error }: AboutProps) {
         {/* Left Column - Image */}
         <div className="md:w-1/3">
           <PixelizeImage 
-            src={content.mainImageUrl} 
+            src='/images/action_figure_reese.png'
             alt="About image" 
             className="w-full h-auto object-cover rounded-[20px]"
           />
@@ -45,13 +45,11 @@ export default function About({ about, error }: AboutProps) {
         {/* Right Column - Text Content */}
         <div className="md:w-2/3 relative">
           {/* SVG Icon */}
-          {content.svgIconUrl && (
-            <img 
-              src={content.svgIconUrl} 
-              alt="Info icon" 
-              className="absolute top-[2px] left-0 w-[46.5px] md:w-[85px] h-auto"
-            />
-          )}
+          <img 
+            src="/images/about-graphic.svg" 
+            alt="Info icon" 
+            className="absolute top-[2px] left-0 w-[46.5px] md:w-[85px] h-auto"
+          />
 
           {/* Main Text - only indent the first line */}
           <h3 className="indent-[46px] md:indent-[83px] text-project-title-small md:text-project-title font-editorial font-light text-black mb-6 leading-tight">
