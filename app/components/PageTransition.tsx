@@ -5,22 +5,38 @@ import { gsap } from "gsap";
 import React from "react";
 
 export const TransitionContext = React.createContext({
-  startTransition: (to: string) => {},
+  startTransition: (to: string, pageName?: string) => {},
   isTransitioning: false,
 });
 
 export const useTransition = () => React.useContext(TransitionContext);
 
+// Helper function to extract page name from path
+const getPageNameFromPath = (path: string): string => {
+  // Remove any hash or query params
+  const cleanPath = path.split(/[#?]/)[0];
+  
+  // Handle root path
+  if (cleanPath === "/" || cleanPath === "") {
+    return "Home";
+  }
+  
+  // Extract the last segment of the path and capitalize it
+  const pathSegment = cleanPath.split("/").filter(Boolean).pop() || "";
+  return pathSegment.charAt(0).toUpperCase() + pathSegment.slice(1);
+};
+
 export function TransitionProvider({ children }: { children: React.ReactNode }) {
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [nextPath, setNextPath] = useState("");
+  const [nextPageName, setNextPageName] = useState("");
   const [hasNavigated, setHasNavigated] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const transitionRef = useRef<HTMLDivElement>(null);
   const blocksRef = useRef<HTMLDivElement[]>([]);
 
-  const startTransition = (to: string) => {
+  const startTransition = (to: string, pageName?: string) => {
     if (to.startsWith('#') && location.pathname === '/') {
       const element = document.querySelector(to);
       if (element) {
@@ -31,16 +47,21 @@ export function TransitionProvider({ children }: { children: React.ReactNode }) 
 
     setIsTransitioning(true);
     setNextPath(to);
+    // Set the page name, default to path-based name if not provided
+    setNextPageName(pageName || getPageNameFromPath(to));
     setHasNavigated(false);
   };
 
+  // Reference for the blocks container
+  const blocksContainerRef = useRef<HTMLDivElement>(null);
+  
   // Create blocks once
   useEffect(() => {
-    if (!transitionRef.current) return;
+    if (!blocksContainerRef.current) return;
 
     const createBlocks = () => {
-      if (!transitionRef.current) return;
-      transitionRef.current.innerHTML = "";
+      if (!blocksContainerRef.current) return;
+      blocksContainerRef.current.innerHTML = "";
       blocksRef.current = [];
 
       const height = window.innerHeight;
@@ -67,7 +88,7 @@ export function TransitionProvider({ children }: { children: React.ReactNode }) 
           div.style.opacity = "0";
           div.style.clipPath = "inset(0 0 100% 0)";
 
-          transitionRef.current.appendChild(div);
+          blocksContainerRef.current.appendChild(div);
           blocksRef.current.push(div);
         }
       }
@@ -80,7 +101,7 @@ export function TransitionProvider({ children }: { children: React.ReactNode }) 
 
   // Entrance - only run when starting a transition from the current page
   useEffect(() => {
-    if (!isTransitioning || blocksRef.current.length === 0 || hasNavigated) return;
+    if (!isTransitioning || blocksRef.current.length === 0 || hasNavigated || !pageNameRef.current) return;
 
     const blocks = blocksRef.current;
     const indices = [...Array(blocks.length).keys()].sort(() => Math.random() - 0.5);
@@ -88,15 +109,16 @@ export function TransitionProvider({ children }: { children: React.ReactNode }) 
     const entranceTl = gsap.timeline({
       onComplete: () => {
         if (!hasNavigated) {
-          // Add a 0.25 second delay before navigation
+          // Add a 0.75 second delay before navigation (extended by 0.5 seconds)
           setTimeout(() => {
             setHasNavigated(true);
             navigate(nextPath);
-          }, 250); // 250ms = 0.25 seconds
+          }, 750); // 750ms = 0.75 seconds
         }
       }
     });
 
+    // Animate blocks
     indices.forEach((index) => {
       const block = blocks[index];
       gsap.set(block, { clipPath: "inset(0 0 100% 0)", opacity: 1 });
@@ -108,6 +130,15 @@ export function TransitionProvider({ children }: { children: React.ReactNode }) 
       }, 0);
     });
 
+    // Animate page name - fade in only after blocks have fully covered the screen
+    gsap.set(pageNameRef.current, { opacity: 0, scale: 0.9 });
+    entranceTl.to(pageNameRef.current, {
+      opacity: 1,
+      scale: 1,
+      duration: 0.5,
+      ease: "power2.out"
+    }, 0.8); // Start after blocks have fully covered the screen
+
     return () => {
       entranceTl.kill();
     };
@@ -115,9 +146,9 @@ export function TransitionProvider({ children }: { children: React.ReactNode }) 
 
   // Exit - runs after navigation to hide blocks
   useEffect(() => {
-    if (!isTransitioning || !hasNavigated) return;
+    if (!isTransitioning || !hasNavigated || !pageNameRef.current) return;
 
-    // Add a 0.25 second delay after page change before starting exit animation
+    // Add a 0.75 second delay after page change before starting exit animation (extended by 0.5 seconds)
     const delayTimer = setTimeout(() => {
       const blocks = blocksRef.current;
       const indices = [...Array(blocks.length).keys()].sort(() => Math.random() - 0.5);
@@ -131,11 +162,23 @@ export function TransitionProvider({ children }: { children: React.ReactNode }) 
               clipPath: "inset(0 0 100% 0)"
             });
           });
-
+          
+          // Ensure page name is hidden
+          gsap.set(pageNameRef.current, { opacity: 0 });
+          
           setIsTransitioning(false);
         }
       });
 
+      // First fade out the page name
+      exitTl.to(pageNameRef.current, {
+        opacity: 0,
+        scale: 0.9,
+        duration: 0.3,
+        ease: "power2.in"
+      }, 0);
+
+      // Then animate the blocks
       indices.forEach((index) => {
         const block = blocks[index];
         gsap.set(block, { clipPath: "inset(0 0 0% 0)", opacity: 1 });
@@ -144,9 +187,9 @@ export function TransitionProvider({ children }: { children: React.ReactNode }) 
           duration: 0.2 + Math.random() * 0.2,
           delay: Math.random() * 0.5,
           ease: "power2.inOut"
-        }, 0);
+        }, 0.3); // Start after the page name begins to fade out
       });
-    }, 250); // 250ms = 0.25 seconds
+    }, 500); // 750ms = 0.75 seconds
 
     return () => {
       clearTimeout(delayTimer);
@@ -168,6 +211,9 @@ export function TransitionProvider({ children }: { children: React.ReactNode }) 
     }
   }, [location.pathname, isTransitioning]);
 
+  // Reference for the page name text element
+  const pageNameRef = useRef<HTMLDivElement>(null);
+
   return (
     <TransitionContext.Provider value={{ startTransition, isTransitioning }}>
       {children}
@@ -182,13 +228,38 @@ export function TransitionProvider({ children }: { children: React.ReactNode }) 
           zIndex: 9999,
           pointerEvents: isTransitioning ? "all" : "none",
         }}
-      />
+      >
+        {/* Container for transition blocks */}
+        <div ref={blocksContainerRef} style={{ width: "100%", height: "100%" }}></div>
+        
+        {/* Page name text overlay */}
+        <div
+          ref={pageNameRef}
+          className="font-editorial"
+          style={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            color: "white",
+            fontSize: "5rem",
+            textTransform: "none",
+            opacity: 0,
+            zIndex: 10000,
+            
+            
+          }}
+        >
+          {nextPageName}
+        </div>
+      </div>
     </TransitionContext.Provider>
   );
 }
 
-export const TransitionLink = memo(({ to, children, className, ...props }: {
+export const TransitionLink = memo(({ to, pageName, children, className, ...props }: {
   to: string;
+  pageName?: string;
   children: React.ReactNode;
   className?: string;
   [key: string]: any;
@@ -199,7 +270,7 @@ export const TransitionLink = memo(({ to, children, className, ...props }: {
   const handleClick = (e: React.MouseEvent) => {
     if (location.pathname === to && !to.startsWith('#')) return;
     e.preventDefault();
-    startTransition(to);
+    startTransition(to, pageName);
   };
 
   return (
