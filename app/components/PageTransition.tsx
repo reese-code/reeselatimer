@@ -45,18 +45,22 @@ export function TransitionProvider({ children }: { children: React.ReactNode }) 
 
       const height = window.innerHeight;
       const width = window.innerWidth;
-      const numRows = 8;
+      // Slightly reduce number of rows to make blocks larger
+      const numRows = 7;
       const blockHeight = Math.ceil(height / numRows);
       const blockWidth = blockHeight * 1.5;
-      const numCols = Math.ceil(width / blockWidth) + 1;
+      // Add extra columns to ensure full coverage
+      const numCols = Math.ceil(width / blockWidth) + 2;
 
       for (let y = 0; y < numRows; y++) {
         for (let x = 0; x < numCols; x++) {
           const div = document.createElement("div");
-          div.style.width = `${blockWidth}px`;
-          div.style.height = `${blockHeight}px`;
+          // Increase dimensions to ensure overlap between blocks
+          div.style.width = `${blockWidth + 4}px`;
+          div.style.height = `${blockHeight + 2}px`;
           div.style.position = "absolute";
           div.style.top = `${y * blockHeight}px`;
+          // Adjust left position to ensure no gaps
           div.style.left = `${x * blockWidth - blockWidth / 2}px`;
           div.style.backgroundColor = "black";
           div.style.transform = "skew(-20deg)";
