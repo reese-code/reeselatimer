@@ -85,9 +85,8 @@ export default function Services({ services, error }: ServicesProps) {
     });
 
     return () => {
-      if (typeof window !== "undefined" && gsap?.core?.globals()?.ScrollTrigger) {
-        const triggers = gsap.core.globals().ScrollTrigger.getAll?.() || [];
-        triggers.forEach(trigger => trigger.kill());
+      if (typeof window !== "undefined" && ScrollTrigger) {
+        ScrollTrigger.getAll().forEach((trigger: any) => trigger.kill());
       }
     };
   }, [services]);
@@ -98,8 +97,20 @@ export default function Services({ services, error }: ServicesProps) {
 
       {/* Services Header */}
       <div className="flex items-start mb-8 border-b border-black pb-4 justify-center">
-        <h2 className="text-projects-heading-small md:text-projects-heading font-editorial font-light text-black mr-4">Services</h2>
-        <span className="md:text-projects-subheading text-projects-subheading-small font-editorial font-light text-black">02</span>
+        <h2 
+          className="text-projects-heading-small md:text-projects-heading font-editorial font-light text-black mr-4"
+          data-scroll
+          data-scroll-speed="0.5"
+        >
+          Services
+        </h2>
+        <span 
+          className="md:text-projects-subheading text-projects-subheading-small font-editorial font-light text-black"
+          data-scroll
+          data-scroll-speed="1.2"
+        >
+          02
+        </span>
       </div>
 
       {/* Services Content */}
