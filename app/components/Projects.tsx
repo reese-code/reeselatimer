@@ -14,10 +14,10 @@ const secondProject = {
   tertiaryImageUrl: "/images/edistrict_mobile_port.png",
   tags: ["Design assistant", "Development lead"],
   buttons: [
-    { text: "View project", url: "#" },
+    { text: "View website", url: "https://edistrict.com/" },
     { text: "Work together", url: "/contact" }
   ],
-  description: "A complete redesign of a portfolio website with a focus on modern design principles, responsive layouts, and optimized performance. The project showcases skills in both design and development, with careful attention to typography, spacing, and user experience.",
+  description: "A modern redesign for a commercial office space platform, focused on clean design, intuitive navigation, and responsive performance. The site was restructured to improve user flow, making it easier for potential tenants to explore leasing opportunities, amenities, and location benefits. With attention to clarity and visual hierarchy, the result is a refined user experience that communicates professionalism and accessibility across devices.",
   websiteUrl: "#"
 };
 
@@ -70,8 +70,9 @@ export default function Projects({ projects, error }: ProjectsProps) {
               {/* Buttons */}
               <div className="flex gap-2 mb-6">
                 {(projects[0].buttons || [
-                  { text: "View project" },
-                  { text: "Work together" }
+                  { text: "View website", url: "https://shipyourcarsafely.com/" },
+                  { text: "Work together", url: "/contact" },
+                 
                 ]).map((button: { text: string; url?: string }, index: number) => (
                   <button 
                     key={index} 
@@ -170,21 +171,11 @@ export default function Projects({ projects, error }: ProjectsProps) {
                 </div>
                 
                 {/* Description */}
-                <p className="mb-6 text-black">
+                <p className="mb-6 text-black text-type-small">
                   {secondProject.description}
                 </p>
                 
-                {/* Website Link */}
-                {secondProject.websiteUrl && (
-                  <a 
-                    href={secondProject.websiteUrl} 
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-block border-b border-black text-black"
-                  >
-                    Visit website
-                  </a>
-                )}
+                
               </div>
               
               {/* Secondary Image */}
