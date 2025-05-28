@@ -6,21 +6,36 @@ const PixelizeImage = ({ src, alt, className, disableEffect = false }) => {
   const imageRef = useRef(null);
   const canvasRef = useRef(null);
   const containerRef = useRef(null);
+  const scrollTriggerRef = useRef(null);
 
   useEffect(() => {
-    if (disableEffect) return;
+    if (disableEffect) return () => {}; // Always return a cleanup function
 
     let gsap;
     let ScrollTrigger;
+    let isMounted = true;
+    let timer = null;
+    let animations = [];
 
     const loadGSAP = async () => {
-      const gsapModule = await import('gsap');
-      const scrollTriggerModule = await import('gsap/ScrollTrigger');
-      gsap = gsapModule.default;
-      ScrollTrigger = scrollTriggerModule.default;
-      gsap.registerPlugin(ScrollTrigger);
+      try {
+        const gsapModule = await import('gsap');
+        const scrollTriggerModule = await import('gsap/ScrollTrigger');
+        gsap = gsapModule.default;
+        ScrollTrigger = scrollTriggerModule.default;
+        gsap.registerPlugin(ScrollTrigger);
 
-      if (isLoaded && canvasRef.current && imageRef.current && containerRef.current) {
+        // Check if component is still mounted before proceeding
+        if (!isMounted || !isLoaded || !canvasRef.current || !imageRef.current || !containerRef.current) {
+          return;
+        }
+
+        // Clean up any existing ScrollTrigger
+        if (scrollTriggerRef.current) {
+          scrollTriggerRef.current.kill();
+          scrollTriggerRef.current = null;
+        }
+
         const calculatePixelSize = (width, height) => {
           const totalPixels = 18; // Target number of pixels
           return Math.sqrt((width * height) / totalPixels);
@@ -30,46 +45,100 @@ const PixelizeImage = ({ src, alt, className, disableEffect = false }) => {
         const endPixelSize = 1;
 
         const depixelize = (progress) => {
-          if (canvasRef.current && imageRef.current) {
-            const ctx = canvasRef.current.getContext('2d');
-            if (ctx) {
-              const currentPixelSize = gsap.utils.interpolate(startPixelSize, endPixelSize, progress);
-              ctx.imageSmoothingEnabled = false;
-              ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
-              ctx.drawImage(imageRef.current, 0, 0, canvasRef.current.width / currentPixelSize, canvasRef.current.height / currentPixelSize);
-              ctx.drawImage(canvasRef.current, 0, 0, canvasRef.current.width / currentPixelSize, canvasRef.current.height / currentPixelSize, 0, 0, canvasRef.current.width, canvasRef.current.height);
-            }
+          if (!isMounted || !canvasRef.current || !imageRef.current) return;
+          
+          const ctx = canvasRef.current.getContext('2d');
+          if (ctx) {
+            const currentPixelSize = gsap.utils.interpolate(startPixelSize, endPixelSize, progress);
+            ctx.imageSmoothingEnabled = false;
+            ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+
+            const scaledWidth = canvasRef.current.width / currentPixelSize;
+            const scaledHeight = canvasRef.current.height / currentPixelSize;
+
+            ctx.drawImage(imageRef.current, 0, 0, scaledWidth, scaledHeight);
+            ctx.drawImage(canvasRef.current, 0, 0, scaledWidth, scaledHeight, 0, 0, canvasRef.current.width, canvasRef.current.height);
           }
         };
 
-        const isMobile = window.innerWidth <= 768; // Adjust this breakpoint as needed
+        const isMobile = window.innerWidth <= 768;
 
-        ScrollTrigger.create({
-          trigger: containerRef.current,
-          start: isMobile ? 'top bottom-=15%' : 'top bottom-=20%',
-          end: isMobile ? 'top center' : 'top center+=20%',
-          onUpdate: (self) => {
-            depixelize(self.progress);
-          },
-          onEnter: () => {
-            gsap.to(canvasRef.current, { opacity: 1, duration: isMobile ? 0.05 : 0.2 });
-          },
-          onLeave: () => {
-            gsap.to(canvasRef.current, { opacity: 0, duration: isMobile ? 0.05 : 0.2 });
-            gsap.to(imageRef.current, { opacity: 1, duration: isMobile ? 0.05 : 0.2 });
-          },
-          onEnterBack: () => {
-            gsap.to(canvasRef.current, { opacity: 1, duration: isMobile ? 0.05 : 0.2 });
-            gsap.to(imageRef.current, { opacity: 0, duration: isMobile ? 0.05 : 0.2 });
-          },
-          onLeaveBack: () => {
-            gsap.to(canvasRef.current, { opacity: 0, duration: isMobile ? 0.05 : 0.2 });
-          },
-        });
+        // Use regular ScrollTrigger without Locomotive Scroll
+        const initScrollTrigger = () => {
+          if (!isMounted) return;
+
+          scrollTriggerRef.current = ScrollTrigger.create({
+            trigger: containerRef.current,
+            start: isMobile ? 'top bottom-=15%' : 'top bottom-=20%',
+            end: isMobile ? 'top center' : 'top center+=20%',
+            scrub: 1,
+            invalidateOnRefresh: true,
+            onUpdate: (self) => {
+              if (isMounted) depixelize(self.progress);
+            },
+            onEnter: () => {
+              if (!isMounted || !canvasRef.current || !imageRef.current) return;
+              const canvasAnim = gsap.to(canvasRef.current, { opacity: 1, duration: isMobile ? 0.05 : 0.2 });
+              const imageAnim = gsap.to(imageRef.current, { opacity: 0, duration: isMobile ? 0.05 : 0.2 });
+              animations.push(canvasAnim, imageAnim);
+            },
+            onLeave: () => {
+              if (!isMounted || !canvasRef.current || !imageRef.current) return;
+              const canvasAnim = gsap.to(canvasRef.current, { opacity: 0, duration: isMobile ? 0.05 : 0.2 });
+              const imageAnim = gsap.to(imageRef.current, { opacity: 1, duration: isMobile ? 0.05 : 0.2 });
+              animations.push(canvasAnim, imageAnim);
+            },
+            onEnterBack: () => {
+              if (!isMounted || !canvasRef.current || !imageRef.current) return;
+              const canvasAnim = gsap.to(canvasRef.current, { opacity: 1, duration: isMobile ? 0.05 : 0.2 });
+              const imageAnim = gsap.to(imageRef.current, { opacity: 0, duration: isMobile ? 0.05 : 0.2 });
+              animations.push(canvasAnim, imageAnim);
+            },
+            onLeaveBack: () => {
+              if (!isMounted || !canvasRef.current || !imageRef.current) return;
+              const canvasAnim = gsap.to(canvasRef.current, { opacity: 0, duration: isMobile ? 0.05 : 0.2 });
+              const imageAnim = gsap.to(imageRef.current, { opacity: 1, duration: isMobile ? 0.05 : 0.2 });
+              animations.push(canvasAnim, imageAnim);
+            },
+          });
+
+          // Refresh ScrollTrigger after creation
+          if (isMounted && ScrollTrigger) {
+            ScrollTrigger.refresh();
+          }
+        };
+
+        // Initialize ScrollTrigger with a delay to ensure Locomotive Scroll is ready
+        timer = setTimeout(initScrollTrigger, 100);
+
+      } catch (error) {
+        console.error('Error loading GSAP:', error);
       }
     };
 
     loadGSAP();
+
+    // Cleanup function
+    return () => {
+      isMounted = false;
+      
+      if (timer) {
+        clearTimeout(timer);
+      }
+      
+      // Kill all animations
+      animations.forEach(anim => {
+        if (anim && anim.kill) {
+          anim.kill();
+        }
+      });
+      
+      // Kill ScrollTrigger
+      if (scrollTriggerRef.current) {
+        scrollTriggerRef.current.kill();
+        scrollTriggerRef.current = null;
+      }
+    };
   }, [isLoaded, src, disableEffect]);
 
   useEffect(() => {
@@ -83,14 +152,19 @@ const PixelizeImage = ({ src, alt, className, disableEffect = false }) => {
         const ctx = canvasRef.current.getContext('2d');
         if (ctx) {
           const calculatePixelSize = (width, height) => {
-            const totalPixels = 18; // Target number of pixels
+            const totalPixels = 18;
             return Math.sqrt((width * height) / totalPixels);
           };
 
           const initialPixelSize = calculatePixelSize(img.width, img.height);
           ctx.imageSmoothingEnabled = false;
-          ctx.drawImage(img, 0, 0, img.width / initialPixelSize, img.height / initialPixelSize);
-          ctx.drawImage(canvasRef.current, 0, 0, img.width / initialPixelSize, img.height / initialPixelSize, 0, 0, img.width, img.height);
+
+          const scaledWidth = img.width / initialPixelSize;
+          const scaledHeight = img.height / initialPixelSize;
+
+          ctx.clearRect(0, 0, img.width, img.height);
+          ctx.drawImage(img, 0, 0, scaledWidth, scaledHeight);
+          ctx.drawImage(canvasRef.current, 0, 0, scaledWidth, scaledHeight, 0, 0, img.width, img.height);
         }
       }
     };
@@ -111,8 +185,13 @@ const PixelizeImage = ({ src, alt, className, disableEffect = false }) => {
 
   return (
     <div ref={containerRef} className={`relative overflow-hidden ${className}`}>
-      {!isLoaded && (
+      {!isLoaded && !error && (
         <div className="absolute inset-0 bg-gray-200 animate-pulse" />
+      )}
+      {error && (
+        <div className="absolute inset-0 bg-red-200 flex items-center justify-center text-red-600">
+          {error}
+        </div>
       )}
       <canvas
         ref={canvasRef}

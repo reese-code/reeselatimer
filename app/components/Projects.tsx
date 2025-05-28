@@ -30,15 +30,11 @@ export default function Projects({ projects, error }: ProjectsProps) {
       <div className="flex items-start mb-8 border-b border-black pb-4 justify-center">
         <h2 
           className="text-projects-heading-small md:text-projects-heading font-editorial font-light text-black mr-4"
-          data-scroll
-          data-scroll-speed="0.5"
         >
           Projects
         </h2>
         <span 
           className="md:text-projects-subheading text-projects-subheading-small font-editorial font-light text-black"
-          data-scroll
-          data-scroll-speed="1.2"
         >
           01
         </span>

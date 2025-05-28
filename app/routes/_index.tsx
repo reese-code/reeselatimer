@@ -10,7 +10,6 @@ import Projects from "~/components/Projects";
 import Services from "~/components/Services";
 import About from "~/components/About";
 import Footer from "~/components/Footer";
-import { useLocomotiveScroll } from "~/hooks/useLocomotiveScroll";
 
 export const meta: MetaFunction = () => {
   return [
@@ -55,7 +54,6 @@ export const loader: LoaderFunction = async () => {
 
 export default function Index() {
   const { projects, hero, services, about, footer, error } = useLoaderData<typeof loader>();
-  const { scrollRef } = useLocomotiveScroll();
 
   const heroContent = hero || {
     title: "Reese Latimer •",
@@ -66,7 +64,7 @@ export default function Index() {
   };
 
   return (
-    <div ref={scrollRef} id="top" className="min-h-screen">
+    <div id="top" className="min-h-screen">
       {/* NavBar Component */}
       <NavBar 
         title={heroContent.title}
