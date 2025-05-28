@@ -69,9 +69,9 @@ const WavesBackground = () => {
 
     const onMouseMove = (e) => updateMousePosition(e.pageX, e.pageY);
     const onTouchMove = (e) => {
-      e.preventDefault();
-      const touch = e.touches[0];
-      updateMousePosition(touch.clientX, touch.clientY);
+      // Don't prevent default to allow normal scrolling on mobile
+      // Don't update mouse position on touch to disable line interaction
+      return;
     };
     const onResize = () => { setSize(); setLines(); };
 

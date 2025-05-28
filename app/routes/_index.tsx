@@ -81,6 +81,16 @@ export default function Index() {
         <div className="absolute top-0 left-0 w-full h-[50vh] bg-gradient-to-b from-black/80 to-transparent z-[5] pointer-events-none"></div>
         <div className="absolute bottom-0 left-0 w-full h-[50vh] bg-gradient-to-b from-transparent to-black/80 z-[5] pointer-events-none"></div>
 
+        {/* Centered Work Together Button */}
+        <div className="absolute inset-0 flex items-center justify-center z-10">
+          <TransitionLink 
+            to="/contact" 
+            className="bg-white text-black px-6 py-2 rounded-btn-bdrd font-medium text-type-small hover:bg-gray-100 transition-colors duration-200"
+          >
+          Work together
+          </TransitionLink>
+        </div>
+
         {/* Hero Tagline & Link */}
         <div className="mt-auto flex md:flex-row flex-col justify-between items-center gap-4 pb-8 relative z-10">
           <div className="flex flex-col items-end gap-0">
