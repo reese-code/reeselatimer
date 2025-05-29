@@ -1,7 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import Noise from './Noise.jsx';
 
-// React component for the waves background
 const WavesBackground = () => {
   const elementRef = useRef(null);
 
@@ -32,8 +31,10 @@ const WavesBackground = () => {
       paths.forEach((path) => path.remove());
       paths = [];
 
-      const xGap = 10, yGap = 32;
-      const oWidth = width + 200, oHeight = height + 30;
+      const xGap = 10;
+      const yGap = 22;
+      const oWidth = width + 200;
+      const oHeight = height + 30;
       const totalLines = Math.ceil(oWidth / xGap);
       const totalPoints = Math.ceil(oHeight / yGap);
       const xStart = (width - xGap * totalLines) / 2;
@@ -42,13 +43,16 @@ const WavesBackground = () => {
       for (let i = 0; i <= totalLines; i++) {
         const points = [];
         for (let j = 0; j <= totalPoints; j++) {
-          points.push({ x: xStart + xGap * i, y: yStart + yGap * j, wave: { x: 0, y: 0 }, cursor: { x: 0, y: 0, vx: 0, vy: 0 } });
+          points.push({
+            x: xStart + xGap * i,
+            y: yStart + yGap * j,
+            wave: { x: 0, y: 0 },
+            cursor: { x: 0, y: 0, vx: 0, vy: 0 }
+          });
         }
+
         const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
         path.classList.add('a__line', 'js-line');
-        path.setAttribute('stroke-width', '1'); // thinner line
-        path.setAttribute('stroke', 'white');
-        path.setAttribute('fill', 'none');
         svg.appendChild(path);
         paths.push(path);
         lines.push(points);
@@ -69,30 +73,31 @@ const WavesBackground = () => {
 
     const onMouseMove = (e) => updateMousePosition(e.pageX, e.pageY);
     const onTouchMove = (e) => {
-      // Don't prevent default to allow normal scrolling on mobile
-      // Don't update mouse position on touch to disable line interaction
-      return;
+      e.preventDefault();
+      const touch = e.touches[0];
+      updateMousePosition(touch.clientX, touch.clientY);
     };
     const onResize = () => { setSize(); setLines(); };
 
     const movePoints = (time) => {
       lines.forEach((points) => {
         points.forEach((p) => {
-          /* speed change start */
-          const move = noise.perlin2((p.x + time * 0.0225) * 0.002, (p.y + time * 0.0175) * 0.0015) * 12;
-          /* speed change end */
+          const move = noise.perlin2((p.x + time * 0.0125) * 0.002, (p.y + time * 0.005) * 0.0015) * 12;
+          p.wave.x = Math.cos(move) * 32;
+          p.wave.y = Math.sin(move) * 16;
 
-          /* waviness start */
-          p.wave.x = Math.cos(move) * 35;
-          p.wave.y = Math.sin(move) * 20;
-          /* waviness end */
+          const dx = p.x - mouse.sx;
+          const dy = p.y - mouse.sy;
+          const d = Math.hypot(dx, dy);
+          const l = Math.max(175, mouse.vs);
 
-          const dx = p.x - mouse.sx, dy = p.y - mouse.sy, d = Math.hypot(dx, dy), l = Math.max(175, mouse.vs);
           if (d < l) {
-            const s = 1 - d / l, f = Math.cos(d * 0.001) * s;
+            const s = 1 - d / l;
+            const f = Math.cos(d * 0.001) * s;
             p.cursor.vx += Math.cos(mouse.a) * f * l * mouse.vs * 0.00065;
             p.cursor.vy += Math.sin(mouse.a) * f * l * mouse.vs * 0.00065;
           }
+
           p.cursor.vx += (0 - p.cursor.x) * 0.005;
           p.cursor.vy += (0 - p.cursor.y) * 0.005;
           p.cursor.vx *= 0.925;
@@ -117,13 +122,11 @@ const WavesBackground = () => {
 
     const drawLines = () => {
       lines.forEach((points, lIndex) => {
-        let p1 = moved(points[0], false);
-        let d = `M ${p1.x} ${p1.y}`;
+        let d = `M ${moved(points[0], false).x} ${moved(points[0], false).y}`;
         points.forEach((p1, pIndex) => {
           const isLast = pIndex === points.length - 1;
-          p1 = moved(p1, !isLast);
-          const p2 = moved(points[pIndex + 1] || points[points.length - 1], !isLast);
-          d += `L ${p1.x} ${p1.y}`;
+          const p = moved(p1, !isLast);
+          d += `L ${p.x} ${p.y}`;
         });
         paths[lIndex].setAttribute('d', d);
       });
@@ -142,7 +145,6 @@ const WavesBackground = () => {
       mouse.a = Math.atan2(dy, dx);
       element.style.setProperty('--x', `${mouse.sx}px`);
       element.style.setProperty('--y', `${mouse.sy}px`);
-
       movePoints(time);
       drawLines();
       animationFrame = requestAnimationFrame(tick);
@@ -164,8 +166,8 @@ const WavesBackground = () => {
   }, []);
 
   return (
-    <div 
-      ref={elementRef} 
+    <div
+      ref={elementRef}
       className="a-waves"
       style={{
         '--x': '-0.5rem',

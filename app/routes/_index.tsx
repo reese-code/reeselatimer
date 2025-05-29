@@ -136,11 +136,11 @@ export default function Index() {
           <TransitionLink 
             ref={buttonRef}
             to="/contact" 
-            className="bg-black
-           text-white px-6 py-2 rounded-btn-bdrd font-medium text-type-small border pointer-events-auto"
+            className="bg-[#fff]
+           text-black px-1 py-1 rounded-btn-bdrd font-medium text-type-small border-black pointer-events-auto"
             style={{ transform: 'translate3d(0, 0, 0)' }}
           >
-          Work together
+          <div className="border border-black px-5 py-1 rounded-btn-bdrd">Work together</div>
           </TransitionLink>
         </div>
 
