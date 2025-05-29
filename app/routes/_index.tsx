@@ -1,5 +1,7 @@
 import type { MetaFunction, LoaderFunction } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
+import { useEffect, useRef } from "react";
+import { gsap } from "gsap";
 import { TransitionLink } from "~/components/PageTransition";
 import type { Project, Hero, Service, About as AboutType, Footer as FooterType } from "~/types/sanity";
 import WavesBackground from "~/components/AWaves.jsx";
@@ -54,6 +56,8 @@ export const loader: LoaderFunction = async () => {
 
 export default function Index() {
   const { projects, hero, services, about, footer, error } = useLoaderData<typeof loader>();
+  const buttonRef = useRef<HTMLAnchorElement>(null);
+  const heroSectionRef = useRef<HTMLElement>(null);
 
   const heroContent = hero || {
     title: "Reese Latimer •",
@@ -62,6 +66,52 @@ export default function Index() {
     subTagline: "and design to achieve online growth.",
     projectsLinkText: "Selected projects"
   };
+
+  useEffect(() => {
+    const button = buttonRef.current;
+    const heroSection = heroSectionRef.current;
+    
+    if (!button || !heroSection) return;
+
+    let mouseX = 0;
+    let mouseY = 0;
+    let buttonX = 0;
+    let buttonY = 0;
+
+    const handleMouseMove = (e: MouseEvent) => {
+      const rect = heroSection.getBoundingClientRect();
+      mouseX = e.clientX - rect.left;
+      mouseY = e.clientY - rect.top;
+    };
+
+    const animateButton = () => {
+      // Lerp factor - lower values = smoother/slower following
+      const lerpFactor = 0.1;
+      
+      // Calculate target position (offset from mouse)
+      const targetX = mouseX - button.offsetWidth / 2;
+      const targetY = mouseY - button.offsetHeight / 2;
+      
+      // Apply lerp
+      buttonX += (targetX - buttonX) * lerpFactor;
+      buttonY += (targetY - buttonY) * lerpFactor;
+      
+      // Apply transform
+      gsap.set(button, {
+        x: buttonX,
+        y: buttonY,
+      });
+      
+      requestAnimationFrame(animateButton);
+    };
+
+    heroSection.addEventListener('mousemove', handleMouseMove);
+    animateButton();
+
+    return () => {
+      heroSection.removeEventListener('mousemove', handleMouseMove);
+    };
+  }, []);
 
   return (
     <div id="top" className="min-h-screen">
@@ -73,7 +123,7 @@ export default function Index() {
       />
 
       {/* Hero Section */}
-      <section id="hero" className="relative z-10 h-screen flex flex-col px-3 md:px-10 bg-black">
+      <section ref={heroSectionRef} id="hero" className="relative z-10 h-screen flex flex-col px-3 md:px-10 bg-black">
         {/* Background */}
         <WavesBackground />
 
@@ -82,10 +132,13 @@ export default function Index() {
         <div className="absolute bottom-0 left-0 w-full h-[50vh] bg-gradient-to-b from-transparent to-black/80 z-[5] pointer-events-none"></div>
 
         {/* Centered Work Together Button */}
-        <div className="absolute inset-0 flex items-center justify-center z-10">
+        <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
           <TransitionLink 
+            ref={buttonRef}
             to="/contact" 
-            className="bg-white text-black px-6 py-2 rounded-btn-bdrd font-medium text-type-small hover:bg-gray-100 transition-colors duration-200"
+            className="bg-black
+           text-white px-6 py-2 rounded-btn-bdrd font-medium text-type-small border pointer-events-auto"
+            style={{ transform: 'translate3d(0, 0, 0)' }}
           >
           Work together
           </TransitionLink>
