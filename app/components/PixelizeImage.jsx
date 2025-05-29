@@ -78,26 +78,31 @@ const PixelizeImage = ({ src, alt, className, disableEffect = false }) => {
             },
             onEnter: () => {
               if (!isMounted || !canvasRef.current || !imageRef.current) return;
+              // Entering from top - start pixelated animation
               const canvasAnim = gsap.to(canvasRef.current, { opacity: 1, duration: isMobile ? 0.05 : 0.2 });
               const imageAnim = gsap.to(imageRef.current, { opacity: 0, duration: isMobile ? 0.05 : 0.2 });
               animations.push(canvasAnim, imageAnim);
             },
             onLeave: () => {
               if (!isMounted || !canvasRef.current || !imageRef.current) return;
+              // Leaving downward - show clear image
               const canvasAnim = gsap.to(canvasRef.current, { opacity: 0, duration: isMobile ? 0.05 : 0.2 });
               const imageAnim = gsap.to(imageRef.current, { opacity: 1, duration: isMobile ? 0.05 : 0.2 });
               animations.push(canvasAnim, imageAnim);
             },
             onEnterBack: () => {
               if (!isMounted || !canvasRef.current || !imageRef.current) return;
+              // Re-entering from bottom - start pixelated animation again
               const canvasAnim = gsap.to(canvasRef.current, { opacity: 1, duration: isMobile ? 0.05 : 0.2 });
               const imageAnim = gsap.to(imageRef.current, { opacity: 0, duration: isMobile ? 0.05 : 0.2 });
               animations.push(canvasAnim, imageAnim);
             },
             onLeaveBack: () => {
               if (!isMounted || !canvasRef.current || !imageRef.current) return;
-              const canvasAnim = gsap.to(canvasRef.current, { opacity: 0, duration: isMobile ? 0.05 : 0.2 });
-              const imageAnim = gsap.to(imageRef.current, { opacity: 1, duration: isMobile ? 0.05 : 0.2 });
+              // Leaving upward - return to pixelated state
+              depixelize(0); // Reset to fully pixelated
+              const canvasAnim = gsap.to(canvasRef.current, { opacity: 1, duration: isMobile ? 0.05 : 0.2 });
+              const imageAnim = gsap.to(imageRef.current, { opacity: 0, duration: isMobile ? 0.05 : 0.2 });
               animations.push(canvasAnim, imageAnim);
             },
           });
@@ -195,13 +200,15 @@ const PixelizeImage = ({ src, alt, className, disableEffect = false }) => {
       )}
       <canvas
         ref={canvasRef}
-        className="absolute inset-0 w-full h-full object-cover"
+        className="absolute inset-0 w-full h-full object-cover opacity-100"
+        style={{ opacity: 1 }}
       />
       <img
         ref={imageRef}
         src={src}
         alt={alt}
         className="w-full h-full object-cover opacity-0"
+        style={{ opacity: 0 }}
       />
     </div>
   );
