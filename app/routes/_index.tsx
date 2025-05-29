@@ -145,7 +145,7 @@ export default function Index() {
         </div>
 
         {/* Hero Tagline & Link */}
-        <div className="mt-auto flex md:flex-row flex-col justify-between items-center gap-4 pb-8 relative z-10">
+        <div className="mt-auto flex md:flex-row flex-col justify-between items-end gap-4 pb-8 relative z-10">
           <div className="flex flex-col items-end gap-0">
             <div className="flex items-center gap-2 mb-2">
               {hero?.taglineIconUrl && (
