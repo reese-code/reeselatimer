@@ -7,8 +7,8 @@ import { useEffect, useRef } from "react";
 
 export const meta: MetaFunction = () => {
   return [
-    { title: "Contact - Reese Latimer" },
-    { name: "description", content: "Get in touch with Reese Latimer" },
+    { title: "Reese Latimer | Web Design, Development & Branding" },
+    { name: "description", content: "Reese Latimer is a web designer and developer crafting bold, high-performing websites with refined branding, modern design systems, and smooth user experiences. From custom code to creative strategy, I build with precision and purpose." },
   ];
 };
 

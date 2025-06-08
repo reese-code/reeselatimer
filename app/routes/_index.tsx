@@ -15,8 +15,8 @@ import Footer from "~/components/Footer";
 
 export const meta: MetaFunction = () => {
   return [
-    { title: "Reese Latimer - Portfolio" },
-    { name: "description", content: "Portfolio of Reese Latimer" },
+    { title: "Reese Latimer | Web Design, Development & Branding" },
+    { name: "description", content: "Reese Latimer is a web designer and developer crafting bold, high-performing websites with refined branding, modern design systems, and smooth user experiences. From custom code to creative strategy, I build with precision and purpose." },
   ];
 };
 
@@ -136,11 +136,11 @@ export default function Index() {
           <TransitionLink 
             ref={buttonRef}
             to="/contact" 
-            className="bg-[#fff]
+            className="bg-[#42f572]
            text-black px-1 py-1 rounded-btn-bdrd font-medium text-type-small border-black pointer-events-auto"
             style={{ transform: 'translate3d(0, 0, 0)' }}
           >
-          <div className="border border-black px-5 py-1 rounded-btn-bdrd">Work together</div>
+          <div className="border border-black px-5 py-1 rounded-btn-bdrd">Click to connect</div>
           </TransitionLink>
         </div>
 
