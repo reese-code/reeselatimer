@@ -151,20 +151,11 @@ export default function Index() {
 
         {/* Gradient Overlay: black to transparent, positioned above waves but below content */}
         <div className="absolute top-0 left-0 w-full h-[50vh] bg-gradient-to-b from-black/80 to-transparent z-[5] pointer-events-none"></div>
-        <div className="absolute bottom-0 left-0 w-full h-[70vh] bg-gradient-to-b from-transparent to-black/100 z-[5] pointer-events-none"></div>
+        <div className="absolute bottom-0 left-0 w-full h-[50vh] bg-gradient-to-b from-transparent to-black/100 z-[5] pointer-events-none"></div>
+        <div className="absolute bottom-0 left-0 w-full h-[50vh] bg-gradient-to-b from-transparent to-black/100 z-[5] pointer-events-none"></div>
 
         {/* Centered Work Together Button */}
-        <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
-          <TransitionLink 
-            ref={buttonRef}
-            to="/contact" 
-            className="bg-[#42f572]
-           text-black px-1 py-1 rounded-btn-bdrd font-medium text-type-small border-black pointer-events-auto"
-            style={{ transform: 'translate3d(0, 0, 0)' }}
-          >
-          <div className="border border-black px-5 py-1 rounded-btn-bdrd">Click to connect</div>
-          </TransitionLink>
-        </div>
+        
 
         {/* Hero Tagline & Link */}
         <div className="mt-auto flex md:flex-row flex-col justify-between items-end gap-4 pb-8 relative z-10">
