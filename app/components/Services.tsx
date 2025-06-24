@@ -113,7 +113,7 @@ export default function Services({ services, error }: ServicesProps) {
       <div className="flex flex-col md:flex-row gap-8 md:gap-16">
         {/* Fixed Counter */}
         <div className="md:sticky md:top-20 md:self-start md:w-1/2 hidden md:block">
-          <div className="relative overflow-hidden h-[180px]">
+          <div className="relative overflow-hidden h-[190px]">
             <div ref={counterRef} className="absolute top-0 left-0 w-full flex"></div>
           </div>
         </div>
