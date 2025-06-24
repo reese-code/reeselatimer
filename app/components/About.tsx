@@ -65,7 +65,7 @@ export default function About({ about, error }: AboutProps) {
           </h3>
 
           {/* Paragraphs */}
-          <div className="space-y-6">
+          <div className="space-y-6 md:w-[500px]">
             <p className="text-[20px]">{content.firstParagraph}</p>
             <p className="text-[20px]">{content.secondParagraph}</p>
           </div>
