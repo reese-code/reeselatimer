@@ -44,7 +44,7 @@ export default function About({ about, error }: AboutProps) {
         {/* Left Column - Image */}
         <div className="md:w-1/3">
           <PixelizeImage 
-            src='/images/action_figure_reese.png'
+            src="/images/ai_portrait.png"
             alt="About image" 
             className="w-full h-auto object-cover rounded-[20px]"
           />
