@@ -33,77 +33,99 @@ export default function NavBar({
   useEffect(() => {
     if (!scrollReady || !navRef.current || !gradientRef.current) return;
 
-    // Only set up scroll animations on home page
+    // Only set up scroll animations on home page using vanilla JS instead of GSAP for positioning
     if (isHomePage) {
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: "section#hero",
-          start: "bottom top+=80",
-          end: "bottom top+=80",
-          toggleActions: "play none none reverse",
-          onEnter: () => {
-            gsap.to(".nav-text", { color: "#000", duration: 0.3 });
-            gsap.to(".nav-divider", { backgroundColor: "#000", duration: 0.3 });
-            gsap.to(".square-design", { backgroundColor: "#000", duration: 0.3 });
-          },
-          onLeaveBack: () => {
-            gsap.to(".nav-text", { color: "#fff", duration: 0.3 });
-            gsap.to(".nav-divider", { backgroundColor: "#fff", duration: 0.3 });
-            gsap.to(".square-design", { backgroundColor: "#fff", duration: 0.3 });
-          }
+      const handleScroll = () => {
+        const heroSection = document.querySelector('section#hero');
+        if (!heroSection || !gradientRef.current) return;
+
+        const heroRect = heroSection.getBoundingClientRect();
+        const heroBottom = heroRect.bottom;
+        
+        // Show background when hero section is scrolled past
+        if (heroBottom <= 80) {
+          // Show white background
+          gradientRef.current.style.opacity = '1';
+          gradientRef.current.style.height = '80px';
+          
+          // Change text colors to black
+          const navTexts = document.querySelectorAll('.nav-text');
+          const navDividers = document.querySelectorAll('.nav-divider');
+          const squareDesigns = document.querySelectorAll('.square-design');
+          
+          navTexts.forEach(el => (el as HTMLElement).style.color = '#000');
+          navDividers.forEach(el => (el as HTMLElement).style.backgroundColor = '#000');
+          squareDesigns.forEach(el => (el as HTMLElement).style.backgroundColor = '#000');
+        } else {
+          // Hide white background
+          gradientRef.current.style.opacity = '0';
+          gradientRef.current.style.height = '0';
+          
+          // Change text colors to white
+          const navTexts = document.querySelectorAll('.nav-text');
+          const navDividers = document.querySelectorAll('.nav-divider');
+          const squareDesigns = document.querySelectorAll('.square-design');
+          
+          navTexts.forEach(el => (el as HTMLElement).style.color = '#fff');
+          navDividers.forEach(el => (el as HTMLElement).style.backgroundColor = '#fff');
+          squareDesigns.forEach(el => (el as HTMLElement).style.backgroundColor = '#fff');
         }
-      });
-      
-      tl.fromTo(
-        gradientRef.current,
-        { opacity: 0, height: "0" },
-        { opacity: 1, height: "80px", duration: 0.3 }
-      );
+      };
+
+      // Add scroll listener
+      window.addEventListener('scroll', handleScroll);
       
       return () => {
-        if (tl.scrollTrigger) tl.scrollTrigger.kill();
-        tl.kill();
+        window.removeEventListener('scroll', handleScroll);
       };
     }
 
     // For non-home pages, show the white background and set colors based on textColor
     if (!isHomePage) {
-      gsap.to(gradientRef.current, { opacity: 1, height: "80px", duration: 0 });
+      if (gradientRef.current) {
+        gradientRef.current.style.opacity = '1';
+        gradientRef.current.style.height = '80px';
+      }
       
       // Set initial colors based on textColor
+      const navTexts = document.querySelectorAll('.nav-text');
+      const navDividers = document.querySelectorAll('.nav-divider');
+      const squareDesigns = document.querySelectorAll('.square-design');
+      
       if (textColor === "text-black") {
-        gsap.set(".nav-text", { color: "#000" });
-        gsap.set(".nav-divider", { backgroundColor: "#000" });
-        gsap.set(".square-design", { backgroundColor: "#000" });
+        navTexts.forEach(el => (el as HTMLElement).style.color = '#000');
+        navDividers.forEach(el => (el as HTMLElement).style.backgroundColor = '#000');
+        squareDesigns.forEach(el => (el as HTMLElement).style.backgroundColor = '#000');
       } else if (textColor === "text-hero-white") {
-        gsap.set(".nav-text", { color: "#fff" });
-        gsap.set(".nav-divider", { backgroundColor: "#fff" });
-        gsap.set(".square-design", { backgroundColor: "#fff" });
+        navTexts.forEach(el => (el as HTMLElement).style.color = '#fff');
+        navDividers.forEach(el => (el as HTMLElement).style.backgroundColor = '#fff');
+        squareDesigns.forEach(el => (el as HTMLElement).style.backgroundColor = '#fff');
       }
     }
     
-  }, [scrollReady, isHomePage]);
+  }, [scrollReady, isHomePage, textColor]);
 
   return (
     <div ref={navRef} className="fixed top-0 left-0 w-full z-50">
       <div 
         ref={gradientRef} 
         className="absolute top-0 left-0 w-full bg-white opacity-0 z-0"
+        style={{ transition: 'opacity 0.3s ease, height 0.3s ease' }}
       ></div>
       
       <div className="px-3 md:px-10">
         <div className="flex justify-between items-center pt-4 relative z-10">
-          <TransitionLink to={isHomePage ? "#top" : "/"} className={`text-nav nav-text ${textColor}`}>
+          <TransitionLink to={isHomePage ? "#top" : "/"} className={`text-nav nav-text ${textColor}`} style={{ transition: 'color 0.3s ease' }}>
             {title}
           </TransitionLink>
-          <TransitionLink to="/contact" className={`text-nav nav-text ${textColor}`}>
+          <TransitionLink to="/contact" className={`text-nav nav-text ${textColor}`} style={{ transition: 'color 0.3s ease' }}>
             {contactText}
           </TransitionLink>
         </div>
 
-        <div className={`w-full h-px ${textColor === "text-hero-white" ? "bg-hero-white" : "bg-black"} mt-4 relative z-10 nav-divider`}>
-          <div className={`square-design absolute left-0 z-10 nav-detail ${textColor === "text-hero-white" ? "bg-white" : "bg-black"}`}></div>
-          <div className={`square-design absolute right-0 z-10 nav-detail ${textColor === "text-hero-white" ? "bg-white" : "bg-black"}`}></div>
+        <div className={`w-full h-px ${textColor === "text-hero-white" ? "bg-hero-white" : "bg-black"} mt-4 relative z-10 nav-divider`} style={{ transition: 'background-color 0.3s ease' }}>
+          <div className={`square-design absolute left-0 z-10 nav-detail ${textColor === "text-hero-white" ? "bg-white" : "bg-black"}`} style={{ transition: 'background-color 0.3s ease' }}></div>
+          <div className={`square-design absolute right-0 z-10 nav-detail ${textColor === "text-hero-white" ? "bg-white" : "bg-black"}`} style={{ transition: 'background-color 0.3s ease' }}></div>
         </div>
       </div>
     </div>
