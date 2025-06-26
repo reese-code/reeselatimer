@@ -12,7 +12,7 @@ export default function About({ about, error }: AboutProps) {
 
   const defaultAbout = {
     title: "About",
-    mainImageUrl: "/images/action_figure_reese.png",
+    mainImageUrl: "/images/ai_portrait.png",
     svgIconUrl: "/images/about-graphic.svg",
     mainText: "For over half a decade, I have collaborated with multiple brands, teams, and individuals to create high performing interactive web experiences.",
     firstParagraph: "I specialize in optimizing e commerce performance, as well as planning, designing, and programming of web projects. At the the moment, I'm working on freelance and growing my personal portfolio and brand in Denver, Colorado.",
