@@ -27,7 +27,7 @@ export default function Projects({ projects, error }: ProjectsProps) {
       {error && <p className="text-red-500 mb-4">Error: {error}</p>}
       
       {/* Projects Header */}
-      <div className="flex items-start mb-8 border-b border-black pb-4 justify-center">
+      <div className="flex items-start mb-8 border-b border-black pb-0 justify-center">
         <h2 
           className="text-projects-heading-small md:text-projects-heading font-editorial font-light text-black mr-4"
         >
@@ -68,7 +68,7 @@ export default function Projects({ projects, error }: ProjectsProps) {
                 {(projects[0].tags || ["Development lead", "Design assistant", "Digital assets"]).map((tag: string, index: number) => (
                   <span 
                     key={index} 
-                    className="px-4 py-2 border border-[#9F9F9F] text-[#9F9F9F] rounded-btn-bdrd text-type-small"
+                    className="px-4 py-2 border border-[#9F9F9F] text-[#9F9F9F] rounded-btn-bdrd "
                   >
                     {tag}
                   </span>
