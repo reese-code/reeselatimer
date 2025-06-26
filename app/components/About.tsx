@@ -40,9 +40,9 @@ export default function About({ about, error }: AboutProps) {
       </div>
 
       {/* About Content */}
-      <div className="flex flex-col md:flex-row gap-8">
+      <div className="flex flex-col md:flex-row gap-8 md:gap-16">
         {/* Left Column - Image */}
-        <div className="md:w-1/3">
+        <div className="md:sticky md:top-20 md:self-start md:w-1/3">
           <PixelizeImage 
             src="/images/ai_portrait.png"
             alt="About image" 
@@ -51,7 +51,7 @@ export default function About({ about, error }: AboutProps) {
         </div>
 
         {/* Right Column - Text Content */}
-        <div className="md:w-2/3 relative">
+        <div className="flex-1 md:w-2/3 relative">
           {/* SVG Icon */}
           <img 
             src="/images/about-graphic.svg" 
