@@ -174,7 +174,7 @@ export default function Footer({ socialLinks: propSocialLinks }: FooterProps) {
           </TransitionLink>
 
           <div className="ml-auto text-type-small">
-            <span>©2024</span>
+            <span>©2025</span>
           </div>
         </div>
       </div>

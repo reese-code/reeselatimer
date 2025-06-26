@@ -106,7 +106,7 @@ export default function NavBar({
   }, [scrollReady, isHomePage, textColor]);
 
   return (
-    <div ref={navRef} className="fixed top-0 left-0 w-full z-50">
+    <div ref={navRef} className="sticky top-0 left-0 w-full z-50">
       <div 
         ref={gradientRef} 
         className="absolute top-0 left-0 w-full bg-white opacity-0 z-0"

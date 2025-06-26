@@ -63,7 +63,7 @@ export default function Contact() {
       <div 
         ref={typeformContainerRef}
         className="flex-grow w-full mt-20" 
-        style={{ height: "90vh" }}
+        style={{ height: "70vh" }}
       >
         <div
           data-tf-widget="BFK1B1dt"

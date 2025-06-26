@@ -15,40 +15,7 @@
 }
 
 
-/* Interactive Waves Background */
-.a-waves {
-  --x: -0.5rem;
-  --y: 50%;
-  position: relative;
-}
 
-.a-waves:before {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 3rem;
-  height: 3rem;
-  background-color: rgba(255, 255, 255, 0.5);
-  backdrop-filter: blur(3px);
-  border-radius: 50%;
-  transform: translate3d(calc(var(--x) - 50%), calc(var(--y) - 50%), 0);
-  will-change: transform;
-  content: "";
-}
-
-.a-waves svg {
-  display: block;
-  width: 100%;
-  height: 100%;
-}
-
-.a-waves svg path {
-  fill: none;
-  stroke: rgba(255, 255, 255, 1);
-  stroke-width: 1px;
-  will-change: auto;
-  vector-effect: non-scaling-stroke;
-}
 
 /* Hero overlay start */
 
@@ -78,6 +45,7 @@
 
 body {
   max-width: 100%;
+  margin-top: -63px;
   background-color: #fff;
   transform: translateZ(0); /* Force hardware acceleration */
 }
@@ -110,8 +78,28 @@ body {
   transition: background-color 0.3s ease;
 }
 
-/* Ensure proper layering for sticky elements */
+/* Sticky About Image Styles */
+.is-pinned {
+  z-index: 10;
+  position: fixed !important;
+  top: 80px !important;
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+/* Smooth transitions for sticky elements */
+.about-image-container {
+  transition: all 0.3s ease-out;
+}
+
+/* Ensure proper layering during sticky state */
 #about {
   position: relative;
   z-index: 1;
+}
+
+/* Performance optimization for sticky elements */
+.is-pinned img {
+  transform: translateZ(0);
+  backface-visibility: hidden;
 }
