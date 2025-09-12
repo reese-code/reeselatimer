@@ -7,13 +7,15 @@ type NavBarProps = {
   contactText?: string;
   isHomePage?: boolean;
   textColor?: string;
+  forceTransparent?: boolean;
 };
 
 export default function NavBar({ 
   title = "Reese Latimer •", 
   contactText = "Let's get in touch",
   isHomePage = false,
-  textColor = "text-hero-white"
+  textColor = "text-hero-white",
+  forceTransparent = false
 }: NavBarProps) {
   const navRef = useRef<HTMLDivElement>(null);
   const gradientRef = useRef<HTMLDivElement>(null);
@@ -81,7 +83,7 @@ export default function NavBar({
     }
 
     // For non-home pages, show the white background and set colors based on textColor
-    if (!isHomePage) {
+    if (!isHomePage && !forceTransparent) {
       if (gradientRef.current) {
         gradientRef.current.style.opacity = '1';
         gradientRef.current.style.height = '80px';
@@ -102,6 +104,23 @@ export default function NavBar({
         squareDesigns.forEach(el => (el as HTMLElement).style.backgroundColor = '#fff');
       }
     }
+
+    // For forceTransparent pages, keep background transparent and set white text
+    if (forceTransparent) {
+      if (gradientRef.current) {
+        gradientRef.current.style.opacity = '0';
+        gradientRef.current.style.height = '0';
+      }
+      
+      // Set colors to white
+      const navTexts = document.querySelectorAll('.nav-text');
+      const navDividers = document.querySelectorAll('.nav-divider');
+      const squareDesigns = document.querySelectorAll('.square-design');
+      
+      navTexts.forEach(el => (el as HTMLElement).style.color = '#fff');
+      navDividers.forEach(el => (el as HTMLElement).style.backgroundColor = '#fff');
+      squareDesigns.forEach(el => (el as HTMLElement).style.backgroundColor = '#fff');
+    }
     
   }, [scrollReady, isHomePage, textColor]);
 
@@ -118,9 +137,16 @@ export default function NavBar({
           <TransitionLink to={isHomePage ? "#top" : "/"} className={`text-nav nav-text ${textColor}`} style={{ transition: 'color 0.3s ease' }}>
             {title}
           </TransitionLink>
-          <TransitionLink to="/contact" className={`text-nav nav-text ${textColor}`} style={{ transition: 'color 0.3s ease' }}>
-            {contactText}
-          </TransitionLink>
+          
+          <div className="flex items-center gap-6">
+            <TransitionLink to="/ai-art" className={`text-nav nav-text ${textColor} flex items-center gap-2`} style={{ transition: 'color 0.3s ease' }}>
+              AI Art
+              <img src="/images/arrow.svg" alt="Arrow" className="w-4 h-4" />
+            </TransitionLink>
+            <TransitionLink to="/contact" className={`text-nav nav-text ${textColor}`} style={{ transition: 'color 0.3s ease' }}>
+              {contactText}
+            </TransitionLink>
+          </div>
         </div>
 
         <div className={`w-full h-px ${textColor === "text-hero-white" ? "bg-hero-white" : "bg-black"} mt-4 relative z-10 nav-divider`} style={{ transition: 'background-color 0.3s ease' }}>

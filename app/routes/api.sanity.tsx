@@ -1,6 +1,6 @@
 import { json } from "@remix-run/node";
 import { createClient } from '@sanity/client';
-import type { About, Project, Service, Footer, Hero } from "~/types/sanity";
+import type { About, Project, Service, Footer, Hero, AiArt, AiArtImage } from "~/types/sanity";
 
 // Create a Sanity client with CDN enabled for development too
 // This helps with performance in local development
@@ -78,6 +78,32 @@ export async function getFooter(): Promise<Footer | null> {
   }`);
   cachedFooter = result;
   cacheTimestamp = Date.now();
+  return result;
+}
+
+export async function getAiArt(): Promise<AiArt | null> {
+  const result = await sanityClient.fetch<AiArt | null>(`*[_type == "aiArt"][0]{
+    _id,
+    title,
+    subtitle,
+    description
+  }`);
+  return result;
+}
+
+export async function getAiArtImages(): Promise<AiArtImage[]> {
+  const result = await sanityClient.fetch<AiArtImage[]>(`*[_type == "aiArtImage"] | order(createdAt desc){
+    _id,
+    title,
+    "imageUrl": image.asset->url,
+    group->{
+      _id,
+      name,
+      description,
+      color
+    },
+    createdAt
+  }`);
   return result;
 }
 

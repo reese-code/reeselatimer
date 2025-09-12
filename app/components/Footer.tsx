@@ -96,6 +96,14 @@ export default function Footer({ socialLinks: propSocialLinks }: FooterProps) {
                 </TransitionLink>
               )}
             </li>
+            <li>
+              <TransitionLink 
+                to="/ai-art" 
+                className="text-type-small font-light hover:underline"
+              >
+                AI Art
+              </TransitionLink>
+            </li>
           </ul>
         </div>
 
