@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://reeselatimer.com/sitemap.xml
+
+# Disallow test pages
+Disallow: /test

@@ -1,5 +1,14 @@
 import { json } from "@remix-run/node";
+import type { MetaFunction } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
+
+export const meta: MetaFunction = () => {
+  return [
+    { title: "Test Page | Reese Latimer" },
+    { name: "description", content: "Test page for development and debugging purposes." },
+    { name: "robots", content: "noindex, nofollow" },
+  ];
+};
 
 export const loader = async () => {
   console.log('Test route loader function started');

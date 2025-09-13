@@ -56,24 +56,24 @@ export interface Footer {
   socialLinks: SocialLink[];
 }
 
-export interface AiArt {
-  _id: string;
-  title: string;
-  subtitle?: string;
-  description?: string;
-}
-
 export interface AiArtGroup {
-  _id: string;
   name: string;
   description?: string;
   color?: string;
 }
 
 export interface AiArtImage {
-  _id: string;
   title: string;
   imageUrl: string;
-  group: AiArtGroup;
+  groupName?: string;
   createdAt: string;
+}
+
+export interface AiArt {
+  _id: string;
+  title: string;
+  subtitle?: string;
+  description?: string;
+  groups?: AiArtGroup[];
+  images?: AiArtImage[];
 }
