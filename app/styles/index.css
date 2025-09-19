@@ -45,7 +45,7 @@
 
 body {
   max-width: 100%;
-  margin-top: -63px;
+  margin-top: -73px;
   background-color: #fff;
   transform: translateZ(0); /* Force hardware acceleration */
 }
