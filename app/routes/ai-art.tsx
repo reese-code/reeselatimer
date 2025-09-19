@@ -91,7 +91,7 @@ export default function AiArt() {
           <div className="mb-4">
             <div className="mx-auto mb-6 h-[200px] w-[200px] overflow-hidden rounded-full">
               <img
-                src="/images/square_pfp_port.png"
+                src="/images/ai_portrait.png"
                 alt="AI Portrait"
                 className="h-full w-full object-cover"
             />
