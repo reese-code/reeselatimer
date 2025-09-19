@@ -149,10 +149,17 @@ export default function NavBar({
   // Mobile menu functions
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
+    // Prevent/allow scrolling when menu is open/closed
+    if (!isMobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
   };
 
   const closeMobileMenu = () => {
     setIsMobileMenuOpen(false);
+    document.body.style.overflow = 'unset';
   };
 
   const scrollToSection = (id: string) => {
@@ -161,6 +168,20 @@ export default function NavBar({
       element.scrollIntoView({ behavior: 'smooth' });
     }
     closeMobileMenu();
+  };
+
+  // Get current hamburger color based on scroll state and page
+  const getHamburgerColor = () => {
+    if (isMobileMenuOpen) return 'bg-white'; // Always white when menu is open
+    return textColor === "text-hero-white" ? "bg-white" : "bg-black";
+  };
+
+  // Check if current page matches route
+  const isCurrentPage = (route: string) => {
+    if (route === '/' && isHomePage) return true;
+    if (route === '/contact' && location.pathname === '/contact') return true;
+    if (route === '/ai-art' && location.pathname === '/ai-art') return true;
+    return false;
   };
 
   // Social links (matching footer)
@@ -172,116 +193,67 @@ export default function NavBar({
   ];
 
   return (
-    <div ref={navRef} className="sticky top-0 left-0 w-full z-50">
+    <>
+      {/* Mobile Menu Overlay - Full Height */}
       <div 
-        ref={gradientRef} 
-        className={`absolute top-0 left-0 w-full opacity-0 z-0 ${useGradient ? 'bg-gradient-to-b from-black to-transparent' : 'bg-white'}`}
-        style={{ transition: 'opacity 0.3s ease, height 0.3s ease' }}
-      ></div>
-      
-      <div className="px-3 md:px-10">
-        <div className="flex justify-between items-center pt-4 relative z-10">
-          <TransitionLink to={isHomePage ? "#top" : "/"} className={`text-nav nav-text ${textColor}`} style={{ transition: 'color 0.3s ease' }}>
-            {title}
-          </TransitionLink>
-          
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-6">
-            <TransitionLink to="/ai-art" className={`text-nav nav-text ${textColor} flex items-center gap-2`} style={{ transition: 'color 0.3s ease' }}>
-              AI Art
-            </TransitionLink>
-            <TransitionLink to="/contact" className={`text-nav nav-text ${textColor}`} style={{ transition: 'color 0.3s ease' }}>
-              {contactText}
-            </TransitionLink>
-          </div>
-
-          {/* Mobile Hamburger Menu */}
-          <button
-            onClick={toggleMobileMenu}
-            className="md:hidden relative w-8 h-8 flex flex-col justify-center items-center cursor-pointer z-50"
-            aria-label="Toggle mobile menu"
-          >
-            <div className="relative w-6 h-4 flex flex-col justify-between">
-              <span 
-                className={`block h-0.5 w-full nav-text transition-all duration-300 ease-in-out ${
-                  isMobileMenuOpen ? 'rotate-45 translate-y-1.5' : ''
-                } ${textColor === "text-hero-white" ? "bg-white" : "bg-black"}`}
-                style={{ transition: 'all 0.3s ease, background-color 0.3s ease' }}
-              ></span>
-              <span 
-                className={`block h-0.5 w-full nav-text transition-all duration-300 ease-in-out ${
-                  isMobileMenuOpen ? '-rotate-45 -translate-y-1.5' : ''
-                } ${textColor === "text-hero-white" ? "bg-white" : "bg-black"}`}
-                style={{ transition: 'all 0.3s ease, background-color 0.3s ease' }}
-              ></span>
-            </div>
-          </button>
-        </div>
-
-        <div className={`w-full h-px ${textColor === "text-hero-white" ? "bg-hero-white" : "bg-black"} mt-4 relative z-10 nav-divider`} style={{ transition: 'background-color 0.3s ease' }}>
-          <div className={`square-design absolute left-0 z-10 nav-detail ${textColor === "text-hero-white" ? "bg-white" : "bg-black"}`} style={{ transition: 'background-color 0.3s ease' }}></div>
-          <div className={`square-design absolute right-0 z-10 nav-detail ${textColor === "text-hero-white" ? "bg-white" : "bg-black"}`} style={{ transition: 'background-color 0.3s ease' }}></div>
-        </div>
-      </div>
-
-      {/* Mobile Menu Overlay */}
-      <div 
-        className={`fixed inset-0 bg-black bg-opacity-95 z-40 transition-opacity duration-300 md:hidden ${
-          isMobileMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible'
+        className={`fixed inset-0 bg-black bg-opacity-95 transition-all duration-500 ease-in-out md:hidden ${
+          isMobileMenuOpen ? 'opacity-100 visible z-30' : 'opacity-0 invisible z-30'
         }`}
         onClick={closeMobileMenu}
+        style={{ height: '100vh' }}
       >
         <div 
-          className={`flex flex-col justify-between h-full p-6 pt-20 transition-transform duration-300 ${
-            isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
+          className={`flex flex-col justify-center items-center h-full transition-transform duration-500 ease-in-out ${
+            isMobileMenuOpen ? 'translate-y-0' : '-translate-y-full'
           }`}
           onClick={(e) => e.stopPropagation()}
         >
-          {/* Mobile Menu Header */}
-          <div className="text-center">
-            <h2 className="text-2xl font-light text-white mb-12 font-editorial">
-              Reese Latimer
-            </h2>
+          {/* Navigation Links */}
+          <nav className="flex flex-col gap-8 text-center">
+            {isHomePage ? (
+              <button 
+                onClick={() => scrollToSection('hero')}
+                className={`relative text-6xl font-light text-white hover:text-gray-300 transition-colors font-editorial ${
+                  isCurrentPage('/') ? 'after:content-[""] after:absolute after:left-1/2 after:top-1/2 after:transform after:-translate-x-1/2 after:-translate-y-1/2 after:w-full after:h-0.5 after:bg-white' : ''
+                }`}
+              >
+                INDEX
+              </button>
+            ) : (
+              <TransitionLink 
+                to="/" 
+                onClick={closeMobileMenu}
+                className={`relative text-6xl font-light text-white hover:text-gray-300 transition-colors font-editorial ${
+                  isCurrentPage('/') ? 'after:content-[""] after:absolute after:left-1/2 after:top-1/2 after:transform after:-translate-x-1/2 after:-translate-y-1/2 after:w-full after:h-0.5 after:bg-white' : ''
+                }`}
+              >
+                INDEX
+              </TransitionLink>
+            )}
             
-            {/* Navigation Links */}
-            <nav className="flex flex-col gap-8">
-              {isHomePage ? (
-                <button 
-                  onClick={() => scrollToSection('hero')}
-                  className="text-6xl font-light text-white hover:text-gray-300 transition-colors font-editorial"
-                >
-                  INDEX
-                </button>
-              ) : (
-                <TransitionLink 
-                  to="/" 
-                  onClick={closeMobileMenu}
-                  className="text-6xl font-light text-white hover:text-gray-300 transition-colors font-editorial"
-                >
-                  INDEX
-                </TransitionLink>
-              )}
-              
-              <TransitionLink 
-                to="/contact" 
-                onClick={closeMobileMenu}
-                className="text-6xl font-light text-white hover:text-gray-300 transition-colors font-editorial"
-              >
-                CONTACT
-              </TransitionLink>
-              
-              <TransitionLink 
-                to="/ai-art" 
-                onClick={closeMobileMenu}
-                className="text-6xl font-light text-white hover:text-gray-300 transition-colors font-editorial"
-              >
-                AI ART
-              </TransitionLink>
-            </nav>
-          </div>
+            <TransitionLink 
+              to="/contact" 
+              onClick={closeMobileMenu}
+              className={`relative text-6xl font-light text-white hover:text-gray-300 transition-colors font-editorial ${
+                isCurrentPage('/contact') ? 'after:content-[""] after:absolute after:left-1/2 after:top-1/2 after:transform after:-translate-x-1/2 after:-translate-y-1/2 after:w-full after:h-0.5 after:bg-white' : ''
+              }`}
+            >
+              CONTACT
+            </TransitionLink>
+            
+            <TransitionLink 
+              to="/ai-art" 
+              onClick={closeMobileMenu}
+              className={`relative text-6xl font-light text-white hover:text-gray-300 transition-colors font-editorial ${
+                isCurrentPage('/ai-art') ? 'after:content-[""] after:absolute after:left-1/2 after:top-1/2 after:transform after:-translate-x-1/2 after:-translate-y-1/2 after:w-full after:h-0.5 after:bg-white' : ''
+              }`}
+            >
+              AI ART
+            </TransitionLink>
+          </nav>
 
           {/* Social Links */}
-          <div className="text-center">
+          <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2">
             <div className="flex justify-center gap-6 text-sm text-white">
               {socialLinks.map((link, index) => (
                 <a 
@@ -298,6 +270,62 @@ export default function NavBar({
           </div>
         </div>
       </div>
-    </div>
+
+      {/* Sticky Navbar */}
+      <div ref={navRef} className="sticky top-0 left-0 w-full z-50">
+        <div 
+          ref={gradientRef} 
+          className={`absolute top-0 left-0 w-full opacity-0 z-0 ${useGradient ? 'bg-gradient-to-b from-black to-transparent' : 'bg-white'}`}
+          style={{ transition: 'opacity 0.3s ease, height 0.3s ease' }}
+        ></div>
+        
+        <div className="px-3 md:px-10">
+          <div className="flex justify-between items-center pt-4 relative z-50">
+            <TransitionLink 
+              to={isHomePage ? "#top" : "/"} 
+              className={`text-nav nav-text ${isMobileMenuOpen ? 'text-white' : textColor}`} 
+              style={{ transition: 'color 0.3s ease' }}
+            >
+              {title}
+            </TransitionLink>
+            
+            {/* Desktop Navigation */}
+            <div className="hidden md:flex items-center gap-6">
+              <TransitionLink to="/ai-art" className={`text-nav nav-text ${textColor} flex items-center gap-2`} style={{ transition: 'color 0.3s ease' }}>
+                AI Art
+              </TransitionLink>
+              <TransitionLink to="/contact" className={`text-nav nav-text ${textColor}`} style={{ transition: 'color 0.3s ease' }}>
+                {contactText}
+              </TransitionLink>
+            </div>
+
+            {/* Mobile Hamburger Menu */}
+            <button
+              onClick={toggleMobileMenu}
+              className="md:hidden relative w-10 h-10 flex flex-col justify-center items-center cursor-pointer z-60"
+              aria-label="Toggle mobile menu"
+            >
+              <div className="relative w-6 h-4 flex flex-col justify-between">
+                <span 
+                  className={`block h-0.5 w-full transition-all duration-300 ease-in-out ${
+                    isMobileMenuOpen ? 'rotate-45 translate-y-1.5 bg-white' : getHamburgerColor()
+                  }`}
+                ></span>
+                <span 
+                  className={`block h-0.5 w-full transition-all duration-300 ease-in-out ${
+                    isMobileMenuOpen ? '-rotate-45 -translate-y-1.5 bg-white' : getHamburgerColor()
+                  }`}
+                ></span>
+              </div>
+            </button>
+          </div>
+
+          <div className={`w-full h-px ${textColor === "text-hero-white" ? "bg-hero-white" : "bg-black"} mt-4 relative z-50 nav-divider`} style={{ transition: 'background-color 0.3s ease' }}>
+            <div className={`square-design absolute left-0 z-10 nav-detail ${textColor === "text-hero-white" ? "bg-white" : "bg-black"}`} style={{ transition: 'background-color 0.3s ease' }}></div>
+            <div className={`square-design absolute right-0 z-10 nav-detail ${textColor === "text-hero-white" ? "bg-white" : "bg-black"}`} style={{ transition: 'background-color 0.3s ease' }}></div>
+          </div>
+        </div>
+      </div>
+    </>
   );
 }
