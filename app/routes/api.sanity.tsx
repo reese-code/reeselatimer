@@ -95,6 +95,7 @@ export async function getAiArt(): Promise<AiArt | null> {
     images[] | order(createdAt desc){
       title,
       "imageUrl": image.asset->url,
+      prompt,
       groupName,
       createdAt
     }

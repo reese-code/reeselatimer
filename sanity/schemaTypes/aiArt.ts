@@ -81,6 +81,13 @@ export default defineType({
               validation: (Rule) => Rule.required(),
             },
             {
+              name: 'prompt',
+              title: 'AI Prompt',
+              type: 'text',
+              rows: 3,
+              description: 'The prompt used to generate this AI art',
+            },
+            {
               name: 'groupName',
               title: 'Group',
               type: 'string',

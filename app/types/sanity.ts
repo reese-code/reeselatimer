@@ -65,6 +65,7 @@ export interface AiArtGroup {
 export interface AiArtImage {
   title: string;
   imageUrl: string;
+  prompt?: string;
   groupName?: string;
   createdAt: string;
 }

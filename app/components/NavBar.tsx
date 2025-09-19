@@ -141,7 +141,7 @@ export default function NavBar({
           <div className="flex items-center gap-6">
             <TransitionLink to="/ai-art" className={`text-nav nav-text ${textColor} flex items-center gap-2`} style={{ transition: 'color 0.3s ease' }}>
               AI Art
-              <img src="/images/arrow.svg" alt="Arrow" className="w-4 h-4" />
+            
             </TransitionLink>
             <TransitionLink to="/contact" className={`text-nav nav-text ${textColor}`} style={{ transition: 'color 0.3s ease' }}>
               {contactText}

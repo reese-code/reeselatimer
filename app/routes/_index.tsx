@@ -168,13 +168,13 @@ export default function Index() {
                   className="w-9 h-9 text-hero-white"
                 />
               )}
-              <p className="md:text-nav-big text-[30px] font-editorial editorial text-hero-white font-light leading-none">
-                {heroContent.tagline}
-              </p>
+              <h1 className="md:text-nav-big text-[30px] font-editorial editorial text-hero-white font-light leading-none">
+                 Crafting digital experiences
+              </h1>
             </div>
-            <p className="md:text-nav-big text-[30px]  font-editorial editorial text-hero-white font-light leading-none">
-              {heroContent.subTagline}
-            </p>
+            <h1 className="md:text-nav-big text-[30px]  font-editorial editorial text-hero-white font-light leading-none">
+              that engage, delight, and reflect your brand.
+            </h1>
           </div>
 
           <TransitionLink to="#work" className="text-nav text-hero-white border-b border-hero-white">
