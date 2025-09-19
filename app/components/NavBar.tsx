@@ -59,10 +59,16 @@ export default function NavBar({
           const navTexts = document.querySelectorAll('.nav-text');
           const navDividers = document.querySelectorAll('.nav-divider');
           const squareDesigns = document.querySelectorAll('.square-design');
+          const hamburgerBars = document.querySelectorAll('.hamburger-bar');
           
           navTexts.forEach(el => (el as HTMLElement).style.color = '#000');
           navDividers.forEach(el => (el as HTMLElement).style.backgroundColor = '#000');
           squareDesigns.forEach(el => (el as HTMLElement).style.backgroundColor = '#000');
+          hamburgerBars.forEach(el => {
+            if (!isMobileMenuOpen) {
+              (el as HTMLElement).style.backgroundColor = '#000';
+            }
+          });
         } else {
           // Hide white background
           gradientRef.current.style.opacity = '0';
@@ -72,10 +78,16 @@ export default function NavBar({
           const navTexts = document.querySelectorAll('.nav-text');
           const navDividers = document.querySelectorAll('.nav-divider');
           const squareDesigns = document.querySelectorAll('.square-design');
+          const hamburgerBars = document.querySelectorAll('.hamburger-bar');
           
           navTexts.forEach(el => (el as HTMLElement).style.color = '#fff');
           navDividers.forEach(el => (el as HTMLElement).style.backgroundColor = '#fff');
           squareDesigns.forEach(el => (el as HTMLElement).style.backgroundColor = '#fff');
+          hamburgerBars.forEach(el => {
+            if (!isMobileMenuOpen) {
+              (el as HTMLElement).style.backgroundColor = '#fff';
+            }
+          });
         }
       };
 
@@ -176,6 +188,15 @@ export default function NavBar({
     return textColor === "text-hero-white" ? "bg-white" : "bg-black";
   };
 
+  // Get current scroll position for mobile menu positioning
+  const [scrollY, setScrollY] = useState(0);
+
+  useEffect(() => {
+    const handleScroll = () => setScrollY(window.scrollY);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   // Check if current page matches route
   const isCurrentPage = (route: string) => {
     if (route === '/' && isHomePage) return true;
@@ -196,11 +217,16 @@ export default function NavBar({
     <>
       {/* Mobile Menu Overlay - Full Height */}
       <div 
-        className={`fixed inset-0 bg-black bg-opacity-95 transition-all duration-500 ease-in-out md:hidden ${
-          isMobileMenuOpen ? 'opacity-100 visible z-30' : 'opacity-0 invisible z-30'
+        className={`fixed bg-black transition-all duration-500 ease-in-out md:hidden ${
+          isMobileMenuOpen ? 'opacity-100 visible z-[9999]' : 'opacity-0 invisible z-[9999]'
         }`}
         onClick={closeMobileMenu}
-        style={{ height: '100vh' }}
+        style={{ 
+          top: `${scrollY}px`,
+          left: 0,
+          right: 0,
+          height: '100vh'
+        }}
       >
         <div 
           className={`flex flex-col justify-center items-center h-full transition-transform duration-500 ease-in-out ${
@@ -273,6 +299,12 @@ export default function NavBar({
 
       {/* Sticky Navbar */}
       <div ref={navRef} className="sticky top-0 left-0 w-full z-50">
+        {/* Background that changes when mobile menu is open */}
+        <div 
+          className={`absolute top-0 left-0 w-full z-0 transition-all duration-300 ease ${
+            isMobileMenuOpen ? 'bg-black opacity-100 h-20' : 'opacity-0'
+          }`}
+        ></div>
         <div 
           ref={gradientRef} 
           className={`absolute top-0 left-0 w-full opacity-0 z-0 ${useGradient ? 'bg-gradient-to-b from-black to-transparent' : 'bg-white'}`}
@@ -302,17 +334,17 @@ export default function NavBar({
             {/* Mobile Hamburger Menu */}
             <button
               onClick={toggleMobileMenu}
-              className="md:hidden relative w-10 h-10 flex flex-col justify-center items-center cursor-pointer z-60"
+              className="md:hidden relative w-10 h-10 flex flex-col justify-center items-center cursor-pointer z-[10000]"
               aria-label="Toggle mobile menu"
             >
               <div className="relative w-6 h-4 flex flex-col justify-between">
                 <span 
-                  className={`block h-0.5 w-full transition-all duration-300 ease-in-out ${
+                  className={`hamburger-bar block h-0.5 w-full transition-all duration-300 ease-in-out ${
                     isMobileMenuOpen ? 'rotate-45 translate-y-1.5 bg-white' : getHamburgerColor()
                   }`}
                 ></span>
                 <span 
-                  className={`block h-0.5 w-full transition-all duration-300 ease-in-out ${
+                  className={`hamburger-bar block h-0.5 w-full transition-all duration-300 ease-in-out ${
                     isMobileMenuOpen ? '-rotate-45 -translate-y-1.5 bg-white' : getHamburgerColor()
                   }`}
                 ></span>
@@ -320,9 +352,21 @@ export default function NavBar({
             </button>
           </div>
 
-          <div className={`w-full h-px ${textColor === "text-hero-white" ? "bg-hero-white" : "bg-black"} mt-4 relative z-50 nav-divider`} style={{ transition: 'background-color 0.3s ease' }}>
-            <div className={`square-design absolute left-0 z-10 nav-detail ${textColor === "text-hero-white" ? "bg-white" : "bg-black"}`} style={{ transition: 'background-color 0.3s ease' }}></div>
-            <div className={`square-design absolute right-0 z-10 nav-detail ${textColor === "text-hero-white" ? "bg-white" : "bg-black"}`} style={{ transition: 'background-color 0.3s ease' }}></div>
+          <div 
+            className={`w-full h-px mt-4 relative z-50 nav-divider transition-colors duration-300 ${
+              isMobileMenuOpen ? 'bg-white' : (textColor === "text-hero-white" ? "bg-hero-white" : "bg-black")
+            }`}
+          >
+            <div 
+              className={`square-design absolute left-0 z-10 nav-detail transition-colors duration-300 ${
+                isMobileMenuOpen ? 'bg-white' : (textColor === "text-hero-white" ? "bg-white" : "bg-black")
+              }`}
+            ></div>
+            <div 
+              className={`square-design absolute right-0 z-10 nav-detail transition-colors duration-300 ${
+                isMobileMenuOpen ? 'bg-white' : (textColor === "text-hero-white" ? "bg-white" : "bg-black")
+              }`}
+            ></div>
           </div>
         </div>
       </div>
