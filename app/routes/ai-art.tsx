@@ -80,6 +80,7 @@ export default function AiArt() {
         isHomePage={false}
         textColor="text-hero-white"
         forceTransparent={true}
+        useGradient={true}
       />
 
       {/* AI Art Section */}
@@ -94,7 +95,7 @@ export default function AiArt() {
                 src="/images/ai_portrait.png"
                 alt="AI Portrait"
                 className="h-full w-full object-cover"
-            />
+              />
             </div>
           </div>
 
@@ -186,9 +187,9 @@ export default function AiArt() {
 
       {/* Image Modal */}
       {selectedImage && (
-        <div className="sticky inset-0 z-50 flex items-center justify-center p-5 sm-p-3 ">
-          <div className="relative w-full h-full ">
-            <div className="backdrop-blur-md bg-[#444]/30 flex flex-col overflow-hidden rounded-2xl pt-4 px-5">
+        <div className="fixed inset-0 z-[1010] flex items-center justify-center bg-black/80">
+          <div className="relative w-full h-full max-w-6xl max-h-screen p-4">
+            <div className="backdrop-blur-md bg-[#444]/30 flex flex-col overflow-hidden rounded-2xl pt-4 px-5 h-full">
               {/* Close */}
               <button
                 onClick={closeModal}

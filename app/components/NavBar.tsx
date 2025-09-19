@@ -8,6 +8,7 @@ type NavBarProps = {
   isHomePage?: boolean;
   textColor?: string;
   forceTransparent?: boolean;
+  useGradient?: boolean;
 };
 
 export default function NavBar({ 
@@ -15,7 +16,8 @@ export default function NavBar({
   contactText = "Let's get in touch",
   isHomePage = false,
   textColor = "text-hero-white",
-  forceTransparent = false
+  forceTransparent = false,
+  useGradient = false
 }: NavBarProps) {
   const navRef = useRef<HTMLDivElement>(null);
   const gradientRef = useRef<HTMLDivElement>(null);
@@ -106,13 +108,30 @@ export default function NavBar({
     }
 
     // For forceTransparent pages, keep background transparent and set white text
-    if (forceTransparent) {
+    if (forceTransparent && !useGradient) {
       if (gradientRef.current) {
         gradientRef.current.style.opacity = '0';
         gradientRef.current.style.height = '0';
       }
       
       // Set colors to white
+      const navTexts = document.querySelectorAll('.nav-text');
+      const navDividers = document.querySelectorAll('.nav-divider');
+      const squareDesigns = document.querySelectorAll('.square-design');
+      
+      navTexts.forEach(el => (el as HTMLElement).style.color = '#fff');
+      navDividers.forEach(el => (el as HTMLElement).style.backgroundColor = '#fff');
+      squareDesigns.forEach(el => (el as HTMLElement).style.backgroundColor = '#fff');
+    }
+
+    // For gradient pages, show the gradient background and set white text
+    if (useGradient) {
+      if (gradientRef.current) {
+        gradientRef.current.style.opacity = '1';
+        gradientRef.current.style.height = '120px'; // Taller for gradient effect
+      }
+      
+      // Set colors to white for gradient
       const navTexts = document.querySelectorAll('.nav-text');
       const navDividers = document.querySelectorAll('.nav-divider');
       const squareDesigns = document.querySelectorAll('.square-design');
@@ -128,7 +147,7 @@ export default function NavBar({
     <div ref={navRef} className="sticky top-0 left-0 w-full z-50">
       <div 
         ref={gradientRef} 
-        className="absolute top-0 left-0 w-full bg-white opacity-0 z-0"
+        className={`absolute top-0 left-0 w-full opacity-0 z-0 ${useGradient ? 'bg-gradient-to-b from-black to-transparent' : 'bg-white'}`}
         style={{ transition: 'opacity 0.3s ease, height 0.3s ease' }}
       ></div>
       
