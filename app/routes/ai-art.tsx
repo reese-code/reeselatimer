@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import type { AiArt, AiArtImage, AiArtGroup, Footer as FooterType } from "~/types/sanity";
 import NavBar from "~/components/NavBar";
 import Footer from "~/components/Footer";
+import PixelizeImage from "~/components/PixelizeImage.jsx";
 import { getAiArt, getFooter } from "./api.sanity";
 
 export const meta: MetaFunction = () => {
@@ -153,7 +154,7 @@ export default function AiArt() {
                     className="group relative cursor-pointer"
                     onClick={() => handleImageClick(image)}
                   >
-                    <img
+                    <PixelizeImage
                       src={image.imageUrl}
                       alt={image.title}
                       className="h-auto w-full object-cover transition-all duration-300 group-hover:opacity-90"
@@ -214,10 +215,11 @@ export default function AiArt() {
 
               {/* Image */}
               <div className="relative">
-                <img
+                <PixelizeImage
                   src={selectedImage.imageUrl}
                   alt={selectedImage.title}
                   className="max-h-[70vh] w-full rounded-xl object-contain"
+                  disableEffect={true}
                 />
                 {(() => {
                   const group = findGroupByName(selectedImage.groupName);
