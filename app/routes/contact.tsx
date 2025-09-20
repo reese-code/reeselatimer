@@ -63,7 +63,7 @@ export default function Contact() {
       <div 
         ref={typeformContainerRef}
         className="flex-grow w-full mt-20" 
-        style={{ height: "70vh" }}
+        style={{ height: "70vh sm-max-h-700px" }}
       >
         <div
           data-tf-widget="BFK1B1dt"
@@ -72,7 +72,7 @@ export default function Contact() {
           data-tf-transitive-search-params
           data-tf-medium="snippet"
           data-tf-hidden="utm_source=xxxxx,utm_medium=xxxxx,utm_campaign=xxxxx,utm_term=xxxxx,utm_content=xxxxx"
-          style={{ width: "100%", height: "100%" }}
+          style={{ width: "100%", height: "50%" }}
         ></div>
       </div>
 
