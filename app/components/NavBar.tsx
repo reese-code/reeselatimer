@@ -310,7 +310,7 @@ export default function NavBar({
           top: `${scrollY}px`,
           left: 0,
           right: 0,
-          height: '100vh'
+          height: '109vh'
         }}
       >
         <div 
