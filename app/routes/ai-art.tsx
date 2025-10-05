@@ -65,8 +65,6 @@ export default function AiArt() {
   const handleTabClick = (tabName: string) => {
     setActiveTab(tabName);
     setIsTransitioning(true);
-    
-    // Start transition immediately, then set focused after animation begins
     setTimeout(() => {
       setFocusedTab(tabName);
       setIsTransitioning(false);
@@ -76,12 +74,10 @@ export default function AiArt() {
   const handleClearFocus = () => {
     setIsTransitioning(true);
     setFocusedTab(null);
-    
     setTimeout(() => {
       setIsTransitioning(false);
     }, 500);
   };
-
 
   return (
     <div className="relative min-h-screen bg-black">
@@ -94,6 +90,70 @@ export default function AiArt() {
         forceTransparent={true}
         useGradient={true}
       />
+
+      {/* Image Modal moved directly under NavBar to sit above content */}
+      {selectedImage && (
+        
+        <div className="sticky z-[2000] sm:top-[35%] left-1/2 -translate-x-1/2 -translate-y-1/2 max-w-[400px] max-h-[500px] m-[-250px]">
+          <div className="backdrop-blur-md bg-[#777]/30 flex flex-col overflow-hidden rounded-2xl pt-4 px-5 h-full border border-[#AAA8A880]">
+            {/* Close */}
+            <button
+              onClick={closeModal}
+              className="mb-4 h-10 w-10 rounded-full bg-black/50 text-white transition-all duration-300 hover:bg-black/70"
+              aria-label="Close"
+            >
+              <svg
+                className="m-auto block"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M19 12H5M12 19L5 12L12 5"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </button>
+
+            {/* Image */}
+            <div className="relative">
+              <PixelizeImage
+                src={selectedImage.imageUrl}
+                alt={selectedImage.title}
+                className="max-h-[70vh] w-full rounded-xl object-contain"
+                disableEffect={true}
+              />
+              {(() => {
+                const group = findGroupByName(selectedImage.groupName);
+                const bg = group?.color ? `${group.color}80` : "#AAA8A880";
+                return group ? (
+                  <div
+                    className="backdrop-blur-md bg-[#444]/30 absolute right-2 top-2 rounded-full px-3 py-1 text-sm font-medium"
+                    style={{ backgroundColor: bg, color: "#000" }}
+                  >
+                    {group.name}
+                  </div>
+                ) : null;
+              })()}
+            </div>
+
+            {/* Prompt */}
+            {selectedImage.prompt && (
+              <div className="py-6">
+                <h3 className="mb-2 text-lg font-medium text-white">{selectedImage.title}</h3>
+                <p className="text-sm leading-relaxed text-[#AAA8A8]">
+                  {selectedImage.prompt}
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* AI Art Section */}
       <section className="bg-black px-3 py-16 pt-28 md:px-10">
@@ -260,69 +320,6 @@ export default function AiArt() {
           </div>
         </div>
       </section>
-
-      {/* Image Modal */}
-      {selectedImage && (
-        <div className="sticky top-4 left-4 z-[1010] max-w-6xl max-h-[calc(100vh-2rem)]">
-          <div className="backdrop-blur-md bg-[#444]/30 flex flex-col overflow-hidden rounded-2xl pt-4 px-5 h-full">
-              {/* Close */}
-              <button
-                onClick={closeModal}
-                className="mb-4 h-10 w-10 rounded-full bg-black/50 text-white transition-all duration-300 hover:bg-black/70"
-                aria-label="Close"
-              >
-                <svg
-                  className="m-auto block"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M19 12H5M12 19L5 12L12 5"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </button>
-
-              {/* Image */}
-              <div className="relative">
-                <PixelizeImage
-                  src={selectedImage.imageUrl}
-                  alt={selectedImage.title}
-                  className="max-h-[70vh] w-full rounded-xl object-contain"
-                  disableEffect={true}
-                />
-                {(() => {
-                  const group = findGroupByName(selectedImage.groupName);
-                  const bg = group?.color ? `${group.color}80` : "#AAA8A880";
-                  return group ? (
-                    <div
-                      className="backdrop-blur-md bg-[#444]/30 absolute right-2 top-2 rounded-full px-3 py-1 text-sm font-medium"
-                      style={{ backgroundColor: bg, color: "#000" }}
-                    >
-                      {group.name}
-                    </div>
-                  ) : null;
-                })()}
-              </div>
-
-              {/* Prompt */}
-              {selectedImage.prompt && (
-                <div className="py-6">
-                  <h3 className="mb-2 text-lg font-medium text-white">{selectedImage.title}</h3>
-                  <p className="text-sm leading-relaxed text-[#AAA8A8]">
-                    {selectedImage.prompt}
-                  </p>
-                </div>
-              )}
-          </div>
-        </div>
-      )}
 
       {/* Footer */}
       <Footer socialLinks={footer?.socialLinks} textColor="white" />
