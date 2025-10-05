@@ -383,7 +383,7 @@ export default function NavBar({
       </div>
 
       {/* Sticky Navbar */}
-      <div ref={navRef} className="sticky top-0 left-0 w-full z-[10001]">
+      <div ref={navRef} className="sticky top-0 left-0 w-full z-[1001]">
         {/* Background that changes when mobile menu is open */}
         <div 
           className={`absolute top-0 left-0 w-full z-0 transition-all duration-300 ease ${
