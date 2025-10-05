@@ -39,6 +39,9 @@ export default function AiArt() {
   const [focusedTab, setFocusedTab] = useState<string | null>(null);
   const [isTransitioning, setIsTransitioning] = useState<boolean>(false);
 
+  const focusedGroup = focusedTab ? (aiArt?.groups || []).find(g => g.name === focusedTab) : null;
+  const selectedGroup = selectedImage ? (aiArt?.groups || []).find(g => g.name === selectedImage.groupName) : null;
+
   const aiArtContent = aiArt || {
     title: "AI Art",
     subtitle: "Ai Artist & Creative Technologist",
@@ -91,10 +94,9 @@ export default function AiArt() {
         useGradient={true}
       />
 
-      {/* Image Modal moved directly under NavBar to sit above content */}
+      {/* Modal directly under NavBar, desktop centers like before; mobile fills viewport */}
       {selectedImage && (
-        
-        <div className="sticky z-[2000] sm:top-[35%] left-1/2 -translate-x-1/2 -translate-y-1/2 max-w-[400px] max-h-[500px] m-[-250px]">
+        <div className="z-[2000]  inset-0 w-screen h-screen p-3 sticky sm:inset-auto sm:w-auto sm:h-auto sm:top-[35%] sm:left-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 sm:max-w-[400px] sm:max-h-[500px] sm:m-[-250px]">
           <div className="backdrop-blur-md bg-[#777]/30 flex flex-col overflow-hidden rounded-2xl pt-4 px-5 h-full border border-[#AAA8A880]">
             {/* Close */}
             <button
@@ -128,18 +130,14 @@ export default function AiArt() {
                 className="max-h-[70vh] w-full rounded-xl object-contain"
                 disableEffect={true}
               />
-              {(() => {
-                const group = findGroupByName(selectedImage.groupName);
-                const bg = group?.color ? `${group.color}80` : "#AAA8A880";
-                return group ? (
-                  <div
-                    className="backdrop-blur-md bg-[#444]/30 absolute right-2 top-2 rounded-full px-3 py-1 text-sm font-medium"
-                    style={{ backgroundColor: bg, color: "#000" }}
-                  >
-                    {group.name}
-                  </div>
-                ) : null;
-              })()}
+              {selectedGroup && (
+                <div
+                  className="backdrop-blur-md bg-[#444]/30 absolute right-2 top-2 rounded-full px-3 py-1 text-sm font-medium"
+                  style={{ backgroundColor: `${selectedGroup.color || "#AAA8A8"}80`, color: "#000" }}
+                >
+                  {selectedGroup.name}
+                </div>
+              )}
             </div>
 
             {/* Prompt */}
@@ -258,22 +256,19 @@ export default function AiArt() {
                 </div>
 
                 {/* Focused Tab */}
-                {(() => {
-                  const focusedGroup = groups.find((g: AiArtGroup) => g.name === focusedTab);
-                  return focusedGroup ? (
-                    <button
-                      className="flex-shrink-0 rounded-full px-6 py-2 text-sm font-medium text-black scale-110 transition-all duration-300 delay-200"
-                      style={{
-                        backgroundColor: focusedGroup.color || "#AAA8A8",
-                        borderColor: focusedGroup.color || "#AAA8A8",
-                        opacity: focusedTab && !isTransitioning ? 1 : 0,
-                        transform: focusedTab && !isTransitioning ? "scale(1.1)" : "scale(0.9)"
-                      }}
-                    >
-                      {focusedGroup.name}
-                    </button>
-                  ) : null;
-                })()}
+                {focusedGroup && (
+                  <button
+                    className="flex-shrink-0 rounded-full px-6 py-2 text-sm font-medium text-black scale-110 transition-all duration-300 delay-200"
+                    style={{
+                      backgroundColor: focusedGroup.color || "#AAA8A8",
+                      borderColor: focusedGroup.color || "#AAA8A8",
+                      opacity: focusedTab && !isTransitioning ? 1 : 0,
+                      transform: focusedTab && !isTransitioning ? "scale(1.1)" : "scale(0.9)"
+                    }}
+                  >
+                    {focusedGroup.name}
+                  </button>
+                )}
               </div>
             )}
           </div>
