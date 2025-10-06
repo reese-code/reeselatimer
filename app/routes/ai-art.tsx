@@ -1,6 +1,7 @@
 import type { MetaFunction, LoaderFunction } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+import { gsap } from "gsap";
 import type { AiArt, AiArtImage, AiArtGroup, Footer as FooterType } from "~/types/sanity";
 import NavBar from "~/components/NavBar";
 import Footer from "~/components/Footer";
@@ -39,8 +40,13 @@ export default function AiArt() {
   const [focusedTab, setFocusedTab] = useState<string | null>(null);
   const [isTransitioning, setIsTransitioning] = useState<boolean>(false);
 
-  const focusedGroup = focusedTab ? (aiArt?.groups || []).find(g => g.name === focusedTab) : null;
-  const selectedGroup = selectedImage ? (aiArt?.groups || []).find(g => g.name === selectedImage.groupName) : null;
+  // Refs for GSAP animations
+  const tabsContainerRef = useRef<HTMLDivElement>(null);
+  const clearButtonRef = useRef<HTMLDivElement>(null);
+  const tabRefs = useRef<Map<string, HTMLButtonElement>>(new Map());
+
+  const focusedGroup = focusedTab ? (aiArt?.groups || []).find((g: AiArtGroup) => g.name === focusedTab) : null;
+  const selectedGroup = selectedImage ? (aiArt?.groups || []).find((g: AiArtGroup) => g.name === selectedImage.groupName) : null;
 
   const aiArtContent = aiArt || {
     title: "AI Art",
@@ -68,18 +74,111 @@ export default function AiArt() {
   const handleTabClick = (tabName: string) => {
     setActiveTab(tabName);
     setIsTransitioning(true);
-    setTimeout(() => {
-      setFocusedTab(tabName);
-      setIsTransitioning(false);
-    }, 500);
+    
+    const clickedTab = tabRefs.current.get(tabName);
+    if (!clickedTab || !clearButtonRef.current) return;
+
+    // Get the position where the tab should move (next to the clear button)
+    const clearButtonRect = clearButtonRef.current.getBoundingClientRect();
+    const clickedTabRect = clickedTab.getBoundingClientRect();
+    const container = tabsContainerRef.current?.getBoundingClientRect();
+    
+    if (!container) return;
+
+    // Calculate the target position (next to clear button)
+    const targetX = clearButtonRect.right + 16 - clickedTabRect.left; // 16px gap
+
+    // Create GSAP timeline
+    const tl = gsap.timeline({
+      onComplete: () => {
+        setFocusedTab(tabName);
+        setIsTransitioning(false);
+      }
+    });
+
+    // Animate the clicked tab moving to position
+    tl.to(clickedTab, {
+      x: targetX,
+      scale: 1.1,
+      backgroundColor: findGroupByName(tabName)?.color || "#AAA8A8",
+      color: "#000",
+      duration: 0.5,
+      ease: "power2.inOut"
+    });
+
+    // Fade out other tabs
+    tabRefs.current.forEach((tab, groupName) => {
+      if (groupName !== tabName) {
+        tl.to(tab, {
+          opacity: 0,
+          scale: 0.9,
+          duration: 0.3,
+          ease: "power2.inOut"
+        }, 0);
+      }
+    });
+
+    // Show clear button
+    tl.to(clearButtonRef.current, {
+      opacity: 1,
+      scale: 1,
+      duration: 0.3,
+      ease: "back.out(1.7)"
+    }, 0.2);
   };
 
   const handleClearFocus = () => {
     setIsTransitioning(true);
-    setFocusedTab(null);
-    setTimeout(() => {
-      setIsTransitioning(false);
-    }, 500);
+    
+    const activatedTab = tabRefs.current.get(focusedTab || "");
+    if (!activatedTab) return;
+
+    // Create GSAP timeline
+    const tl = gsap.timeline({
+      onComplete: () => {
+        setFocusedTab(null);
+        setIsTransitioning(false);
+      }
+    });
+
+    // Hide clear button
+    tl.to(clearButtonRef.current, {
+      opacity: 0,
+      scale: 0.8,
+      duration: 0.2,
+      ease: "power2.inOut"
+    });
+
+    // Reset the focused tab position
+    tl.to(activatedTab, {
+      x: 0,
+      scale: 1,
+      backgroundColor: "transparent",
+      color: "#AAA8A8",
+      duration: 0.4,
+      ease: "power2.inOut"
+    }, 0.1);
+
+    // Show all other tabs
+    tabRefs.current.forEach((tab, groupName) => {
+      if (groupName !== focusedTab) {
+        tl.to(tab, {
+          opacity: 1,
+          scale: 1,
+          duration: 0.4,
+          ease: "power2.inOut"
+        }, 0.1);
+      }
+    });
+  };
+
+  // Set ref for tab buttons
+  const setTabRef = (groupName: string) => (el: HTMLButtonElement | null) => {
+    if (el) {
+      tabRefs.current.set(groupName, el);
+    } else {
+      tabRefs.current.delete(groupName);
+    }
   };
 
   return (
@@ -183,94 +282,52 @@ export default function AiArt() {
         </div>
 
         {/* Tabs */}
-        <div className="mb-8 relative h-16">
-          <div className="relative">
-            {/* Scrollable container when not focused */}
-            <div className={`transition-opacity duration-300 ${focusedTab ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
-              <div className="overflow-x-auto scrollbar-hide">
-                <div className="flex items-center pb-4 pt-2 px-4 gap-4">
-                  {groups.map((group: AiArtGroup, index: number) => {
-                    const isClickedTab = isTransitioning && activeTab === group.name;
-                    return (
-                      <button
-                        key={group.name}
-                        onClick={() => handleTabClick(group.name)}
-                        className={`flex-shrink-0 rounded-full px-6 py-2 text-sm font-medium transition-all duration-500 ${
-                          isClickedTab
-                            ? "text-black scale-110 z-20"
-                            : "border border-[#AAA8A8] bg-transparent text-[#AAA8A8] hover:border-white hover:text-white"
-                        }`}
-                        style={{
-                          backgroundColor: isClickedTab 
-                            ? group.color || "#AAA8A8" 
-                            : "transparent",
-                          borderColor: isClickedTab 
-                            ? group.color || "#AAA8A8" 
-                            : "#AAA8A8",
-                          transform: isClickedTab 
-                            ? `translateX(${-index * 120 + 40}px) scale(1.1)` 
-                            : "translateX(0) scale(1)",
-                          opacity: isTransitioning && !isClickedTab ? 0 : 1,
-                          transitionDelay: isTransitioning ? "0ms" : `${index * 50}ms`,
-                          position: isClickedTab ? "relative" : "static"
-                        }}
-                      >
-                        {group.name}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-            </div>
-
-            {/* Focused state overlay */}
-            {focusedTab && (
-              <div className="absolute inset-0 flex items-center px-4">
-                {/* Clear Focus Button (X) */}
-                <div 
-                  className="flex-shrink-0 mr-4 transition-all duration-300 delay-200"
-                  style={{
-                    opacity: focusedTab && !isTransitioning ? 1 : 0,
-                    transform: focusedTab && !isTransitioning ? "scale(1)" : "scale(0.8)"
-                  }}
+        <div className="mb-8 relative h-16" ref={tabsContainerRef}>
+          <div className="overflow-x-auto scrollbar-hide">
+            <div className="flex items-center pb-4 pt-2 px-4 gap-4">
+              {/* Clear Focus Button (X) - initially hidden */}
+              <div 
+                ref={clearButtonRef}
+                className="flex-shrink-0 opacity-0 scale-75"
+              >
+                <button
+                  onClick={handleClearFocus}
+                  className="h-8 w-8 rounded-full bg-[#AAA8A8]/20 text-[#AAA8A8] hover:bg-[#AAA8A8]/30 hover:text-white flex items-center justify-center"
+                  aria-label="Clear filter"
                 >
-                  <button
-                    onClick={handleClearFocus}
-                    className="h-8 w-8 rounded-full bg-[#AAA8A8]/20 text-[#AAA8A8] hover:bg-[#AAA8A8]/30 hover:text-white transition-all duration-300 flex items-center justify-center"
-                    aria-label="Clear filter"
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
                   >
-                    <svg
-                      className="w-4 h-4"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M6 18L18 6M6 6l12 12"
-                      />
-                    </svg>
-                  </button>
-                </div>
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
+                </button>
+              </div>
 
-                {/* Focused Tab */}
-                {focusedGroup && (
+              {/* Tab buttons */}
+              {groups.map((group: AiArtGroup, index: number) => {
+                return (
                   <button
-                    className="flex-shrink-0 rounded-full px-6 py-2 text-sm font-medium text-black scale-110 transition-all duration-300 delay-200"
+                    key={group.name}
+                    ref={setTabRef(group.name)}
+                    onClick={() => handleTabClick(group.name)}
+                    className="flex-shrink-0 rounded-full px-6 py-2 text-sm font-medium border border-[#AAA8A8] bg-transparent text-[#AAA8A8] hover:border-white hover:text-white"
                     style={{
-                      backgroundColor: focusedGroup.color || "#AAA8A8",
-                      borderColor: focusedGroup.color || "#AAA8A8",
-                      opacity: focusedTab && !isTransitioning ? 1 : 0,
-                      transform: focusedTab && !isTransitioning ? "scale(1.1)" : "scale(0.9)"
+                      borderColor: "#AAA8A8"
                     }}
                   >
-                    {focusedGroup.name}
+                    {group.name}
                   </button>
-                )}
-              </div>
-            )}
+                );
+              })}
+            </div>
           </div>
         </div>
 
