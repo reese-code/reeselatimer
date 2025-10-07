@@ -285,14 +285,14 @@ export default function AiArt() {
 
       {/* Modal directly under NavBar, desktop centers like before; mobile fills viewport */}
       {selectedImage && (
-        <div className="z-[2000] fixed inset-0 w-screen h-screen p-3 sm:inset-auto sm:w-auto sm:h-auto sm:top-[35%] sm:left-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 sm:max-w-[400px] sm:max-h-[500px] sm:m-[-250px]">
+        <div className="z-[2000] sticky inset-0 w-screen h-screen p-3 sm:inset-auto sm:w-auto sm:h-auto sm:top-[35%] sm:left-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 sm:max-w-[400px] sm:max-h-[500px] sm:m-[-250px]">
           <div className="backdrop-blur-md bg-[#777]/30 flex flex-col rounded-2xl pt-4 px-5 h-full border border-[#AAA8A880] sm:max-h-[800px]">
             {/* Top Controls: Close and Navigation */}
             <div className="flex items-center justify-between mb-4">
               {/* Close button */}
               <button
                 onClick={closeModal}
-                className="h-10 w-10 rounded-full bg-black/50 text-white transition-all duration-300 hover:bg-black/70 flex items-center justify-center"
+                className="h-10 w-10 rounded-full bg-black/30 text-white transition-all duration-300 hover:bg-black/70 flex items-center justify-center"
                 aria-label="Close"
               >
                 <svg
@@ -315,7 +315,7 @@ export default function AiArt() {
               <div className="flex gap-2">
                 <button
                   onClick={() => navigateImage('prev')}
-                  className="h-10 w-10 rounded-full bg-black/50 text-white transition-all duration-300 hover:bg-black/70 flex items-center justify-center"
+                  className="h-10 w-10 rounded-full bg-black/30 text-white transition-all duration-300 hover:bg-black/70 flex items-center justify-center"
                   aria-label="Previous image"
                 >
                   <svg
@@ -335,7 +335,7 @@ export default function AiArt() {
                 </button>
                 <button
                   onClick={() => navigateImage('next')}
-                  className="h-10 w-10 rounded-full bg-black/50 text-white transition-all duration-300 hover:bg-black/70 flex items-center justify-center"
+                  className="h-10 w-10 rounded-full bg-black/30 text-white transition-all duration-300 hover:bg-black/70 flex items-center justify-center"
                   aria-label="Next image"
                 >
                   <svg
