@@ -68,8 +68,24 @@ export default function AiArt() {
     return groups.find((group: AiArtGroup) => group.name === groupName);
   };
 
-  const handleImageClick = (image: AiArtImage) => setSelectedImage(image);
-  const closeModal = () => setSelectedImage(null);
+  const handleImageClick = (image: AiArtImage) => {
+    setSelectedImage(image);
+    // Prevent body scroll when modal is open
+    document.body.style.overflow = 'hidden';
+  };
+  
+  const closeModal = () => {
+    setSelectedImage(null);
+    // Restore body scroll when modal is closed
+    document.body.style.overflow = 'unset';
+  };
+
+  // Cleanup body scroll on unmount
+  useEffect(() => {
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, []);
 
   const handleTabClick = (tabName: string) => {
     // Prevent animation if this tab is already focused
@@ -271,13 +287,17 @@ export default function AiArt() {
               )}
             </div>
 
-            {/* Prompt */}
+            {/* Prompt - Scrollable with gradient */}
             {selectedImage.prompt && (
-              <div className="py-6">
-                <h3 className="mb-2 text-lg font-medium text-white">{selectedImage.title}</h3>
-                <p className="text-sm leading-relaxed text-[#AAA8A8]">
-                  {selectedImage.prompt}
-                </p>
+              <div className="flex-1 relative">
+                <div className="overflow-y-auto max-h-[200px] py-6 pr-2 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-[#AAA8A8]/50">
+                  <h3 className="mb-2 text-lg font-medium text-white">{selectedImage.title}</h3>
+                  <p className="text-sm leading-relaxed text-[#AAA8A8]">
+                    {selectedImage.prompt}
+                  </p>
+                </div>
+                {/* Gradient overlay at bottom */}
+                <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-[#777]/30 to-transparent pointer-events-none"></div>
               </div>
             )}
           </div>
@@ -364,22 +384,22 @@ export default function AiArt() {
           </div>
         </div>
 
-        {/* Images Grid */}
+        {/* Images Grid - Masonry Layout */}
         <div className="sm-p-10 bg-black p-3">
-          <div className="grid grid-cols-2 gap-5 md:grid-cols-3 lg:grid-cols-5">
+          <div className="columns-2 gap-5 md:columns-3 lg:columns-5">
             {filteredImages.length > 0 ? (
               filteredImages.map((image: AiArtImage, index: number) => {
                 const group = findGroupByName(image.groupName);
                 return (
                   <div
                     key={index}
-                    className="group relative cursor-pointer"
+                    className="group relative cursor-pointer mb-5 break-inside-avoid"
                     onClick={() => handleImageClick(image)}
                   >
                     <PixelizeImage
                       src={image.imageUrl}
                       alt={image.title}
-                      className="h-auto w-full object-cover transition-all duration-300 group-hover:opacity-90"
+                      className="h-auto w-full object-cover transition-all duration-300 group-hover:opacity-90 rounded-lg"
                     />
                     {group && (
                       <div
@@ -396,7 +416,7 @@ export default function AiArt() {
                 );
               })
             ) : (
-              <div className="col-span-full py-16 text-center">
+              <div className="w-full py-16 text-center">
                 <p className="text-type-small text-white">
                   {focusedTab ? `No images in ${focusedTab} group.` : "No AI art images available."}
                 </p>
