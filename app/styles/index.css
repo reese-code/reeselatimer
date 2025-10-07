@@ -103,3 +103,27 @@ body {
   transform: translateZ(0);
   backface-visibility: hidden;
 }
+
+/* iOS-style subtle scrollbar for modal */
+.modal-scroll::-webkit-scrollbar {
+  width: 2px;
+}
+
+.modal-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.modal-scroll::-webkit-scrollbar-thumb {
+  background: rgba(170, 168, 168, 0.3);
+  border-radius: 1px;
+}
+
+.modal-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(170, 168, 168, 0.5);
+}
+
+/* Firefox scrollbar styling */
+.modal-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(170, 168, 168, 0.3) transparent;
+}

@@ -80,12 +80,54 @@ export default function AiArt() {
     document.body.style.overflow = 'unset';
   };
 
+  const navigateImage = (direction: 'prev' | 'next') => {
+    if (!selectedImage) return;
+    
+    const currentIndex = filteredImages.findIndex((img: AiArtImage) => img.imageUrl === selectedImage.imageUrl);
+    if (currentIndex === -1) return;
+    
+    let newIndex;
+    if (direction === 'prev') {
+      newIndex = currentIndex === 0 ? filteredImages.length - 1 : currentIndex - 1;
+    } else {
+      newIndex = currentIndex === filteredImages.length - 1 ? 0 : currentIndex + 1;
+    }
+    
+    setSelectedImage(filteredImages[newIndex]);
+  };
+
   // Cleanup body scroll on unmount
   useEffect(() => {
     return () => {
       document.body.style.overflow = 'unset';
     };
   }, []);
+
+  // Keyboard navigation
+  useEffect(() => {
+    const handleKeyPress = (event: KeyboardEvent) => {
+      if (!selectedImage) return;
+      
+      if (event.key === 'ArrowLeft') {
+        event.preventDefault();
+        navigateImage('prev');
+      } else if (event.key === 'ArrowRight') {
+        event.preventDefault();
+        navigateImage('next');
+      } else if (event.key === 'Escape') {
+        event.preventDefault();
+        closeModal();
+      }
+    };
+
+    if (selectedImage) {
+      document.addEventListener('keydown', handleKeyPress);
+    }
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyPress);
+    };
+  }, [selectedImage, navigateImage]);
 
   const handleTabClick = (tabName: string) => {
     // Prevent animation if this tab is already focused
@@ -243,31 +285,76 @@ export default function AiArt() {
 
       {/* Modal directly under NavBar, desktop centers like before; mobile fills viewport */}
       {selectedImage && (
-        <div className="z-[2000]  inset-0 w-screen h-screen p-3 sticky sm:inset-auto sm:w-auto sm:h-auto sm:top-[35%] sm:left-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 sm:max-w-[400px] sm:max-h-[500px] sm:m-[-250px]">
-          <div className="backdrop-blur-md bg-[#777]/30 flex flex-col overflow-hidden rounded-2xl pt-4 px-5 h-full border border-[#AAA8A880]">
-            {/* Close */}
-            <button
-              onClick={closeModal}
-              className="mb-4 h-10 w-10 rounded-full bg-black/50 text-white transition-all duration-300 hover:bg-black/70"
-              aria-label="Close"
-            >
-              <svg
-                className="m-auto block"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
+        <div className="z-[2000] fixed inset-0 w-screen h-screen p-3 sm:inset-auto sm:w-auto sm:h-auto sm:top-[35%] sm:left-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 sm:max-w-[400px] sm:max-h-[500px] sm:m-[-250px]">
+          <div className="backdrop-blur-md bg-[#777]/30 flex flex-col rounded-2xl pt-4 px-5 h-full border border-[#AAA8A880] sm:max-h-[800px]">
+            {/* Top Controls: Close and Navigation */}
+            <div className="flex items-center justify-between mb-4">
+              {/* Close button */}
+              <button
+                onClick={closeModal}
+                className="h-10 w-10 rounded-full bg-black/50 text-white transition-all duration-300 hover:bg-black/70 flex items-center justify-center"
+                aria-label="Close"
               >
-                <path
-                  d="M19 12H5M12 19L5 12L12 5"
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
                   stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </button>
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
+
+              {/* Navigation buttons */}
+              <div className="flex gap-2">
+                <button
+                  onClick={() => navigateImage('prev')}
+                  className="h-10 w-10 rounded-full bg-black/50 text-white transition-all duration-300 hover:bg-black/70 flex items-center justify-center"
+                  aria-label="Previous image"
+                >
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M15 19l-7-7 7-7"
+                    />
+                  </svg>
+                </button>
+                <button
+                  onClick={() => navigateImage('next')}
+                  className="h-10 w-10 rounded-full bg-black/50 text-white transition-all duration-300 hover:bg-black/70 flex items-center justify-center"
+                  aria-label="Next image"
+                >
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 5l7 7-7 7"
+                    />
+                  </svg>
+                </button>
+              </div>
+            </div>
 
             {/* Image */}
             <div className="relative">
@@ -287,17 +374,23 @@ export default function AiArt() {
               )}
             </div>
 
-            {/* Prompt - Scrollable with gradient */}
+            {/* Prompt - Fixed title with scrollable text */}
             {selectedImage.prompt && (
-              <div className="flex-1 relative">
-                <div className="overflow-y-auto max-h-[200px] py-6 pr-2 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-[#AAA8A8]/50">
-                  <h3 className="mb-2 text-lg font-medium text-white">{selectedImage.title}</h3>
-                  <p className="text-sm leading-relaxed text-[#AAA8A8]">
+              <div className="flex-1 flex flex-col pt-6 pb-5 -mx-5 px-5 min-h-0">
+                {/* Fixed title at top */}
+                <h3 className="mb-4 text-lg font-medium text-white flex-shrink-0">{selectedImage.title}</h3>
+                
+                {/* Scrollable text content */}
+                <div className="flex-1 overflow-y-scroll modal-scroll pr-2 min-h-0" 
+                  style={{
+                    scrollbarWidth: 'thin',
+                    scrollbarColor: 'rgba(170, 168, 168, 0.3) transparent'
+                  }}
+                >
+                  <p className="text-sm leading-relaxed text-[#fff]">
                     {selectedImage.prompt}
                   </p>
                 </div>
-                {/* Gradient overlay at bottom */}
-                <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-[#777]/30 to-transparent pointer-events-none"></div>
               </div>
             )}
           </div>
