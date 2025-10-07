@@ -72,21 +72,14 @@ export default function AiArt() {
   const closeModal = () => setSelectedImage(null);
 
   const handleTabClick = (tabName: string) => {
+    // Prevent animation if this tab is already focused
+    if (focusedTab === tabName) return;
+    
     setActiveTab(tabName);
     setIsTransitioning(true);
     
     const clickedTab = tabRefs.current.get(tabName);
     if (!clickedTab || !clearButtonRef.current) return;
-
-    // Get the position where the tab should move (next to the clear button)
-    const clearButtonRect = clearButtonRef.current.getBoundingClientRect();
-    const clickedTabRect = clickedTab.getBoundingClientRect();
-    const container = tabsContainerRef.current?.getBoundingClientRect();
-    
-    if (!container) return;
-
-    // Calculate the target position (next to clear button)
-    const targetX = clearButtonRect.right + 16 - clickedTabRect.left; // 16px gap
 
     // Create GSAP timeline
     const tl = gsap.timeline({
@@ -96,42 +89,70 @@ export default function AiArt() {
       }
     });
 
-    // Animate the clicked tab moving to position
-    tl.to(clickedTab, {
-      x: targetX,
-      scale: 1.1,
-      backgroundColor: findGroupByName(tabName)?.color || "#AAA8A8",
-      color: "#000",
-      duration: 0.5,
-      ease: "power2.inOut"
+    // Step 1: Set all tabs to absolute positioning to prevent layout shift when X appears
+    tabRefs.current.forEach((tab, groupName) => {
+      const rect = tab.getBoundingClientRect();
+      const container = tabsContainerRef.current?.getBoundingClientRect();
+      if (container) {
+        tl.set(tab, {
+          position: "absolute",
+          left: rect.left - container.left,
+          top: rect.top - container.top,
+        }, 0);
+      }
     });
 
-    // Fade out other tabs
+    // Step 2: Now show the clear button (won't cause layout shift since tabs are absolute)
+    tl.set(clearButtonRef.current, { display: "block" }, 0.1)
+      .to(clearButtonRef.current, {
+        opacity: 1,
+        scale: 1,
+        duration: 0.3,
+        ease: "back.out(1.7)"
+      }, 0.1);
+
+    // Step 3: Hide other tabs FIRST (before selected tab moves)
     tabRefs.current.forEach((tab, groupName) => {
       if (groupName !== tabName) {
         tl.to(tab, {
           opacity: 0,
           scale: 0.9,
-          duration: 0.3,
-          ease: "power2.inOut"
-        }, 0);
+          duration: 0.2,
+          ease: "power2.inOut",
+          onComplete: () => {
+            gsap.set(tab, { display: "none" });
+          }
+        }, 0.1);
       }
     });
 
-    // Show clear button
-    tl.to(clearButtonRef.current, {
-      opacity: 1,
-      scale: 1,
-      duration: 0.3,
-      ease: "back.out(1.7)"
-    }, 0.2);
+    // Step 3: Calculate exact position next to X and move the clicked tab there
+    const clickedTabRect = clickedTab.getBoundingClientRect();
+    const clearButtonRect = clearButtonRef.current.getBoundingClientRect();
+    const container = tabsContainerRef.current?.getBoundingClientRect();
+    
+    if (container) {
+      // Calculate the distance needed to position tab right next to clear button
+      const targetX = clearButtonRect.right + 112 - clickedTabRect.left; // 16px gap
+      
+      tl.to(clickedTab, {
+        x: targetX,
+        scale: 1.1,
+        backgroundColor: findGroupByName(tabName)?.color || "#AAA8A8",
+        color: "#000",
+        duration: 0.4,
+        ease: "power2.inOut"
+      }, 0.2);
+    }
+
+    
   };
 
   const handleClearFocus = () => {
     setIsTransitioning(true);
     
     const activatedTab = tabRefs.current.get(focusedTab || "");
-    if (!activatedTab) return;
+    if (!activatedTab || !clearButtonRef.current) return;
 
     // Create GSAP timeline
     const tl = gsap.timeline({
@@ -141,15 +162,7 @@ export default function AiArt() {
       }
     });
 
-    // Hide clear button
-    tl.to(clearButtonRef.current, {
-      opacity: 0,
-      scale: 0.8,
-      duration: 0.2,
-      ease: "power2.inOut"
-    });
-
-    // Reset the focused tab position
+    // Step 1: Move the selected tab back to its original position and reset its style
     tl.to(activatedTab, {
       x: 0,
       scale: 1,
@@ -157,18 +170,37 @@ export default function AiArt() {
       color: "#AAA8A8",
       duration: 0.4,
       ease: "power2.inOut"
-    }, 0.1);
+    });
 
-    // Show all other tabs
+    // Step 2: Hide the clear button
+    tl.to(clearButtonRef.current, {
+      opacity: 0,
+      scale: 0.8,
+      duration: 0.2,
+      ease: "power2.inOut"
+    }, 0.2)
+    .set(clearButtonRef.current, { display: "none" });
+
+    // Step 3: NOW show all other hidden tabs back (after selected tab has moved back)
     tabRefs.current.forEach((tab, groupName) => {
       if (groupName !== focusedTab) {
-        tl.to(tab, {
-          opacity: 1,
-          scale: 1,
-          duration: 0.4,
-          ease: "power2.inOut"
-        }, 0.1);
+        tl.set(tab, { display: "block" }, 0.5)
+          .to(tab, {
+            opacity: 1,
+            scale: 1,
+            duration: 0.3,
+            ease: "power2.inOut"
+          }, 0.5);
       }
+    });
+
+    // Step 4: Reset all tabs back to normal positioning (not absolute)
+    tabRefs.current.forEach((tab, groupName) => {
+      tl.set(tab, {
+        position: "static",
+        left: "auto",
+        top: "auto",
+      }, 0.9);
     });
   };
 
@@ -289,6 +321,7 @@ export default function AiArt() {
               <div 
                 ref={clearButtonRef}
                 className="flex-shrink-0 opacity-0 scale-75"
+                style={{ display: "none" }}
               >
                 <button
                   onClick={handleClearFocus}
