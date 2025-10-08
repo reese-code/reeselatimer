@@ -59,13 +59,31 @@ export default function AiArt() {
   const images = aiArt?.images || [];
   const groups = aiArt?.groups || [];
 
+  // Get unique group names from images that actually have images assigned
+  const usedGroupNames = [...new Set(images.map((img: AiArtImage) => img.groupName).filter(Boolean))] as string[];
+  
+  // Create dynamic groups based on actually used categories with default colors
+  const dynamicGroups = usedGroupNames.map((groupName: string) => {
+    // Try to find existing group definition first
+    const existingGroup = groups.find((group: AiArtGroup) => group.name === groupName);
+    if (existingGroup) {
+      return existingGroup;
+    }
+    // If no existing group, create a default one
+    return {
+      name: groupName,
+      description: `${groupName} AI Art`,
+      color: '#AAA8A8'
+    };
+  });
+
   const filteredImages = focusedTab
     ? images.filter((img: AiArtImage) => img.groupName === focusedTab)
     : images;
 
   const findGroupByName = (groupName: string | undefined): AiArtGroup | undefined => {
     if (!groupName) return undefined;
-    return groups.find((group: AiArtGroup) => group.name === groupName);
+    return dynamicGroups.find((group: any) => group.name === groupName);
   };
 
   const handleImageClick = (image: AiArtImage) => {
@@ -457,8 +475,8 @@ export default function AiArt() {
                 </button>
               </div>
 
-              {/* Tab buttons */}
-              {groups.map((group: AiArtGroup, index: number) => {
+              {/* Tab buttons - only show groups that have images */}
+              {dynamicGroups.map((group: any, index: number) => {
                 return (
                   <button
                     key={group.name}

@@ -91,7 +91,23 @@ export default defineType({
               name: 'groupName',
               title: 'Group',
               type: 'string',
-              description: 'Enter the exact name of the group this image belongs to',
+              description: 'Select or enter the group name',
+              options: {
+                list: [
+                  { title: 'Portraits', value: 'Portraits' },
+                  { title: 'Landscapes', value: 'Landscapes' },
+                  { title: 'Abstract', value: 'Abstract' },
+                  { title: 'Cyberpunk', value: 'Cyberpunk' },
+                  { title: 'Fantasy', value: 'Fantasy' },
+                  { title: 'Sci-Fi', value: 'Sci-Fi' },
+                  { title: 'Architecture', value: 'Architecture' },
+                  { title: 'Characters', value: 'Characters' },
+                  { title: 'Animals', value: 'Animals' },
+                  { title: 'Digital Art', value: 'Digital Art' },
+                  { title: 'Black & White', value: 'Black & White' },
+                  { title: 'Action', value: 'Action' }
+                ]
+              }
             },
             {
               name: 'createdAt',
