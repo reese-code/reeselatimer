@@ -1,6 +1,6 @@
 import { json } from "@remix-run/node";
 import { createClient } from '@sanity/client';
-import type { About, Project, Service, Footer, Hero, AiArt } from "~/types/sanity";
+import type { About, Project, Service, Footer, Hero, AiArt, Ciao } from "~/types/sanity";
 
 // Create a Sanity client with CDN enabled for development too
 // This helps with performance in local development
@@ -54,7 +54,23 @@ export async function getAbout(): Promise<About | null> {
 
 export async function getProjects(): Promise<Project[]> {
   if (cachedProjects && isCacheValid()) return cachedProjects;
-  const result = await sanityClient.fetch<Project[]>(`*[_type == "project"] | order(_createdAt desc)`);
+  const result = await sanityClient.fetch<Project[]>(`*[_type == "project"]{
+    _id,
+    title,
+    "slug": slug.current,
+    excerpt,
+    client,
+    projectDate,
+    technologies,
+    "mainImageUrl": mainImage.asset->url,
+    "secondaryImageUrl": secondaryImage.asset->url,
+    "tertiaryImageUrl": tertiaryImage.asset->url,
+    "iconSvgUrl": iconSvg.asset->url,
+    description,
+    websiteUrl,
+    tags,
+    buttons
+  } | order(_createdAt desc)`);
   cachedProjects = result;
   cacheTimestamp = Date.now();
   return result;
@@ -99,6 +115,40 @@ export async function getAiArt(): Promise<AiArt | null> {
       groupName,
       createdAt
     }
+  }`);
+  return result;
+}
+
+export async function getCiao(): Promise<Ciao | null> {
+  const result = await sanityClient.fetch<Ciao | null>(`*[_type == "ciao"][0]{
+    _id,
+    title,
+    heroLogoUrl,
+    firstImage{
+      imageUrl,
+      alt
+    },
+    secondImage{
+      imageUrl,
+      alt
+    },
+    problemCard{
+      title,
+      content
+    },
+    solutionCard{
+      title,
+      content
+    },
+    bottomFirstImage{
+      imageUrl,
+      alt
+    },
+    bottomSecondImage{
+      imageUrl,
+      alt
+    },
+    extraContent
   }`);
   return result;
 }

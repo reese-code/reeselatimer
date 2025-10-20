@@ -78,3 +78,26 @@ export interface AiArt {
   groups?: AiArtGroup[];
   images?: AiArtImage[];
 }
+
+export interface CiaoImage {
+  imageUrl: string;
+  alt: string;
+}
+
+export interface CiaoCard {
+  title: string;
+  content: any[];
+}
+
+export interface Ciao {
+  _id: string;
+  title: string;
+  heroLogoUrl?: string;
+  firstImage?: CiaoImage;
+  secondImage?: CiaoImage;
+  problemCard?: CiaoCard;
+  solutionCard?: CiaoCard;
+  bottomFirstImage?: CiaoImage;
+  bottomSecondImage?: CiaoImage;
+  extraContent?: any[];
+}
