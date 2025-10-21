@@ -1,10 +1,16 @@
 import type { MetaFunction, LoaderFunction } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
+import { useEffect, useRef } from "react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import type { Ciao, Footer as FooterType } from "~/types/sanity";
 import NavBar from "~/components/NavBar";
 import Footer from "~/components/Footer";
 import { getCiao, getFooter } from "./api.sanity";
 import { PortableText } from '@portabletext/react';
+
+// Register ScrollTrigger plugin
+gsap.registerPlugin(ScrollTrigger);
 
 export const meta: MetaFunction = () => {
   return [
@@ -37,6 +43,8 @@ export const loader: LoaderFunction = async () => {
 
 export default function CiaoPage() {
   const { ciao, footer, error } = useLoaderData<typeof loader>();
+  const problemCardRef = useRef<HTMLDivElement>(null);
+  const solutionCardRef = useRef<HTMLDivElement>(null);
 
   const defaultCiao = {
     title: "CIAO",
@@ -51,6 +59,58 @@ export default function CiaoPage() {
   };
 
   const ciaoData = ciao || defaultCiao;
+
+  useEffect(() => {
+    // Set initial state for cards (hidden and translated down)
+    if (problemCardRef.current) {
+      gsap.set(problemCardRef.current, { 
+        opacity: 0, 
+        y: 50,
+        willChange: "transform, opacity"
+      });
+    }
+    
+    if (solutionCardRef.current) {
+      gsap.set(solutionCardRef.current, { 
+        opacity: 0, 
+        y: 50,
+        willChange: "transform, opacity"
+      });
+    }
+
+    // Create scroll-triggered animations that only happen once
+    const problemAnimation = gsap.to(problemCardRef.current, {
+      opacity: 1,
+      y: 0,
+      duration: 1,
+      ease: "power2.out",
+      scrollTrigger: {
+        trigger: problemCardRef.current,
+        start: "top 80%",
+        once: true, // Only animate once
+      }
+    });
+
+    const solutionAnimation = gsap.to(solutionCardRef.current, {
+      opacity: 1,
+      y: 0,
+      duration: 1,
+      ease: "power2.out",
+      delay: 0.2, // Slight delay for staggered effect
+      scrollTrigger: {
+        trigger: solutionCardRef.current,
+        start: "top 80%",
+        once: true, // Only animate once
+      }
+    });
+
+    // Cleanup function
+    return () => {
+      problemAnimation.kill();
+      solutionAnimation.kill();
+      ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+    };
+  }, []);
 
   if (error) {
     return (
@@ -73,7 +133,7 @@ export default function CiaoPage() {
       />
 
       {/* Hero Section with CIAO Logo */}
-      <section className="relative min-h-[400px] flex items-start justify-center ">
+      <section className="relative min-h-[400px] max-w-[100vw] flex items-start justify-center overflow-hidden">
         {ciaoData.heroLogoUrl ? (
           <img 
             src={ciaoData.heroLogoUrl}
@@ -115,7 +175,7 @@ export default function CiaoPage() {
       <section className="px-3 md:px-10 py-20">
         <div className="flex flex-col md:flex-row gap-8 max-w-7xl mx-auto">
           {/* Problem Card - Sticky like About section profile picture */}
-          <div className="md:sticky md:top-20 md:self-start md:w-1/2 bg-white/5 backdrop-blur-sm border border-white/20 rounded-xl p-8 w-full h-fit">
+          <div ref={problemCardRef} className="md:sticky md:top-20 md:self-start md:w-1/2 bg-white/5 backdrop-blur-sm border border-white/20 rounded-xl p-8 w-full h-fit">
             <h2 className="text-project-title-small md:text-project-title font-editorial font-light text-white mb-6">
               {ciaoData.problemCard?.title || "Problem"}
             </h2>
@@ -138,7 +198,7 @@ export default function CiaoPage() {
           </div>
 
           {/* Solution Card */}
-          <div className="flex-1 md:w-1/2 bg-white/5 backdrop-blur-sm border border-white/20 rounded-xl p-8 w-full">
+          <div ref={solutionCardRef} className="flex-1 md:w-1/2 bg-white/5 backdrop-blur-sm border border-white/20 rounded-xl p-8 w-full">
             <h2 className="text-project-title-small md:text-project-title font-editorial font-light text-white mb-6">
               {ciaoData.solutionCard?.title || "Solution"}
             </h2>
