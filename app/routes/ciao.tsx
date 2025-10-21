@@ -2,15 +2,11 @@ import type { MetaFunction, LoaderFunction } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import type { Ciao, Footer as FooterType } from "~/types/sanity";
 import NavBar from "~/components/NavBar";
 import Footer from "~/components/Footer";
 import { getCiao, getFooter } from "./api.sanity";
 import { PortableText } from '@portabletext/react';
-
-// Register ScrollTrigger plugin
-gsap.registerPlugin(ScrollTrigger);
 
 export const meta: MetaFunction = () => {
   return [
@@ -61,54 +57,75 @@ export default function CiaoPage() {
   const ciaoData = ciao || defaultCiao;
 
   useEffect(() => {
-    // Set initial state for cards (hidden and translated down)
-    if (problemCardRef.current) {
-      gsap.set(problemCardRef.current, { 
-        opacity: 0, 
-        y: 50,
-        willChange: "transform, opacity"
-      });
-    }
-    
-    if (solutionCardRef.current) {
-      gsap.set(solutionCardRef.current, { 
-        opacity: 0, 
-        y: 50,
-        willChange: "transform, opacity"
-      });
-    }
+    let ScrollTrigger: any;
+    let problemAnimation: any;
+    let solutionAnimation: any;
 
-    // Create scroll-triggered animations that only happen once
-    const problemAnimation = gsap.to(problemCardRef.current, {
-      opacity: 1,
-      y: 0,
-      duration: 1,
-      ease: "power2.out",
-      scrollTrigger: {
-        trigger: problemCardRef.current,
-        start: "top 80%",
-        once: true, // Only animate once
-      }
-    });
+    const initializeAnimations = async () => {
+      try {
+        // Dynamically import ScrollTrigger
+        const scrollTriggerModule = await import('gsap/ScrollTrigger');
+        ScrollTrigger = scrollTriggerModule.ScrollTrigger || scrollTriggerModule.default;
+        
+        // Register ScrollTrigger plugin
+        gsap.registerPlugin(ScrollTrigger);
 
-    const solutionAnimation = gsap.to(solutionCardRef.current, {
-      opacity: 1,
-      y: 0,
-      duration: 1,
-      ease: "power2.out",
-      delay: 0.2, // Slight delay for staggered effect
-      scrollTrigger: {
-        trigger: solutionCardRef.current,
-        start: "top 80%",
-        once: true, // Only animate once
+        // Set initial state for cards (hidden and translated down)
+        if (problemCardRef.current) {
+          gsap.set(problemCardRef.current, { 
+            opacity: 0, 
+            y: 50,
+            willChange: "transform, opacity"
+          });
+        }
+        
+        if (solutionCardRef.current) {
+          gsap.set(solutionCardRef.current, { 
+            opacity: 0, 
+            y: 50,
+            willChange: "transform, opacity"
+          });
+        }
+
+        // Create scroll-triggered animations that only happen once
+        problemAnimation = gsap.to(problemCardRef.current, {
+          opacity: 1,
+          y: 0,
+          duration: 1,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: problemCardRef.current,
+            start: "top 80%",
+            once: true, // Only animate once
+          }
+        });
+
+        solutionAnimation = gsap.to(solutionCardRef.current, {
+          opacity: 1,
+          y: 0,
+          duration: 1,
+          ease: "power2.out",
+          delay: 0.2, // Slight delay for staggered effect
+          scrollTrigger: {
+            trigger: solutionCardRef.current,
+            start: "top 80%",
+            once: true, // Only animate once
+          }
+        });
+      } catch (error) {
+        console.error('Error loading ScrollTrigger:', error);
       }
-    });
+    };
+
+    initializeAnimations();
 
     // Cleanup function
     return () => {
-      problemAnimation.kill();
-      solutionAnimation.kill();
-      ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+      if (problemAnimation) problemAnimation.kill();
+      if (solutionAnimation) solutionAnimation.kill();
+      if (ScrollTrigger) {
+        ScrollTrigger.getAll().forEach((trigger: any) => trigger.kill());
+      }
     };
   }, []);
 
