@@ -362,15 +362,7 @@ export default function NavBar({
               AI ART
             </TransitionLink>
             
-            <TransitionLink 
-              to="/ciao" 
-              onClick={closeMobileMenu}
-              className={`relative text-6xl font-light text-white hover:text-gray-300 transition-colors font-editorial ${
-                location.pathname === '/ciao' ? 'after:content-[""] after:absolute after:left-1/2 after:top-1/2 after:transform after:-translate-x-1/2 after:-translate-y-1/2 after:w-full after:h-0.5 after:bg-white' : ''
-              }`}
-            >
-              CIAO
-            </TransitionLink>
+         
           </nav>
 
           {/* Social Links */}
