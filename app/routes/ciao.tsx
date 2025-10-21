@@ -1,6 +1,5 @@
 import type { MetaFunction, LoaderFunction } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
-import { useEffect, useRef } from "react";
 import type { Ciao, Footer as FooterType } from "~/types/sanity";
 import NavBar from "~/components/NavBar";
 import Footer from "~/components/Footer";
@@ -38,51 +37,6 @@ export const loader: LoaderFunction = async () => {
 
 export default function CiaoPage() {
   const { ciao, footer, error } = useLoaderData<typeof loader>();
-  const problemCardRef = useRef<HTMLDivElement>(null);
-  const solutionCardRef = useRef<HTMLDivElement>(null);
-  const cardsContainerRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const problemCard = problemCardRef.current;
-    const solutionCard = solutionCardRef.current;
-    const cardsContainer = cardsContainerRef.current;
-
-    if (!problemCard || !solutionCard || !cardsContainer) return;
-
-    const handleScroll = () => {
-      const containerRect = cardsContainer.getBoundingClientRect();
-      const problemRect = problemCard.getBoundingClientRect();
-      const solutionRect = solutionCard.getBoundingClientRect();
-      
-      // Check if the cards container is in viewport
-      if (containerRect.top <= 0 && containerRect.bottom > window.innerHeight) {
-        // Calculate how much the solution card extends beyond the problem card
-        const heightDifference = solutionCard.offsetHeight - problemCard.offsetHeight;
-        
-        if (heightDifference > 0) {
-          // Calculate scroll progress within the container
-          const scrollProgress = Math.abs(containerRect.top) / heightDifference;
-          const clampedProgress = Math.min(Math.max(scrollProgress, 0), 1);
-          
-          // Apply sticky positioning to problem card
-          problemCard.style.position = 'sticky';
-          problemCard.style.top = '2rem';
-          problemCard.style.transform = `translateY(${clampedProgress * heightDifference}px)`;
-        }
-      } else {
-        // Reset positioning when not in the sticky zone
-        problemCard.style.position = 'static';
-        problemCard.style.transform = 'none';
-      }
-    };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    handleScroll(); // Initial call
-
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, []);
 
   const defaultCiao = {
     title: "CIAO",
@@ -108,12 +62,14 @@ export default function CiaoPage() {
 
   return (
     <div className="min-h-screen bg-black">
-      {/* White NavBar for black background */}
+      {/* Transparent NavBar with gradient like AI art page */}
       <NavBar 
         title="Reese Latimer •"
         contactText="Let's get in touch"
         isHomePage={false}
         textColor="text-hero-white"
+        forceTransparent={true}
+        useGradient={true}
       />
 
       {/* Hero Section with CIAO Logo */}
@@ -156,28 +112,50 @@ export default function CiaoPage() {
       </section>
 
       {/* Problem-Solution Cards Section */}
-      <section ref={cardsContainerRef} className="px-3 md:px-10 py-20">
-        <div className="flex flex-col sm:flex-row gap-8 max-w-7xl mx-auto">
-          {/* Problem Card */}
-          <div ref={problemCardRef} className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-8 w-full h-fit">
-            <h2 className="text-2xl md:text-3xl font-editorial text-white mb-6">
+      <section className="px-3 md:px-10 py-20">
+        <div className="flex flex-col md:flex-row gap-8 max-w-7xl mx-auto">
+          {/* Problem Card - Sticky like About section profile picture */}
+          <div className="md:sticky md:top-20 md:self-start md:w-1/2 bg-white/5 backdrop-blur-sm border border-white/20 rounded-xl p-8 w-full h-fit">
+            <h2 className="text-project-title-small md:text-project-title font-editorial font-light text-white mb-6">
               {ciaoData.problemCard?.title || "Problem"}
             </h2>
             {ciaoData.problemCard?.content && (
-              <div className="text-white/80 prose prose-invert max-w-none">
-                <PortableText value={ciaoData.problemCard.content} />
+              <div className="text-[20px] text-white/60 max-w-none">
+                <PortableText 
+                  value={ciaoData.problemCard.content}
+                  components={{
+                    block: {
+                      normal: ({children}) => <p className="mb-4">{children}</p>,
+                    },
+                    marks: {
+                      strong: ({children}) => <strong className="font-semibold">{children}</strong>,
+                      em: ({children}) => <em className="italic">{children}</em>,
+                    }
+                  }}
+                />
               </div>
             )}
           </div>
 
           {/* Solution Card */}
-          <div ref={solutionCardRef} className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-8 w-full">
-            <h2 className="text-2xl md:text-3xl font-editorial text-white mb-6">
+          <div className="flex-1 md:w-1/2 bg-white/5 backdrop-blur-sm border border-white/20 rounded-xl p-8 w-full">
+            <h2 className="text-project-title-small md:text-project-title font-editorial font-light text-white mb-6">
               {ciaoData.solutionCard?.title || "Solution"}
             </h2>
             {ciaoData.solutionCard?.content && (
-              <div className="text-white/80 prose prose-invert max-w-none">
-                <PortableText value={ciaoData.solutionCard.content} />
+              <div className="text-[20px] text-white/60 max-w-none">
+                <PortableText 
+                  value={ciaoData.solutionCard.content}
+                  components={{
+                    block: {
+                      normal: ({children}) => <p className="mb-4">{children}</p>,
+                    },
+                    marks: {
+                      strong: ({children}) => <strong className="font-semibold">{children}</strong>,
+                      em: ({children}) => <em className="italic">{children}</em>,
+                    }
+                  }}
+                />
               </div>
             )}
           </div>
@@ -187,8 +165,19 @@ export default function CiaoPage() {
       {/* Extra Content Section */}
       {ciaoData.extraContent && ciaoData.extraContent.length > 0 && (
         <section className="px-3 md:px-10 py-20">
-          <div className="max-w-4xl mx-auto text-white/80 prose prose-invert prose-lg">
-            <PortableText value={ciaoData.extraContent} />
+          <div className="max-w-4xl mx-auto text-[20px] text-white/80">
+            <PortableText 
+              value={ciaoData.extraContent}
+              components={{
+                block: {
+                  normal: ({children}) => <p className="mb-4">{children}</p>,
+                },
+                marks: {
+                  strong: ({children}) => <strong className="font-semibold">{children}</strong>,
+                  em: ({children}) => <em className="italic">{children}</em>,
+                }
+              }}
+            />
           </div>
         </section>
       )}
