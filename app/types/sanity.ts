@@ -79,11 +79,6 @@ export interface AiArt {
   images?: AiArtImage[];
 }
 
-export interface CiaoImage {
-  imageUrl: string;
-  alt: string;
-}
-
 export interface CiaoCard {
   title: string;
   content: any[];
@@ -93,11 +88,11 @@ export interface Ciao {
   _id: string;
   title: string;
   heroLogoUrl?: string;
-  firstImage?: CiaoImage;
-  secondImage?: CiaoImage;
+  firstImageUrl?: string;
+  secondImageUrl?: string;
   problemCard?: CiaoCard;
   solutionCard?: CiaoCard;
-  bottomFirstImage?: CiaoImage;
-  bottomSecondImage?: CiaoImage;
+  bottomFirstImageUrl?: string;
+  bottomSecondImageUrl?: string;
   extraContent?: any[];
 }

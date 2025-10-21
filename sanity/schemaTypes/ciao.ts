@@ -10,44 +10,29 @@ export default {
       initialValue: 'CIAO'
     },
     {
-      name: 'heroLogoUrl',
-      title: 'Hero Logo URL',
-      type: 'url',
-      description: 'URL for the CIAO logo displayed in the hero section'
+      name: 'heroLogo',
+      title: 'Hero Logo',
+      type: 'image',
+      options: {
+        hotspot: true
+      },
+      description: 'Upload the CIAO logo for the hero section'
     },
     {
       name: 'firstImage',
       title: 'First Image',
-      type: 'object',
-      fields: [
-        {
-          name: 'imageUrl',
-          title: 'Image URL',
-          type: 'url'
-        },
-        {
-          name: 'alt',
-          title: 'Alt Text',
-          type: 'string'
-        }
-      ]
+      type: 'image',
+      options: {
+        hotspot: true
+      }
     },
     {
       name: 'secondImage',
       title: 'Second Image',
-      type: 'object',
-      fields: [
-        {
-          name: 'imageUrl',
-          title: 'Image URL',
-          type: 'url'
-        },
-        {
-          name: 'alt',
-          title: 'Alt Text',
-          type: 'string'
-        }
-      ]
+      type: 'image',
+      options: {
+        hotspot: true
+      }
     },
     {
       name: 'problemCard',
@@ -88,36 +73,18 @@ export default {
     {
       name: 'bottomFirstImage',
       title: 'Bottom First Image (Flipped)',
-      type: 'object',
-      fields: [
-        {
-          name: 'imageUrl',
-          title: 'Image URL',
-          type: 'url'
-        },
-        {
-          name: 'alt',
-          title: 'Alt Text',
-          type: 'string'
-        }
-      ]
+      type: 'image',
+      options: {
+        hotspot: true
+      }
     },
     {
       name: 'bottomSecondImage',
       title: 'Bottom Second Image (Flipped)',
-      type: 'object',
-      fields: [
-        {
-          name: 'imageUrl',
-          title: 'Image URL',
-          type: 'url'
-        },
-        {
-          name: 'alt',
-          title: 'Alt Text',
-          type: 'string'
-        }
-      ]
+      type: 'image',
+      options: {
+        hotspot: true
+      }
     },
     {
       name: 'extraContent',

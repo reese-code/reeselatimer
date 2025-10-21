@@ -87,12 +87,12 @@ export default function CiaoPage() {
   const defaultCiao = {
     title: "CIAO",
     heroLogoUrl: "",
-    firstImage: { imageUrl: "", alt: "First image" },
-    secondImage: { imageUrl: "", alt: "Second image" },
+    firstImageUrl: "",
+    secondImageUrl: "",
     problemCard: { title: "Problem", content: [] },
     solutionCard: { title: "Solution", content: [] },
-    bottomFirstImage: { imageUrl: "", alt: "Bottom first image" },
-    bottomSecondImage: { imageUrl: "", alt: "Bottom second image" },
+    bottomFirstImageUrl: "",
+    bottomSecondImageUrl: "",
     extraContent: []
   };
 
@@ -117,12 +117,12 @@ export default function CiaoPage() {
       />
 
       {/* Hero Section with CIAO Logo */}
-      <section className="relative h-screen flex items-center justify-center px-3 md:px-10">
+      <section className="relative min-h-[400px] flex items-start justify-center ">
         {ciaoData.heroLogoUrl ? (
           <img 
             src={ciaoData.heroLogoUrl}
             alt="CIAO Logo"
-            className="max-h-[60vh] max-w-[80vw] object-contain"
+            className="max-w-[100vw] object-contain"
           />
         ) : (
           <h1 className="text-8xl md:text-[12rem] font-editorial text-white font-light">
@@ -132,22 +132,22 @@ export default function CiaoPage() {
       </section>
 
       {/* First Two Images Section */}
-      <section className="px-3 md:px-10 py-20">
-        <div className="grid md:grid-cols-2 gap-8 max-w-7xl mx-auto">
-          {ciaoData.firstImage?.imageUrl && (
+      <section className="px-3 md:px-10">
+        <div className="flex flex-col sm:flex-row gap-3 sm:gap-10 max-w-7xl mx-auto">
+          {ciaoData.firstImageUrl && (
             <div className="relative">
               <img 
-                src={ciaoData.firstImage.imageUrl}
-                alt={ciaoData.firstImage.alt}
+                src={ciaoData.firstImageUrl}
+                alt="First CIAO image"
                 className="w-full h-auto rounded-lg"
               />
             </div>
           )}
-          {ciaoData.secondImage?.imageUrl && (
+          {ciaoData.secondImageUrl && (
             <div className="relative">
               <img 
-                src={ciaoData.secondImage.imageUrl}
-                alt={ciaoData.secondImage.alt}
+                src={ciaoData.secondImageUrl}
+                alt="Second CIAO image"
                 className="w-full h-auto rounded-lg"
               />
             </div>
@@ -157,9 +157,9 @@ export default function CiaoPage() {
 
       {/* Problem-Solution Cards Section */}
       <section ref={cardsContainerRef} className="px-3 md:px-10 py-20">
-        <div className="grid md:grid-cols-2 gap-8 max-w-7xl mx-auto">
+        <div className="flex flex-col sm:flex-row gap-8 max-w-7xl mx-auto">
           {/* Problem Card */}
-          <div ref={problemCardRef} className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-8">
+          <div ref={problemCardRef} className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-8 w-full h-fit">
             <h2 className="text-2xl md:text-3xl font-editorial text-white mb-6">
               {ciaoData.problemCard?.title || "Problem"}
             </h2>
@@ -171,7 +171,7 @@ export default function CiaoPage() {
           </div>
 
           {/* Solution Card */}
-          <div ref={solutionCardRef} className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-8">
+          <div ref={solutionCardRef} className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-8 w-full">
             <h2 className="text-2xl md:text-3xl font-editorial text-white mb-6">
               {ciaoData.solutionCard?.title || "Solution"}
             </h2>
@@ -195,21 +195,21 @@ export default function CiaoPage() {
 
       {/* Bottom Two Images Section (Flipped) */}
       <section className="px-3 md:px-10 py-20">
-        <div className="grid md:grid-cols-2 gap-8 max-w-7xl mx-auto">
-          {ciaoData.bottomSecondImage?.imageUrl && (
+        <div className="flex flex-col sm:flex-row gap-3 sm:gap-5 max-w-7xl mx-auto">
+          {ciaoData.bottomSecondImageUrl && (
             <div className="relative md:order-2">
               <img 
-                src={ciaoData.bottomSecondImage.imageUrl}
-                alt={ciaoData.bottomSecondImage.alt}
+                src={ciaoData.bottomSecondImageUrl}
+                alt="Bottom second CIAO image"
                 className="w-full h-auto rounded-lg"
               />
             </div>
           )}
-          {ciaoData.bottomFirstImage?.imageUrl && (
+          {ciaoData.bottomFirstImageUrl && (
             <div className="relative md:order-1">
               <img 
-                src={ciaoData.bottomFirstImage.imageUrl}
-                alt={ciaoData.bottomFirstImage.alt}
+                src={ciaoData.bottomFirstImageUrl}
+                alt="Bottom first CIAO image"
                 className="w-full h-auto rounded-lg"
               />
             </div>

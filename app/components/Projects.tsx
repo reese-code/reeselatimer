@@ -9,17 +9,9 @@ interface ProjectsProps {
 // No hardcoded projects - all projects now come from Sanity
 
 export default function Projects({ projects, error }: ProjectsProps) {
-  // Debug: Log what projects we're getting
-  console.log('Projects received:', projects);
-  
   return (
     <section id="work" className="px-3 md:px-10 py-16 bg-white">
       {error && <p className="text-red-500 mb-4">Error: {error}</p>}
-      
-      {/* Debug: Show project count */}
-      <div className="mb-4 text-sm text-gray-600">
-        Found {projects.length} project(s): {projects.map(p => p.title).join(', ')}
-      </div>
       
       {/* Projects Header */}
       <div className="flex items-start mb-8 border-b border-black pb-0 justify-center">

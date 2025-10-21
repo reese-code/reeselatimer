@@ -123,15 +123,9 @@ export async function getCiao(): Promise<Ciao | null> {
   const result = await sanityClient.fetch<Ciao | null>(`*[_type == "ciao"][0]{
     _id,
     title,
-    heroLogoUrl,
-    firstImage{
-      imageUrl,
-      alt
-    },
-    secondImage{
-      imageUrl,
-      alt
-    },
+    "heroLogoUrl": heroLogo.asset->url,
+    "firstImageUrl": firstImage.asset->url,
+    "secondImageUrl": secondImage.asset->url,
     problemCard{
       title,
       content
@@ -140,14 +134,8 @@ export async function getCiao(): Promise<Ciao | null> {
       title,
       content
     },
-    bottomFirstImage{
-      imageUrl,
-      alt
-    },
-    bottomSecondImage{
-      imageUrl,
-      alt
-    },
+    "bottomFirstImageUrl": bottomFirstImage.asset->url,
+    "bottomSecondImageUrl": bottomSecondImage.asset->url,
     extraContent
   }`);
   return result;
