@@ -5,6 +5,7 @@ import { gsap } from "gsap";
 import type { Ciao, Footer as FooterType } from "~/types/sanity";
 import NavBar from "~/components/NavBar";
 import Footer from "~/components/Footer";
+import PixelizeImage from "~/components/PixelizeImage";
 import { getCiao, getFooter } from "./api.sanity";
 import { PortableText } from '@portabletext/react';
 
@@ -152,7 +153,7 @@ export default function CiaoPage() {
       {/* Hero Section with CIAO Logo */}
       <section className="relative min-h-[400px] max-w-[100vw] flex items-start justify-center overflow-hidden">
         {ciaoData.heroLogoUrl ? (
-          <img 
+          <PixelizeImage 
             src={ciaoData.heroLogoUrl}
             alt="CIAO Logo"
             className="max-w-[100vw] object-contain"
@@ -169,7 +170,7 @@ export default function CiaoPage() {
         <div className="flex flex-col sm:flex-row gap-3 sm:gap-10 max-w-7xl mx-auto">
           {ciaoData.firstImageUrl && (
             <div className="relative">
-              <img 
+              <PixelizeImage 
                 src={ciaoData.firstImageUrl}
                 alt="First CIAO image"
                 className="w-full h-auto rounded-lg"
@@ -178,7 +179,7 @@ export default function CiaoPage() {
           )}
           {ciaoData.secondImageUrl && (
             <div className="relative">
-              <img 
+              <PixelizeImage 
                 src={ciaoData.secondImageUrl}
                 alt="Second CIAO image"
                 className="w-full h-auto rounded-lg"
@@ -264,7 +265,7 @@ export default function CiaoPage() {
         <div className="flex flex-col sm:flex-row gap-3 sm:gap-5 max-w-7xl mx-auto">
           {ciaoData.bottomSecondImageUrl && (
             <div className="relative md:order-2">
-              <img 
+              <PixelizeImage 
                 src={ciaoData.bottomSecondImageUrl}
                 alt="Bottom second CIAO image"
                 className="w-full h-auto rounded-lg"
@@ -273,7 +274,7 @@ export default function CiaoPage() {
           )}
           {ciaoData.bottomFirstImageUrl && (
             <div className="relative md:order-1">
-              <img 
+              <PixelizeImage 
                 src={ciaoData.bottomFirstImageUrl}
                 alt="Bottom first CIAO image"
                 className="w-full h-auto rounded-lg"
