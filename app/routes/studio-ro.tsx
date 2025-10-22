@@ -151,12 +151,12 @@ export default function StudioRoPage() {
       />
 
       {/* Hero Section with Studio RO Logo */}
-      <section className="relative min-h-[400px] max-w-[100vw] pb-3 sm:pb-10 flex items-start justify-center overflow-hidden">
+      <section className="sm:p-0 p-3 pt-20 relative min-h-[400px] max-w-[100vw] sm:pb-10 flex items-start justify-center overflow-hidden">
         {studioRoData.heroLogoUrl ? (
           <PixelizeImage 
             src={studioRoData.heroLogoUrl}
             alt="Studio RO Logo"
-            className="max-w-[100vw] object-contain"
+            className="max-w-[100vw] object-contain rounded-xl sm:rounded-bl-xl sm:rounded-br-xl sm:rounded-t-none"
           />
         ) : (
           <h1 className="text-8xl md:text-[12rem] font-editorial text-white font-light">
@@ -166,7 +166,7 @@ export default function StudioRoPage() {
       </section>
 
       {/* First Two Images Section */}
-      <section className="px-3 md:px-10">
+      <section className="px-3 md:px-10 pt-3 sm:pt-0">
         <div className="flex flex-col sm:flex-row gap-3 sm:gap-10 max-w-7xl mx-auto">
           {studioRoData.firstImageUrl && (
             <div className="relative">
@@ -194,9 +194,17 @@ export default function StudioRoPage() {
         <div className="flex flex-col md:flex-row gap-8 max-w-7xl mx-auto">
           {/* Problem Card - Sticky like About section profile picture */}
           <div ref={problemCardRef} className="md:sticky md:top-20 md:self-start md:w-1/2 bg-white/5 backdrop-blur-sm border border-white/20 rounded-xl p-8 w-full h-fit">
-            <h2 className="text-project-title-small md:text-project-title font-editorial font-light text-white mb-6">
-              {studioRoData.problemCard?.title || "Problem"}
-            </h2>
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-project-title-small md:text-project-title font-editorial font-light text-white">
+                {studioRoData.problemCard?.title || "Problem"}
+              </h2>
+              <button 
+                className="px-6 py-2 bg-white text-black rounded-btn-bdrd text-type-small"
+                onClick={() => window.location.href = '/contact'}
+              >
+                Work Together
+              </button>
+            </div>
             {studioRoData.problemCard?.content && (
               <div className="text-[20px] text-white/60 max-w-none">
                 <PortableText 
@@ -217,9 +225,17 @@ export default function StudioRoPage() {
 
           {/* Solution Card */}
           <div ref={solutionCardRef} className="flex-1 md:w-1/2 bg-white/5 backdrop-blur-sm border border-white/20 rounded-xl p-8 w-full">
-            <h2 className="text-project-title-small md:text-project-title font-editorial font-light text-white mb-6">
-              {studioRoData.solutionCard?.title || "Solution"}
-            </h2>
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-project-title-small md:text-project-title font-editorial font-light text-white">
+                {studioRoData.solutionCard?.title || "Solution"}
+              </h2>
+              <button 
+                className="px-6 py-2 bg-white text-black rounded-btn-bdrd text-type-small"
+                onClick={() => window.location.href = '/contact'}
+              >
+                Work Together
+              </button>
+            </div>
             {studioRoData.solutionCard?.content && (
               <div className="text-[20px] text-white/60 max-w-none">
                 <PortableText 
