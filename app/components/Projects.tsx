@@ -38,6 +38,13 @@ export default function Projects({ projects, error }: ProjectsProps) {
               tertiary: project.tertiaryImageUrl || "/images/ciao_mobile.png"
             };
           }
+          if (project.title === "Studio RO") {
+            return {
+              main: project.mainImageUrl || "/images/studio_ro_main.png",
+              secondary: project.secondaryImageUrl || "/images/studio_ro_secondary.png", 
+              tertiary: project.tertiaryImageUrl || "/images/studio_ro_mobile.png"
+            };
+          }
           return {
             main: project.mainImageUrl || "/images/placeholder.png",
             secondary: project.secondaryImageUrl,

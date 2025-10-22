@@ -96,3 +96,21 @@ export interface Ciao {
   bottomSecondImageUrl?: string;
   extraContent?: any[];
 }
+
+export interface StudioRoCard {
+  title: string;
+  content: any[];
+}
+
+export interface StudioRo {
+  _id: string;
+  title: string;
+  heroLogoUrl?: string;
+  firstImageUrl?: string;
+  secondImageUrl?: string;
+  problemCard?: StudioRoCard;
+  solutionCard?: StudioRoCard;
+  bottomFirstImageUrl?: string;
+  bottomSecondImageUrl?: string;
+  extraContent?: any[];
+}

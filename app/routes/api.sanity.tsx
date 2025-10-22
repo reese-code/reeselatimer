@@ -1,6 +1,6 @@
 import { json } from "@remix-run/node";
 import { createClient } from '@sanity/client';
-import type { About, Project, Service, Footer, Hero, AiArt, Ciao } from "~/types/sanity";
+import type { About, Project, Service, Footer, Hero, AiArt, Ciao, StudioRo } from "~/types/sanity";
 
 // Create a Sanity client with CDN enabled for development too
 // This helps with performance in local development
@@ -121,6 +121,28 @@ export async function getAiArt(): Promise<AiArt | null> {
 
 export async function getCiao(): Promise<Ciao | null> {
   const result = await sanityClient.fetch<Ciao | null>(`*[_type == "ciao"][0]{
+    _id,
+    title,
+    "heroLogoUrl": heroLogo.asset->url,
+    "firstImageUrl": firstImage.asset->url,
+    "secondImageUrl": secondImage.asset->url,
+    problemCard{
+      title,
+      content
+    },
+    solutionCard{
+      title,
+      content
+    },
+    "bottomFirstImageUrl": bottomFirstImage.asset->url,
+    "bottomSecondImageUrl": bottomSecondImage.asset->url,
+    extraContent
+  }`);
+  return result;
+}
+
+export async function getStudioRo(): Promise<StudioRo | null> {
+  const result = await sanityClient.fetch<StudioRo | null>(`*[_type == "studioRo"][0]{
     _id,
     title,
     "heroLogoUrl": heroLogo.asset->url,

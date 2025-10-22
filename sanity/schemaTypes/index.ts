@@ -5,5 +5,6 @@ import about from './about'
 import footer from './footer'
 import aiArt from './aiArt'
 import ciao from './ciao'
+import studioRo from './studioRo'
 
-export const schemaTypes = [project, hero, service, about, footer, aiArt, ciao]
+export const schemaTypes = [project, hero, service, about, footer, aiArt, ciao, studioRo]
