@@ -151,7 +151,7 @@ export default function StudioRoPage() {
       />
 
       {/* Hero Section with Studio RO Logo */}
-      <section className="relative min-h-[400px] max-w-[100vw] flex items-start justify-center overflow-hidden">
+      <section className="relative min-h-[400px] max-w-[100vw] pb-3 sm:pb-10 flex items-start justify-center overflow-hidden">
         {studioRoData.heroLogoUrl ? (
           <PixelizeImage 
             src={studioRoData.heroLogoUrl}
