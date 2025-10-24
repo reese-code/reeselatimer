@@ -1,12 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
 
-const PixelizeImage = ({ src, alt, className, disableEffect = false }) => {
+const PixelizeImage = ({ src, alt, className, disableEffect = false, lazy = false }) => {
   const [isLoaded, setIsLoaded] = useState(false);
+  const [shouldLoad, setShouldLoad] = useState(!lazy); // Only load immediately if not lazy
   const [error, setError] = useState(null);
   const imageRef = useRef(null);
   const canvasRef = useRef(null);
   const containerRef = useRef(null);
   const scrollTriggerRef = useRef(null);
+  const intersectionObserverRef = useRef(null);
 
   useEffect(() => {
     if (disableEffect) return () => {}; // Always return a cleanup function
@@ -146,7 +148,42 @@ const PixelizeImage = ({ src, alt, className, disableEffect = false }) => {
     };
   }, [isLoaded, src, disableEffect]);
 
+  // Intersection Observer for lazy loading
   useEffect(() => {
+    if (!lazy || shouldLoad) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const [entry] = entries;
+        if (entry.isIntersecting) {
+          setShouldLoad(true);
+          observer.disconnect();
+        }
+      },
+      {
+        root: null,
+        rootMargin: '200px', // Start loading 200px before the image comes into view
+        threshold: 0,
+      }
+    );
+
+    if (containerRef.current) {
+      observer.observe(containerRef.current);
+    }
+
+    intersectionObserverRef.current = observer;
+
+    return () => {
+      if (intersectionObserverRef.current) {
+        intersectionObserverRef.current.disconnect();
+      }
+    };
+  }, [lazy, shouldLoad]);
+
+  // Image loading effect - only runs when shouldLoad is true
+  useEffect(() => {
+    if (!shouldLoad) return;
+
     const img = new Image();
     img.src = src;
     img.onload = () => {
@@ -176,7 +213,7 @@ const PixelizeImage = ({ src, alt, className, disableEffect = false }) => {
     img.onerror = () => {
       setError('Failed to load image');
     };
-  }, [src, disableEffect]);
+  }, [src, disableEffect, shouldLoad]);
 
   if (disableEffect) {
     return (
@@ -190,11 +227,18 @@ const PixelizeImage = ({ src, alt, className, disableEffect = false }) => {
 
   return (
     <div ref={containerRef} className={`relative overflow-hidden ${className}`}>
-      {!isLoaded && !error && (
-        <div className="absolute inset-0 bg-gray-200 animate-pulse" />
+      {!shouldLoad && lazy && (
+        <div className="absolute inset-0 bg-gray-800 flex items-center justify-center">
+          <div className="w-8 h-8 border-2 border-gray-600 border-t-white rounded-full animate-spin"></div>
+        </div>
+      )}
+      {shouldLoad && !isLoaded && !error && (
+        <div className="absolute inset-0 bg-gray-700 animate-pulse flex items-center justify-center">
+          <div className="text-gray-400 text-sm">Loading...</div>
+        </div>
       )}
       {error && (
-        <div className="absolute inset-0 bg-red-200 flex items-center justify-center text-red-600">
+        <div className="absolute inset-0 bg-red-900 flex items-center justify-center text-red-400 text-sm">
           {error}
         </div>
       )}

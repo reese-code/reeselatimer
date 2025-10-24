@@ -511,6 +511,7 @@ export default function AiArt() {
                       src={image.imageUrl}
                       alt={image.title}
                       className="h-auto w-full object-cover transition-all duration-300 group-hover:opacity-90 rounded-lg"
+                      lazy={true}
                     />
                     {group && (
                       <div

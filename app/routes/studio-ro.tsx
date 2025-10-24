@@ -193,7 +193,7 @@ export default function StudioRoPage() {
       <section className="px-3 md:px-10 py-20">
         <div className="flex flex-col md:flex-row gap-8 max-w-7xl mx-auto">
           {/* Problem Card - Sticky like About section profile picture */}
-          <div ref={problemCardRef} className="md:sticky md:top-20 md:self-start md:w-1/2 bg-white/5 backdrop-blur-sm border border-white/20 rounded-xl p-8 w-full h-fit">
+          <div ref={problemCardRef} className="md:sticky md:top-20 md:self-start md:w-1/2 bg-white/5 backdrop-blur-sm border border-white/20 rounded-xl sm:p-8 p-3 w-full h-fit">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-project-title-small md:text-project-title font-editorial font-light text-white">
                 {studioRoData.problemCard?.title || "Problem"}
@@ -224,7 +224,7 @@ export default function StudioRoPage() {
           </div>
 
           {/* Solution Card */}
-          <div ref={solutionCardRef} className="flex-1 md:w-1/2 bg-white/5 backdrop-blur-sm border border-white/20 rounded-xl p-8 w-full">
+          <div ref={solutionCardRef} className="flex-1 md:w-1/2 bg-white/5 backdrop-blur-sm border border-white/20 rounded-xl sm:p-8 p-3 w-full">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-project-title-small md:text-project-title font-editorial font-light text-white">
                 {studioRoData.solutionCard?.title || "Solution"}

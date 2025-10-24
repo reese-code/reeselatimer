@@ -15,22 +15,27 @@ if (!sanityClient.config().projectId) {
   throw new Error('Sanity Project ID is required');
 }
 
-// Export individual query functions with memoization for direct use in components
-let cachedAbout: About | null = null;
-let cachedProjects: Project[] | null = null;
-let cachedServices: Service[] | null = null;
-let cachedFooter: Footer | null = null;
-let cachedHero: Hero | null = null;
-let cacheTimestamp = 0;
-const CACHE_TTL = 60000; // 1 minute cache TTL
+// Enhanced caching system with individual timestamps and longer TTL
+const cache = {
+  about: { data: null as About | null, timestamp: 0 },
+  projects: { data: null as Project[] | null, timestamp: 0 },
+  services: { data: null as Service[] | null, timestamp: 0 },
+  footer: { data: null as Footer | null, timestamp: 0 },
+  hero: { data: null as Hero | null, timestamp: 0 },
+  aiArt: { data: null as AiArt | null, timestamp: 0 },
+  ciao: { data: null as Ciao | null, timestamp: 0 },
+  studioRo: { data: null as StudioRo | null, timestamp: 0 },
+};
 
-// Helper to check if cache is valid
-const isCacheValid = () => {
-  return Date.now() - cacheTimestamp < CACHE_TTL;
+const CACHE_TTL = 300000; // 5 minutes cache TTL for better performance
+
+// Helper to check if specific cache entry is valid
+const isCacheValid = (cacheEntry: { timestamp: number }) => {
+  return Date.now() - cacheEntry.timestamp < CACHE_TTL;
 };
 
 export async function getHero(): Promise<Hero | null> {
-  if (cachedHero && isCacheValid()) return cachedHero;
+  if (cache.hero.data && isCacheValid(cache.hero)) return cache.hero.data;
   const result = await sanityClient.fetch<Hero | null>(`*[_type == "hero"][0]{
     title,
     contactText,
@@ -39,21 +44,21 @@ export async function getHero(): Promise<Hero | null> {
     subTagline,
     projectsLinkText
   }`);
-  cachedHero = result;
-  cacheTimestamp = Date.now();
+  cache.hero.data = result;
+  cache.hero.timestamp = Date.now();
   return result;
 }
 
 export async function getAbout(): Promise<About | null> {
-  if (cachedAbout && isCacheValid()) return cachedAbout;
+  if (cache.about.data && isCacheValid(cache.about)) return cache.about.data;
   const result = await sanityClient.fetch<About | null>(`*[_type == "about"][0]`);
-  cachedAbout = result;
-  cacheTimestamp = Date.now();
+  cache.about.data = result;
+  cache.about.timestamp = Date.now();
   return result;
 }
 
 export async function getProjects(): Promise<Project[]> {
-  if (cachedProjects && isCacheValid()) return cachedProjects;
+  if (cache.projects.data && isCacheValid(cache.projects)) return cache.projects.data;
   const result = await sanityClient.fetch<Project[]>(`*[_type == "project"]{
     _id,
     title,
@@ -71,33 +76,34 @@ export async function getProjects(): Promise<Project[]> {
     tags,
     buttons
   } | order(_createdAt desc)`);
-  cachedProjects = result;
-  cacheTimestamp = Date.now();
+  cache.projects.data = result;
+  cache.projects.timestamp = Date.now();
   return result;
 }
 
 export async function getServices(): Promise<Service[]> {
-  if (cachedServices && isCacheValid()) return cachedServices;
+  if (cache.services.data && isCacheValid(cache.services)) return cache.services.data;
   const result = await sanityClient.fetch<Service[]>(`*[_type == "service"] | order(order asc)`);
-  cachedServices = result;
-  cacheTimestamp = Date.now();
+  cache.services.data = result;
+  cache.services.timestamp = Date.now();
   return result;
 }
 
 export async function getFooter(): Promise<Footer | null> {
-  if (cachedFooter && isCacheValid()) return cachedFooter;
+  if (cache.footer.data && isCacheValid(cache.footer)) return cache.footer.data;
   const result = await sanityClient.fetch<Footer | null>(`*[_type == "footer"][0] {
     socialLinks[] {
       platform,
       url
     }
   }`);
-  cachedFooter = result;
-  cacheTimestamp = Date.now();
+  cache.footer.data = result;
+  cache.footer.timestamp = Date.now();
   return result;
 }
 
 export async function getAiArt(): Promise<AiArt | null> {
+  if (cache.aiArt.data && isCacheValid(cache.aiArt)) return cache.aiArt.data;
   const result = await sanityClient.fetch<AiArt | null>(`*[_type == "aiArt"][0]{
     _id,
     title,
@@ -116,10 +122,13 @@ export async function getAiArt(): Promise<AiArt | null> {
       createdAt
     }
   }`);
+  cache.aiArt.data = result;
+  cache.aiArt.timestamp = Date.now();
   return result;
 }
 
 export async function getCiao(): Promise<Ciao | null> {
+  if (cache.ciao.data && isCacheValid(cache.ciao)) return cache.ciao.data;
   const result = await sanityClient.fetch<Ciao | null>(`*[_type == "ciao"][0]{
     _id,
     title,
@@ -138,10 +147,13 @@ export async function getCiao(): Promise<Ciao | null> {
     "bottomSecondImageUrl": bottomSecondImage.asset->url,
     extraContent
   }`);
+  cache.ciao.data = result;
+  cache.ciao.timestamp = Date.now();
   return result;
 }
 
 export async function getStudioRo(): Promise<StudioRo | null> {
+  if (cache.studioRo.data && isCacheValid(cache.studioRo)) return cache.studioRo.data;
   const result = await sanityClient.fetch<StudioRo | null>(`*[_type == "studioRo"][0]{
     _id,
     title,
@@ -160,6 +172,8 @@ export async function getStudioRo(): Promise<StudioRo | null> {
     "bottomSecondImageUrl": bottomSecondImage.asset->url,
     extraContent
   }`);
+  cache.studioRo.data = result;
+  cache.studioRo.timestamp = Date.now();
   return result;
 }
 
@@ -222,11 +236,15 @@ export async function loader() {
     ]);
 
     // Update cache
-    cachedProjects = projects;
-    cachedServices = services;
-    cachedAbout = about;
-    cachedFooter = footer;
-    cacheTimestamp = Date.now();
+    cache.projects.data = projects;
+    cache.services.data = services;
+    cache.about.data = about;
+    cache.footer.data = footer;
+    const now = Date.now();
+    cache.projects.timestamp = now;
+    cache.services.timestamp = now;
+    cache.about.timestamp = now;
+    cache.footer.timestamp = now;
 
     return json({
       projects: projects || [],

@@ -14,9 +14,31 @@ import About from "~/components/About";
 import Footer from "~/components/Footer";
 
 export const meta: MetaFunction = () => {
+  const canonicalUrl = "https://reeselatimer.com";
+  
   return [
     { title: "Reese Latimer | Web Design, Development & Branding" },
-    { name: "description", content: "Reese Latimer is a web designer and developer crafting bold, high-performing websites with refined branding, modern design systems, and smooth user experiences. From custom code to creative strategy, I build with precision and purpose." },
+    { name: "description", content: "Web designer & developer crafting bold, high-performing websites with refined branding and smooth user experiences." },
+    
+    // Canonical tag
+    { tagName: "link", rel: "canonical", href: canonicalUrl },
+    
+    // OpenGraph meta tags
+    { property: "og:title", content: "Reese Latimer | Web Design, Development & Branding" },
+    { property: "og:description", content: "Web designer & developer crafting bold, high-performing websites with refined branding and smooth user experiences." },
+    { property: "og:type", content: "website" },
+    { property: "og:url", content: canonicalUrl },
+    { property: "og:site_name", content: "Reese Latimer" },
+    { property: "og:locale", content: "en_US" },
+    
+    // Twitter Card meta tags
+    { name: "twitter:card", content: "summary_large_image" },
+    { name: "twitter:title", content: "Reese Latimer | Web Design, Development & Branding" },
+    { name: "twitter:description", content: "Web designer & developer crafting bold, high-performing websites with refined branding and smooth user experiences." },
+    
+    // Additional SEO meta tags
+    { name: "author", content: "Reese Latimer" },
+    { name: "robots", content: "index, follow" },
   ];
 };
 
@@ -135,8 +157,40 @@ export default function Index() {
     };
   }, []);
 
+  const schemaData = {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Reese Latimer",
+    "jobTitle": "Web Designer & Developer",
+    "description": "Web designer & developer crafting bold, high-performing websites with refined branding and smooth user experiences.",
+    "url": "https://reeselatimer.com",
+    "sameAs": [
+      "https://github.com/reese-code"
+    ],
+    "knowsAbout": [
+      "Web Design",
+      "Web Development", 
+      "Branding",
+      "User Experience Design",
+      "Frontend Development"
+    ],
+    "offers": {
+      "@type": "Service",
+      "name": "Web Design & Development Services",
+      "description": "Custom web design and development services including branding, user experience design, and high-performance website creation."
+    }
+  };
+
   return (
     <div id="top" className="min-h-screen">
+      {/* Schema.org JSON-LD structured data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(schemaData),
+        }}
+      />
+      
       {/* NavBar Component */}
       <NavBar 
         title={heroContent.title}
@@ -172,9 +226,9 @@ export default function Index() {
                  Crafting digital experiences
               </h1>
             </div>
-            <h1 className="md:text-nav-big text-[30px]  font-editorial editorial text-hero-white font-light leading-none">
+            <div className="md:text-nav-big text-[30px]  font-editorial editorial text-hero-white font-light leading-none">
               that engage, delight, and reflect your brand.
-            </h1>
+            </div>
           </div>
 
           <TransitionLink to="#work" className="text-nav text-hero-white border-b border-hero-white">
