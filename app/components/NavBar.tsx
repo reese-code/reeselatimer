@@ -14,7 +14,7 @@ type NavBarProps = {
 
 export default function NavBar({ 
   title = "Reese Latimer •", 
-  contactText = "Let's get in touch",
+  contactText = "Work together",
   isHomePage = false,
   textColor = "text-hero-white",
   forceTransparent = false,
@@ -40,120 +40,28 @@ export default function NavBar({
   useEffect(() => {
     if (!scrollReady || !navRef.current || !gradientRef.current) return;
 
-    // Only set up scroll animations on home page using vanilla JS instead of GSAP for positioning
-    if (isHomePage) {
-      const handleScroll = () => {
-        const heroSection = document.querySelector('section#hero');
-        if (!heroSection || !gradientRef.current) return;
-
-        const heroRect = heroSection.getBoundingClientRect();
-        const heroBottom = heroRect.bottom;
-        
-        // Show background when hero section is scrolled past
-        if (heroBottom <= 80) {
-          // Show white background
-          gradientRef.current.style.opacity = '1';
-          gradientRef.current.style.height = '80px';
-          
-          // Change text colors to black
-          const navTexts = document.querySelectorAll('.nav-text');
-          const navDividers = document.querySelectorAll('.nav-divider');
-          const squareDesigns = document.querySelectorAll('.square-design');
-          const hamburgerBars = document.querySelectorAll('.hamburger-bar');
-          
-          navTexts.forEach(el => (el as HTMLElement).style.color = '#000');
-          navDividers.forEach(el => (el as HTMLElement).style.backgroundColor = '#000');
-          squareDesigns.forEach(el => (el as HTMLElement).style.backgroundColor = '#000');
-          hamburgerBars.forEach(el => {
-            if (!isMobileMenuOpen) {
-              (el as HTMLElement).style.backgroundColor = '#000';
-            }
-          });
-        } else {
-          // Hide white background
-          gradientRef.current.style.opacity = '0';
-          gradientRef.current.style.height = '0';
-          
-          // Change text colors to white
-          const navTexts = document.querySelectorAll('.nav-text');
-          const navDividers = document.querySelectorAll('.nav-divider');
-          const squareDesigns = document.querySelectorAll('.square-design');
-          const hamburgerBars = document.querySelectorAll('.hamburger-bar');
-          
-          navTexts.forEach(el => (el as HTMLElement).style.color = '#fff');
-          navDividers.forEach(el => (el as HTMLElement).style.backgroundColor = '#fff');
-          squareDesigns.forEach(el => (el as HTMLElement).style.backgroundColor = '#fff');
-          hamburgerBars.forEach(el => {
-            if (!isMobileMenuOpen) {
-              (el as HTMLElement).style.backgroundColor = '#fff';
-            }
-          });
-        }
-      };
-
-      // Add scroll listener
-      window.addEventListener('scroll', handleScroll);
-      
-      return () => {
-        window.removeEventListener('scroll', handleScroll);
-      };
-    }
-
     // For non-home pages, show the white background and set colors based on textColor
     if (!isHomePage && !forceTransparent) {
       if (gradientRef.current) {
         gradientRef.current.style.opacity = '1';
         gradientRef.current.style.height = '80px';
       }
-      
-      // Set initial colors based on textColor
-      const navTexts = document.querySelectorAll('.nav-text');
-      const navDividers = document.querySelectorAll('.nav-divider');
-      const squareDesigns = document.querySelectorAll('.square-design');
-      
-      if (textColor === "text-black") {
-        navTexts.forEach(el => (el as HTMLElement).style.color = '#000');
-        navDividers.forEach(el => (el as HTMLElement).style.backgroundColor = '#000');
-        squareDesigns.forEach(el => (el as HTMLElement).style.backgroundColor = '#000');
-      } else if (textColor === "text-hero-white") {
-        navTexts.forEach(el => (el as HTMLElement).style.color = '#fff');
-        navDividers.forEach(el => (el as HTMLElement).style.backgroundColor = '#fff');
-        squareDesigns.forEach(el => (el as HTMLElement).style.backgroundColor = '#fff');
-      }
     }
 
-    // For forceTransparent pages, keep background transparent and set white text
+    // For forceTransparent pages, keep background transparent
     if (forceTransparent && !useGradient) {
       if (gradientRef.current) {
         gradientRef.current.style.opacity = '0';
         gradientRef.current.style.height = '0';
       }
-      
-      // Set colors to white
-      const navTexts = document.querySelectorAll('.nav-text');
-      const navDividers = document.querySelectorAll('.nav-divider');
-      const squareDesigns = document.querySelectorAll('.square-design');
-      
-      navTexts.forEach(el => (el as HTMLElement).style.color = '#fff');
-      navDividers.forEach(el => (el as HTMLElement).style.backgroundColor = '#fff');
-      squareDesigns.forEach(el => (el as HTMLElement).style.backgroundColor = '#fff');
     }
 
-    // For gradient pages, show the gradient background and set white text
+    // For gradient pages, show the gradient background
     if (useGradient) {
       if (gradientRef.current) {
         gradientRef.current.style.opacity = '1';
         gradientRef.current.style.height = '120px'; // Taller for gradient effect
       }
-      
-      // Set colors to white for gradient
-      const navTexts = document.querySelectorAll('.nav-text');
-      const navDividers = document.querySelectorAll('.nav-divider');
-      const squareDesigns = document.querySelectorAll('.square-design');
-      
-      navTexts.forEach(el => (el as HTMLElement).style.color = '#fff');
-      navDividers.forEach(el => (el as HTMLElement).style.backgroundColor = '#fff');
-      squareDesigns.forEach(el => (el as HTMLElement).style.backgroundColor = '#fff');
     }
     
   }, [scrollReady, isHomePage, textColor]);
@@ -366,7 +274,7 @@ export default function NavBar({
           </nav>
 
           {/* Social Links */}
-          <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2">
+          <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 bg-black-400/50">
             <div className="flex justify-center gap-6 text-sm text-white">
               {socialLinks.map((link, index) => (
                 <a 
@@ -385,7 +293,7 @@ export default function NavBar({
       </div>
 
       {/* Sticky Navbar */}
-      <div ref={navRef} className="sticky top-0 left-0 w-full z-[1001]">
+      <div ref={navRef} className="sticky top-3 sm:top-5 left-0 w-full z-[1001] bg-gray-500/50 mx-3 sm:mx-10  sm:w-[calc(100%-80px)] w-[calc(100%-23.9px)] backdrop-blur h-fit pb-4 rounded-full px-2">
         {/* Background that changes when mobile menu is open */}
         <div 
           className={`absolute top-0 left-0 w-full z-0 transition-all duration-300 ease ${
@@ -400,22 +308,82 @@ export default function NavBar({
         
         <div className="px-3 md:px-10">
           <div className="flex justify-between items-center pt-4 relative z-[10002]">
+            {/* Mobile Title - Only visible on mobile */}
             <TransitionLink 
               to={isHomePage ? "#top" : "/"} 
-              className={`text-nav nav-text ${isMobileMenuOpen ? 'text-white' : textColor} relative z-[10003]`} 
+              className={`md:hidden text-nav nav-text ${isMobileMenuOpen ? 'text-white' : textColor} relative z-[10003]`} 
               style={{ transition: 'color 0.3s ease' }}
             >
               {title}
             </TransitionLink>
             
             {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center gap-6">
-              <TransitionLink to="/ai-art" className={`text-nav nav-text ${textColor} flex items-center gap-2`} style={{ transition: 'color 0.3s ease' }}>
-                AI Art
-              </TransitionLink>
-              <TransitionLink to="/contact" className={`text-nav nav-text ${textColor}`} style={{ transition: 'color 0.3s ease' }}>
-                {contactText}
-              </TransitionLink>
+            <div className="hidden md:flex w-full items-center relative">
+              {/* Left Side Links */}
+              <div className="flex items-center gap-6">
+                <TransitionLink 
+                  to="/ai-art" 
+                  className={`text-nav nav-text ${textColor}`} 
+                  style={{ transition: 'color 0.3s ease' }}
+                >
+                  AI Art
+                </TransitionLink>
+                {isHomePage ? (
+                  <button 
+                    onClick={() => scrollToSection('work')}
+                    className={`text-nav nav-text ${textColor}`}
+                    style={{ transition: 'color 0.3s ease' }}
+                  >
+                    Work
+                  </button>
+                ) : (
+                  <TransitionLink 
+                    to="/#work" 
+                    className={`text-nav nav-text ${textColor}`}
+                    style={{ transition: 'color 0.3s ease' }}
+                  >
+                    Work
+                  </TransitionLink>
+                )}
+                {isHomePage ? (
+                  <button 
+                    onClick={() => scrollToSection('about')}
+                    className={`text-nav nav-text ${textColor}`}
+                    style={{ transition: 'color 0.3s ease' }}
+                  >
+                    About
+                  </button>
+                ) : (
+                  <TransitionLink 
+                    to="/#about" 
+                    className={`text-nav nav-text ${textColor}`}
+                    style={{ transition: 'color 0.3s ease' }}
+                  >
+                    About
+                  </TransitionLink>
+                )}
+              </div>
+
+              {/* Centered Logo */}
+              <div className="absolute left-1/2 transform -translate-x-1/2">
+                <TransitionLink 
+                  to={isHomePage ? "#top" : "/"} 
+                  className={`text-[40px] font-normal nav-text ${textColor}`}
+                  style={{ transition: 'color 0.3s ease' }}
+                >
+                  LATIMER
+                </TransitionLink>
+              </div>
+
+              {/* Right Side Button */}
+              <div className="ml-auto">
+                <TransitionLink 
+                  to="/contact" 
+                  className={`bg-gray-500/70 text-white px-6 py-2 rounded-full text-nav font-medium hover:bg-gray-500 transition-colors`}
+                >
+                  {contactText}
+                </TransitionLink>
+              </div>
             </div>
 
             {/* Mobile Hamburger Menu */}
@@ -439,22 +407,6 @@ export default function NavBar({
             </button>
           </div>
 
-          <div 
-            className={`w-full h-px mt-4 relative z-[10002] nav-divider transition-colors duration-300 ${
-              isMobileMenuOpen ? 'bg-white' : (textColor === "text-hero-white" ? "bg-hero-white" : "bg-black")
-            }`}
-          >
-            <div 
-              className={`square-design absolute left-0 z-10 nav-detail transition-colors duration-300 ${
-                isMobileMenuOpen ? 'bg-white' : (textColor === "text-hero-white" ? "bg-white" : "bg-black")
-              }`}
-            ></div>
-            <div 
-              className={`square-design absolute right-0 z-10 nav-detail transition-colors duration-300 ${
-                isMobileMenuOpen ? 'bg-white' : (textColor === "text-hero-white" ? "bg-white" : "bg-black")
-              }`}
-            ></div>
-          </div>
         </div>
       </div>
     </>
