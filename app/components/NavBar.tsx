@@ -21,7 +21,6 @@ export default function NavBar({
   useGradient = false
 }: NavBarProps) {
   const navRef = useRef<HTMLDivElement>(null);
-  const gradientRef = useRef<HTMLDivElement>(null);
   const [scrollReady, setScrollReady] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
@@ -38,33 +37,47 @@ export default function NavBar({
   }, []);
 
   useEffect(() => {
-    if (!scrollReady || !navRef.current || !gradientRef.current) return;
+    if (!scrollReady || !navRef.current) return;
 
-    // For non-home pages, show the white background and set colors based on textColor
-    if (!isHomePage && !forceTransparent) {
-      if (gradientRef.current) {
-        gradientRef.current.style.opacity = '1';
-        gradientRef.current.style.height = '80px';
-      }
-    }
+    // Only set up scroll animations on home page
+    if (isHomePage) {
+      const handleScroll = () => {
+        const heroSection = document.querySelector('section#hero');
+        if (!heroSection || !navRef.current) return;
 
-    // For forceTransparent pages, keep background transparent
-    if (forceTransparent && !useGradient) {
-      if (gradientRef.current) {
-        gradientRef.current.style.opacity = '0';
-        gradientRef.current.style.height = '0';
-      }
-    }
+        const heroRect = heroSection.getBoundingClientRect();
+        const heroBottom = heroRect.bottom;
+        
+        // Hide navbar background when in hero section, show when scrolled past
+        if (heroBottom <= 80) {
+          // Show navbar background when scrolled past hero
+          navRef.current.style.backgroundColor = 'rgba(107, 114, 128, 0.5)';
+          navRef.current.style.backdropFilter = 'blur(12px)';
+        } else {
+          // Hide navbar background when in hero section
+          navRef.current.style.backgroundColor = 'transparent';
+          navRef.current.style.backdropFilter = 'none';
+        }
+      };
 
-    // For gradient pages, show the gradient background
-    if (useGradient) {
-      if (gradientRef.current) {
-        gradientRef.current.style.opacity = '1';
-        gradientRef.current.style.height = '120px'; // Taller for gradient effect
+      // Add scroll listener
+      window.addEventListener('scroll', handleScroll);
+      
+      return () => {
+        window.removeEventListener('scroll', handleScroll);
+      };
+    } else {
+      // For non-home pages, always show the background
+      if (navRef.current && !forceTransparent) {
+        navRef.current.style.backgroundColor = 'rgba(107, 114, 128, 0.5)';
+        navRef.current.style.backdropFilter = 'blur(12px)';
+      } else if (navRef.current && forceTransparent) {
+        navRef.current.style.backgroundColor = 'transparent';
+        navRef.current.style.backdropFilter = 'none';
       }
     }
     
-  }, [scrollReady, isHomePage, textColor]);
+  }, [scrollReady, isHomePage, textColor, forceTransparent]);
 
   // Mobile menu functions
   const toggleMobileMenu = () => {
@@ -74,97 +87,14 @@ export default function NavBar({
     // Prevent/allow scrolling when menu is open/closed
     if (newMenuState) {
       document.body.style.overflow = 'hidden';
-      // Hide navbar background and force elements to white when menu opens
-      if (gradientRef.current) {
-        gradientRef.current.style.opacity = '0';
-        gradientRef.current.style.height = '0';
-      }
-      const navTexts = document.querySelectorAll('.nav-text');
-      const navDividers = document.querySelectorAll('.nav-divider');
-      const squareDesigns = document.querySelectorAll('.square-design');
-      const hamburgerBars = document.querySelectorAll('.hamburger-bar');
-      
-      navTexts.forEach(el => (el as HTMLElement).style.color = '#fff');
-      navDividers.forEach(el => (el as HTMLElement).style.backgroundColor = '#fff');
-      squareDesigns.forEach(el => (el as HTMLElement).style.backgroundColor = '#fff');
-      hamburgerBars.forEach(el => (el as HTMLElement).style.backgroundColor = '#fff');
     } else {
       document.body.style.overflow = 'unset';
-      // Restore original colors and background when menu closes
-      restoreNavbarColors();
     }
   };
 
   const closeMobileMenu = () => {
     setIsMobileMenuOpen(false);
     document.body.style.overflow = 'unset';
-    // Restore original colors and background when menu closes
-    restoreNavbarColors();
-  };
-
-  // Function to restore navbar colors based on current state
-  const restoreNavbarColors = () => {
-    if (isHomePage) {
-      // Check hero section position to determine colors
-      const heroSection = document.querySelector('section#hero');
-      if (heroSection && gradientRef.current) {
-        const heroRect = heroSection.getBoundingClientRect();
-        const heroBottom = heroRect.bottom;
-        
-        const navTexts = document.querySelectorAll('.nav-text');
-        const navDividers = document.querySelectorAll('.nav-divider');
-        const squareDesigns = document.querySelectorAll('.square-design');
-        const hamburgerBars = document.querySelectorAll('.hamburger-bar');
-        
-        if (heroBottom <= 80) {
-          // Show white background and black colors for scrolled state
-          gradientRef.current.style.opacity = '1';
-          gradientRef.current.style.height = '80px';
-          navTexts.forEach(el => (el as HTMLElement).style.color = '#000');
-          navDividers.forEach(el => (el as HTMLElement).style.backgroundColor = '#000');
-          squareDesigns.forEach(el => (el as HTMLElement).style.backgroundColor = '#000');
-          hamburgerBars.forEach(el => (el as HTMLElement).style.backgroundColor = '#000');
-        } else {
-          // Hide background and white colors for hero state
-          gradientRef.current.style.opacity = '0';
-          gradientRef.current.style.height = '0';
-          navTexts.forEach(el => (el as HTMLElement).style.color = '#fff');
-          navDividers.forEach(el => (el as HTMLElement).style.backgroundColor = '#fff');
-          squareDesigns.forEach(el => (el as HTMLElement).style.backgroundColor = '#fff');
-          hamburgerBars.forEach(el => (el as HTMLElement).style.backgroundColor = '#fff');
-        }
-      }
-    } else {
-      // For non-home pages, restore based on textColor prop
-      const navTexts = document.querySelectorAll('.nav-text');
-      const navDividers = document.querySelectorAll('.nav-divider');
-      const squareDesigns = document.querySelectorAll('.square-design');
-      const hamburgerBars = document.querySelectorAll('.hamburger-bar');
-      
-      if (textColor === "text-black" && gradientRef.current) {
-        gradientRef.current.style.opacity = '1';
-        gradientRef.current.style.height = '80px';
-        navTexts.forEach(el => (el as HTMLElement).style.color = '#000');
-        navDividers.forEach(el => (el as HTMLElement).style.backgroundColor = '#000');
-        squareDesigns.forEach(el => (el as HTMLElement).style.backgroundColor = '#000');
-        hamburgerBars.forEach(el => (el as HTMLElement).style.backgroundColor = '#000');
-      } else if (gradientRef.current) {
-        if (forceTransparent && !useGradient) {
-          gradientRef.current.style.opacity = '0';
-          gradientRef.current.style.height = '0';
-        } else if (useGradient) {
-          gradientRef.current.style.opacity = '1';
-          gradientRef.current.style.height = '120px';
-        } else {
-          gradientRef.current.style.opacity = '1';
-          gradientRef.current.style.height = '80px';
-        }
-        navTexts.forEach(el => (el as HTMLElement).style.color = '#fff');
-        navDividers.forEach(el => (el as HTMLElement).style.backgroundColor = '#fff');
-        squareDesigns.forEach(el => (el as HTMLElement).style.backgroundColor = '#fff');
-        hamburgerBars.forEach(el => (el as HTMLElement).style.backgroundColor = '#fff');
-      }
-    }
   };
 
   const scrollToSection = (id: string) => {
@@ -293,17 +223,12 @@ export default function NavBar({
       </div>
 
       {/* Sticky Navbar */}
-      <div ref={navRef} className="sticky top-3 sm:top-5 left-0 w-full z-[1001] bg-gray-500/50 mx-3 sm:mx-10  sm:w-[calc(100%-80px)] w-[calc(100%-23.9px)] backdrop-blur h-fit pb-4 rounded-full px-2">
+      <div ref={navRef} className={`sticky top-3 sm:top-5 left-0 w-full z-[1001] ${isHomePage ? 'bg-transparent' : 'bg-gray-500/50'} mx-3 sm:mx-10  sm:w-[calc(100%-80px)] w-[calc(100%-23.9px)] backdrop-blur h-fit pb-4 rounded-full px-2 transition-all duration-300 ease-in-out`}>
         {/* Background that changes when mobile menu is open */}
         <div 
           className={`absolute top-0 left-0 w-full z-0 transition-all duration-300 ease ${
             isMobileMenuOpen ? 'bg-black opacity-100 h-20' : 'opacity-0'
           }`}
-        ></div>
-        <div 
-          ref={gradientRef} 
-          className={`absolute top-0 left-0 w-full opacity-0 z-0 ${useGradient ? 'bg-gradient-to-b from-black to-transparent' : 'bg-white'}`}
-          style={{ transition: 'opacity 0.3s ease, height 0.3s ease' }}
         ></div>
         
         <div className="px-3 md:px-10">
@@ -381,7 +306,7 @@ export default function NavBar({
                   to="/contact" 
                   className={`bg-gray-500/70 text-white px-6 py-2 rounded-full text-nav font-medium hover:bg-gray-500 transition-colors`}
                 >
-                  {contactText}
+                  Work Together
                 </TransitionLink>
               </div>
             </div>

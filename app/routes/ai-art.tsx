@@ -297,8 +297,6 @@ export default function AiArt() {
         contactText="Let's get in touch"
         isHomePage={false}
         textColor="text-hero-white"
-        forceTransparent={true}
-        useGradient={true}
       />
 
       {/* Modal directly under NavBar, desktop centers like before; mobile fills viewport */}
