@@ -23,6 +23,7 @@ export default function NavBar({
   const navRef = useRef<HTMLDivElement>(null);
   const [scrollReady, setScrollReady] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isScrolledPastHero, setIsScrolledPastHero] = useState(false);
   const location = useLocation();
 
   useEffect(() => {
@@ -48,8 +49,12 @@ export default function NavBar({
         const heroRect = heroSection.getBoundingClientRect();
         const heroBottom = heroRect.bottom;
         
+        // Update scroll state for navbar positioning
+        const scrolledPastHero = heroBottom <= 80;
+        setIsScrolledPastHero(scrolledPastHero);
+        
         // Hide navbar background when in hero section, show when scrolled past
-        if (heroBottom <= 80) {
+        if (scrolledPastHero) {
           // Show navbar background when scrolled past hero
           navRef.current.style.backgroundColor = 'rgba(107, 114, 128, 0.5)';
           navRef.current.style.backdropFilter = 'blur(12px)';
@@ -223,7 +228,14 @@ export default function NavBar({
       </div>
 
       {/* Sticky Navbar */}
-      <div ref={navRef} className={`sticky top-3 sm:top-5 left-0 w-full z-[1001] ${isHomePage ? 'bg-transparent' : 'bg-gray-500/50'} mx-3 sm:mx-10  sm:w-[calc(100%-80px)] w-[calc(100%-23.9px)] backdrop-blur h-fit pb-4 rounded-full px-2 transition-all duration-300 ease-in-out`}>
+      <div ref={navRef} className={`sticky top-3 sm:top-5 left-0 w-full z-[1001] ${isHomePage ? 'bg-transparent' : 'bg-gray-500/50'} ${
+        // Dynamic positioning based on scroll state for home page on desktop
+        isHomePage 
+          ? isScrolledPastHero 
+            ? 'mx-3 sm:mx-10 sm:w-[calc(100%-80px)] w-[calc(100%-23.9px)]' // Contracted state (current position)
+            : 'mx-3 sm:mx-0 sm:w-full w-[calc(100%-23.9px)]' // Expanded state (40px more outward)
+          : 'mx-3 sm:mx-10 sm:w-[calc(100%-80px)] w-[calc(100%-23.9px)]' // Non-home page default
+      } backdrop-blur h-fit pb-4 rounded-full px-2 transition-all duration-500 ease-in-out`}>
         {/* Background that changes when mobile menu is open */}
         <div 
           className={`absolute top-0 left-0 w-full z-0 transition-all duration-300 ease ${
