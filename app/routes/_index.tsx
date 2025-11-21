@@ -3,7 +3,13 @@ import { useLoaderData } from "@remix-run/react";
 import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { TransitionLink } from "~/components/PageTransition";
-import type { Project, Hero, Service, About as AboutType, Footer as FooterType } from "~/types/sanity";
+import type {
+  Project,
+  Hero,
+  Service,
+  About as AboutType,
+  Footer as FooterType,
+} from "~/types/sanity";
 import UnicornStudioEmbed from "~/components/UnicornStudioEmbed.jsx";
 import TargetIcon from "~/components/TargetIcon.jsx";
 import PixelizeImage from "~/components/PixelizeImage.jsx";
@@ -19,24 +25,16 @@ export const meta: MetaFunction = () => {
   return [
     { title: "Reese Latimer | Web Design, Development & Branding" },
     { name: "description", content: "Web designer & developer crafting bold, high-performing websites with refined branding and smooth user experiences." },
-    
-    // Canonical tag
     { tagName: "link", rel: "canonical", href: canonicalUrl },
-    
-    // OpenGraph meta tags
     { property: "og:title", content: "Reese Latimer | Web Design, Development & Branding" },
     { property: "og:description", content: "Web designer & developer crafting bold, high-performing websites with refined branding and smooth user experiences." },
     { property: "og:type", content: "website" },
     { property: "og:url", content: canonicalUrl },
     { property: "og:site_name", content: "Reese Latimer" },
     { property: "og:locale", content: "en_US" },
-    
-    // Twitter Card meta tags
     { name: "twitter:card", content: "summary_large_image" },
     { name: "twitter:title", content: "Reese Latimer | Web Design, Development & Branding" },
     { name: "twitter:description", content: "Web designer & developer crafting bold, high-performing websites with refined branding and smooth user experiences." },
-    
-    // Additional SEO meta tags
     { name: "author", content: "Reese Latimer" },
     { name: "robots", content: "index, follow" },
   ];
@@ -46,13 +44,12 @@ import { getProjects, getServices, getAbout, getFooter, getHero } from "./api.sa
 
 export const loader: LoaderFunction = async () => {
   try {
-    // Use the cached data fetching functions for all data
     const [projects, hero, services, about, footer] = await Promise.all([
       getProjects(),
       getHero(),
       getServices(),
       getAbout(),
-      getFooter()
+      getFooter(),
     ]);
     
     return { 
@@ -61,17 +58,17 @@ export const loader: LoaderFunction = async () => {
       services: services || [],
       about: about || null,
       footer: footer || { socialLinks: [] },
-      error: null 
+      error: null,
     };
   } catch (error: unknown) {
-    console.error('Error fetching data:', error);
+    console.error("Error fetching data:", error);
     return { 
       projects: [], 
       hero: null,
       services: [],
       about: null,
       footer: { socialLinks: [] },
-      error: (error as Error).message || 'Failed to fetch data' 
+      error: (error as Error).message || "Failed to fetch data",
     };
   }
 };
@@ -80,13 +77,14 @@ export default function Index() {
   const { projects, hero, services, about, footer, error } = useLoaderData<typeof loader>();
   const buttonRef = useRef<HTMLAnchorElement>(null);
   const heroSectionRef = useRef<HTMLElement>(null);
+  const heroLogoRef = useRef<HTMLDivElement>(null);
 
   const heroContent = hero || {
     title: "Reese Latimer •",
     contactText: "Let's get in touch",
     tagline: "Designer blending strategy",
     subTagline: "and design to achieve online growth.",
-    projectsLinkText: "Selected projects"
+    projectsLinkText: "Selected projects",
   };
 
   useEffect(() => {
@@ -101,10 +99,9 @@ export default function Index() {
     let buttonY = 0;
     let animationId: number;
     let lastFrameTime = 0;
-    const targetFPS = 30; // Reduced from 60fps
+    const targetFPS = 30;
     const frameInterval = 1000 / targetFPS;
 
-    // Throttled mouse move handler
     let mouseMoveTimeout: NodeJS.Timeout;
     const handleMouseMove = (e: MouseEvent) => {
       clearTimeout(mouseMoveTimeout);
@@ -112,11 +109,10 @@ export default function Index() {
         const rect = heroSection.getBoundingClientRect();
         mouseX = e.clientX - rect.left;
         mouseY = e.clientY - rect.top;
-      }, 16); // ~60fps throttling for mouse input
+      }, 16);
     };
 
     const animateButton = (currentTime: number) => {
-      // Frame rate limiting
       if (currentTime - lastFrameTime < frameInterval) {
         animationId = requestAnimationFrame(animateButton);
         return;
@@ -124,36 +120,75 @@ export default function Index() {
       
       lastFrameTime = currentTime;
       
-      // Lerp factor - lower values = smoother/slower following
-      const lerpFactor = 0.08; // Slightly reduced for smoother motion
-      
-      // Calculate target position (offset from mouse)
+      const lerpFactor = 0.08;
       const targetX = mouseX - button.offsetWidth / 2;
       const targetY = mouseY - button.offsetHeight / 2;
       
-      // Apply lerp
       buttonX += (targetX - buttonX) * lerpFactor;
       buttonY += (targetY - buttonY) * lerpFactor;
       
-      // Apply transform with GPU acceleration
       gsap.set(button, {
         x: buttonX,
         y: buttonY,
-        force3D: true, // Force GPU acceleration
+        force3D: true,
       });
       
       animationId = requestAnimationFrame(animateButton);
     };
 
-    heroSection.addEventListener('mousemove', handleMouseMove, { passive: true });
+    heroSection.addEventListener("mousemove", handleMouseMove, { passive: true });
     animationId = requestAnimationFrame(animateButton);
 
     return () => {
-      heroSection.removeEventListener('mousemove', handleMouseMove);
+      heroSection.removeEventListener("mousemove", handleMouseMove);
       if (animationId) {
         cancelAnimationFrame(animationId);
       }
       clearTimeout(mouseMoveTimeout);
+    };
+  }, []);
+
+  // Simple logo scaling effect
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const heroLogo = heroLogoRef.current;
+    const heroSection = heroSectionRef.current;
+    
+    if (!heroLogo || !heroSection) return;
+
+    let animationId: number;
+
+    const animate = () => {
+      const scrollY = window.scrollY;
+      const heroHeight = heroSection.offsetHeight;
+      
+      // Calculate progress (0 to 1) based on scroll through the hero section
+      let progress = Math.min(scrollY / heroHeight, 1);
+      
+      // Scale from large (140px) to small (40px) - scale factor 3.5 to 1
+      const initialScale = 1; // Start at normal scale for 140px text
+      const finalScale = 0.29; // Scale down to ~40px (40/140 = 0.29)
+      const scale = initialScale - (initialScale - finalScale) * progress;
+
+      // Apply scale transform to the logo text
+      const logoText = heroLogo.querySelector('a');
+      if (logoText) {
+        gsap.set(logoText, {
+          scale: scale,
+          force3D: true
+        });
+      }
+
+      animationId = requestAnimationFrame(animate);
+    };
+
+    animationId = requestAnimationFrame(animate);
+
+    return () => {
+      if (animationId) {
+        cancelAnimationFrame(animationId);
+      }
     };
   }, []);
 
@@ -183,7 +218,6 @@ export default function Index() {
 
   return (
     <div id="top" className="min-h-screen">
-      {/* Schema.org JSON-LD structured data */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -191,7 +225,6 @@ export default function Index() {
         }}
       />
       
-      {/* NavBar Component */}
       <NavBar 
         title={heroContent.title}
         contactText={heroContent.contactText}
@@ -199,17 +232,31 @@ export default function Index() {
       />
 
       {/* Hero Section */}
-      <section ref={heroSectionRef} id="hero" className="relative z-10 h-screen flex flex-col px-3 md:px-10 bg-black">
-        {/* Background */}
+      <section
+        ref={heroSectionRef}
+        id="hero"
+        className="hero relative z-10 h-screen flex flex-col px-3 md:px-10 bg-black"
+      >
         <UnicornStudioEmbed />
 
-        {/* Gradient Overlay: black to transparent, positioned above waves but below content */}
         <div className="absolute top-0 left-0 w-full h-[50vh] bg-gradient-to-b from-black/80 to-transparent z-[5] pointer-events-none"></div>
         <div className="absolute bottom-0 left-0 w-full h-[50vh] bg-gradient-to-b from-transparent to-black/100 z-[5] pointer-events-none"></div>
         <div className="absolute bottom-0 left-0 w-full h-[50vh] bg-gradient-to-b from-transparent to-black/100 z-[5] pointer-events-none"></div>
 
-        {/* Centered Work Together Button */}
-        
+        {/* Large Centered Logo that scales down on scroll and sticks at top */}
+        <div
+          ref={heroLogoRef}
+          id="hero-logo"
+          className="sticky top-0 flex justify-center items-center h-screen z-10"
+        >
+          <TransitionLink 
+            to="#top"
+            className="text-[140px] font-normal text-hero-white leading-none"
+            style={{ fontFamily: "inherit" }}
+          >
+            LATIMER
+          </TransitionLink>
+        </div>
 
         {/* Hero Tagline & Link */}
         <div className="mt-auto flex md:flex-row flex-col justify-between items-end gap-4 pb-8 relative z-10">
@@ -226,7 +273,7 @@ export default function Index() {
                  Crafting digital experiences
               </h1>
             </div>
-            <div className="md:text-nav-big text-[30px]  font-editorial editorial text-hero-white font-light leading-none">
+            <div className="md:text-nav-big text-[30px] font-editorial editorial text-hero-white font-light leading-none">
               that engage, delight, and reflect your brand.
             </div>
           </div>
@@ -237,21 +284,9 @@ export default function Index() {
         </div>
       </section>
 
-
-
-
-
-
-      {/* Projects Component */}
       <Projects projects={projects} error={error} />
-      
-      {/* Services Component */}
       <Services services={services} error={error} />
-      
-      {/* About Component */}
       <About about={about} error={error} />
-      
-      {/* Footer Component */}
       <Footer socialLinks={footer?.socialLinks} />
     </div>
   );

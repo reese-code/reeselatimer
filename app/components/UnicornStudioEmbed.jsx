@@ -29,11 +29,9 @@ const UnicornStudioEmbed = () => {
         window.UnicornStudio.isInitialized = false;
       }
 
-      // Initialize UnicornStudio
-      if (!window.UnicornStudio || !window.UnicornStudio.isInitialized) {
-        if (!window.UnicornStudio) {
-          window.UnicornStudio = { isInitialized: false };
-        }
+      // Initialize UnicornStudio using the new embed code logic
+      if (!window.UnicornStudio) {
+        window.UnicornStudio = { isInitialized: false };
         
         // Remove existing script if present
         const existingScript = document.querySelector('script[src*="unicornstudio.js"]');
@@ -42,11 +40,11 @@ const UnicornStudioEmbed = () => {
         }
         
         const script = document.createElement('script');
-        script.src = 'https://cdn.jsdelivr.net/gh/hiunicornstudio/unicornstudio.js@v1.4.25/dist/unicornStudio.umd.js';
+        script.src = 'https://cdn.jsdelivr.net/gh/hiunicornstudio/unicornstudio.js@v1.4.35/dist/unicornStudio.umd.js';
         script.onload = function() {
-          // Small delay to ensure DOM is ready
-          timeoutId = setTimeout(() => {
-            if (window.UnicornStudio && !window.UnicornStudio.isInitialized) {
+          if (!window.UnicornStudio.isInitialized) {
+            // Small delay to ensure DOM is ready
+            timeoutId = setTimeout(() => {
               try {
                 window.UnicornStudio.init();
                 window.UnicornStudio.isInitialized = true;
@@ -64,19 +62,18 @@ const UnicornStudioEmbed = () => {
                   }
                 }, 1000);
               }
-            }
-          }, 100);
+            }, 100);
+          }
         };
         
         (document.head || document.body).appendChild(script);
-      } else {
-        // UnicornStudio is already loaded, just reinitialize
+      } else if (!window.UnicornStudio.isInitialized) {
+        // UnicornStudio object exists but not initialized
         timeoutId = setTimeout(() => {
           try {
-            if (window.UnicornStudio.init) {
-              window.UnicornStudio.init();
-              setIsLoaded(true);
-            }
+            window.UnicornStudio.init();
+            window.UnicornStudio.isInitialized = true;
+            setIsLoaded(true);
           } catch (error) {
             console.error('UnicornStudio reinit failed:', error);
           }
@@ -99,7 +96,7 @@ const UnicornStudioEmbed = () => {
     <div
       key={key} // Force re-render when key changes
       ref={containerRef}
-      data-us-project="ny3zlNrcGhfZeMVpCrgT"
+      data-us-project="WcMuUPre83GmFW5QCrrA"
       style={{
         position: 'absolute',
         top: 0,
