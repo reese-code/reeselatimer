@@ -77,7 +77,6 @@ export default function Index() {
   const { projects, hero, services, about, footer, error } = useLoaderData<typeof loader>();
   const buttonRef = useRef<HTMLAnchorElement>(null);
   const heroSectionRef = useRef<HTMLElement>(null);
-  const heroLogoRef = useRef<HTMLDivElement>(null);
 
   const heroContent = hero || {
     title: "Reese Latimer •",
@@ -148,49 +147,6 @@ export default function Index() {
     };
   }, []);
 
-  // Simple logo scaling effect
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-
-    const heroLogo = heroLogoRef.current;
-    const heroSection = heroSectionRef.current;
-    
-    if (!heroLogo || !heroSection) return;
-
-    let animationId: number;
-
-    const animate = () => {
-      const scrollY = window.scrollY;
-      const heroHeight = heroSection.offsetHeight;
-      
-      // Calculate progress (0 to 1) based on scroll through the hero section
-      let progress = Math.min(scrollY / heroHeight, 1);
-      
-      // Scale from large (140px) to small (40px) - scale factor 3.5 to 1
-      const initialScale = 1; // Start at normal scale for 140px text
-      const finalScale = 0.29; // Scale down to ~40px (40/140 = 0.29)
-      const scale = initialScale - (initialScale - finalScale) * progress;
-
-      // Apply scale transform to the logo text
-      const logoText = heroLogo.querySelector('a');
-      if (logoText) {
-        gsap.set(logoText, {
-          scale: scale,
-          force3D: true
-        });
-      }
-
-      animationId = requestAnimationFrame(animate);
-    };
-
-    animationId = requestAnimationFrame(animate);
-
-    return () => {
-      if (animationId) {
-        cancelAnimationFrame(animationId);
-      }
-    };
-  }, []);
 
   const schemaData = {
     "@context": "https://schema.org",
@@ -243,20 +199,6 @@ export default function Index() {
         <div className="absolute bottom-0 left-0 w-full h-[50vh] bg-gradient-to-b from-transparent to-black/100 z-[5] pointer-events-none"></div>
         <div className="absolute bottom-0 left-0 w-full h-[50vh] bg-gradient-to-b from-transparent to-black/100 z-[5] pointer-events-none"></div>
 
-        {/* Large Centered Logo that scales down on scroll and sticks at top */}
-        <div
-          ref={heroLogoRef}
-          id="hero-logo"
-          className="sticky top-0 flex justify-center items-center h-screen z-10"
-        >
-          <TransitionLink 
-            to="#top"
-            className="text-[140px] font-normal text-hero-white leading-none"
-            style={{ fontFamily: "inherit" }}
-          >
-            LATIMER
-          </TransitionLink>
-        </div>
 
         {/* Hero Tagline & Link */}
         <div className="mt-auto flex md:flex-row flex-col justify-between items-end gap-4 pb-8 relative z-10">
