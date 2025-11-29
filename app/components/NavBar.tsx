@@ -227,9 +227,9 @@ export default function NavBar({
         } ${
           isHomePage 
             ? isScrolledPastHero 
-              ? 'mx-3 sm:mx-10 sm:w-[calc(100%-80px)] w-[calc(100%-23.9px)]'
-              : 'mx-3 sm:mx-0 sm:w-full w-[calc(100%-23.9px)]'
-            : 'mx-3 sm:mx-10 sm:w-[calc(100%-80px)] w-[calc(100%-23.9px)]'
+              ? 'mx-3 sm:mx-10 sm:w-[calc(100%-80px)] w-[calc(100%-24px)]'
+              : 'mx-0 sm:mx-0 sm:w-full w-full'
+            : 'mx-3 sm:mx-10 sm:w-[calc(100%-80px)] w-[calc(100%-24px)]'
         } backdrop-blur h-fit pb-4 rounded-full px-2 transition-all duration-500 ease-in-out`}
       >
         <div 
@@ -240,13 +240,13 @@ export default function NavBar({
         
         <div className="px-3 md:px-10">
           <div className="flex justify-between items-center pt-4 relative z-[10002]">
-            {/* Mobile Title */}
+            {/* Mobile Title - LATIMER Logo */}
             <TransitionLink 
               to={isHomePage ? "#top" : "/"} 
-              className={`md:hidden text-nav nav-text ${isMobileMenuOpen ? 'text-white' : textColor} relative z-[10003]`} 
+              className={`md:hidden text-[24px] font-normal nav-text ${isMobileMenuOpen ? 'text-white' : textColor} relative z-[10003]`} 
               style={{ transition: 'color 0.3s ease' }}
             >
-              {title}
+              LATIMER
             </TransitionLink>
             
             {/* Desktop Navigation */}
