@@ -40,7 +40,7 @@ const UnicornStudioEmbed = () => {
         }
         
         const script = document.createElement('script');
-        script.src = 'https://cdn.jsdelivr.net/gh/hiunicornstudio/unicornstudio.js@v1.4.35/dist/unicornStudio.umd.js';
+        script.src = 'https://cdn.jsdelivr.net/gh/hiunicornstudio/unicornstudio.js@v1.4.36/dist/unicornStudio.umd.js';
         script.onload = function() {
           if (!window.UnicornStudio.isInitialized) {
             // Small delay to ensure DOM is ready
@@ -96,7 +96,7 @@ const UnicornStudioEmbed = () => {
     <div
       key={key} // Force re-render when key changes
       ref={containerRef}
-      data-us-project="WcMuUPre83GmFW5QCrrA"
+      data-us-project="gINWWHiLkQ2d1yaeXDVY"
       style={{
         position: 'absolute',
         top: 0,
