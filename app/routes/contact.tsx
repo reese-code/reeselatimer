@@ -73,7 +73,6 @@ export default function Contact() {
         title="Reese Latimer •"
         contactText="Let's get in touch"
         isHomePage={false}
-        textColor="text-black"
       />
 
       {/* Typeform Container */}

@@ -241,13 +241,23 @@ export default function NavBar({
         <div className="px-3 md:px-10">
           <div className="flex justify-between items-center pt-4 relative z-[10002]">
             {/* Mobile Title - LATIMER Logo */}
-            <TransitionLink 
-              to={isHomePage ? "#top" : "/"} 
-              className={`md:hidden text-[24px] font-normal nav-text ${isMobileMenuOpen ? 'text-white' : textColor} relative z-[10003]`} 
-              style={{ transition: 'color 0.3s ease' }}
-            >
-              LATIMER
-            </TransitionLink>
+            {isHomePage ? (
+              <button
+                onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                className={`md:hidden text-[24px] font-normal nav-text ${isMobileMenuOpen ? 'text-white' : textColor} relative z-[10003]`} 
+                style={{ transition: 'color 0.3s ease' }}
+              >
+                LATIMER
+              </button>
+            ) : (
+              <TransitionLink 
+                to="/" 
+                className={`md:hidden text-[24px] font-normal nav-text ${isMobileMenuOpen ? 'text-white' : textColor} relative z-[10003]`} 
+                style={{ transition: 'color 0.3s ease' }}
+              >
+                LATIMER
+              </TransitionLink>
+            )}
             
             {/* Desktop Navigation */}
             <div className="hidden md:flex w-full items-center relative">
@@ -298,9 +308,21 @@ export default function NavBar({
 
               {/* Centered Logo */}
               <div className="absolute left-1/2 transform -translate-x-1/2">
-                <div className={`text-[40px] font-normal nav-text ${textColor}`}>
-                  LATIMER
-                </div>
+                {isHomePage ? (
+                  <button
+                    onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                    className={`text-[40px] font-normal nav-text ${textColor} hover:opacity-70 transition-opacity cursor-pointer`}
+                  >
+                    LATIMER
+                  </button>
+                ) : (
+                  <TransitionLink 
+                    to="/"
+                    className={`text-[40px] font-normal nav-text ${textColor} hover:opacity-70 transition-opacity`}
+                  >
+                    LATIMER
+                  </TransitionLink>
+                )}
               </div>
 
               {/* Right Side Button */}
