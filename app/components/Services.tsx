@@ -28,6 +28,12 @@ export default function Services({ services, error }: ServicesProps) {
       const cardsElement = cardsRef.current!;
       const serviceCards = cardsElement.querySelectorAll(':scope > div');
 
+      // Initialize service cards with starting animation state
+      gsap.set(serviceCards, {
+        y: 60,
+        opacity: 0
+      });
+
       counterElement.innerHTML = '';
 
       // Create fixed "0" element
@@ -81,6 +87,23 @@ export default function Services({ services, error }: ServicesProps) {
           scrub: 0.8,
           markers: false,
         }
+      });
+
+      // Animate each service card individually
+      serviceCards.forEach((card, index) => {
+        gsap.to(card, {
+          y: 0,
+          opacity: 1,
+          duration: 0.8,
+          ease: "power2.out",
+          delay: index * 0.1, // Stagger effect
+          scrollTrigger: {
+            trigger: card,
+            start: "top 85%",
+            toggleActions: "play none none reverse",
+            markers: false,
+          }
+        });
       });
     });
 
