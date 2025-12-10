@@ -229,7 +229,7 @@ export default function NavBar({
             ? isScrolledPastHero 
               ? 'mx-3 sm:mx-10 w-[calc(100%-24.1px)] sm:w-[calc(100%-80px)]'
               : 'mx-0 sm:mx-0 w-full sm:w-full'
-            : 'mx-0 sm:mx-10 w-[calc(100%-24.01px)] sm:w-[calc(100%-80px)]'
+            : 'mx-3 sm:mx-10 w-[calc(100%-24.01px)] sm:w-[calc(100%-80px)]'
         } backdrop-blur h-fit pb-4 rounded-full px-2 transition-all duration-500 ease-in-out`}
       >
         <div 
