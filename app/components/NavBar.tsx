@@ -21,6 +21,8 @@ export default function NavBar({
   useGradient = false
 }: NavBarProps) {
   const navRef = useRef<HTMLDivElement>(null);
+  const mobileNavLinksRef = useRef<HTMLDivElement>(null);
+  const mobileSocialLinksRef = useRef<HTMLDivElement>(null);
   const [scrollReady, setScrollReady] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isScrolledPastHero, setIsScrolledPastHero] = useState(false);
@@ -84,6 +86,54 @@ export default function NavBar({
     
   }, [scrollReady, isHomePage, textColor, forceTransparent]);
 
+  // GSAP Mobile Menu Animations
+  useEffect(() => {
+    if (!mobileNavLinksRef.current || !mobileSocialLinksRef.current) return;
+
+    const navLinks = mobileNavLinksRef.current.children;
+    const socialLinks = mobileSocialLinksRef.current.children;
+
+    if (isMobileMenuOpen) {
+      // Set initial state for navigation links
+      gsap.set(navLinks, {
+        y: 50,
+        opacity: 0,
+      });
+
+      // Set initial state for social links
+      gsap.set(socialLinks, {
+        x: -30,
+        opacity: 0,
+      });
+
+      // Animate navigation links moving up with stagger
+      gsap.to(navLinks, {
+        y: 0,
+        opacity: 1,
+        duration: 0.8,
+        ease: "power2.out",
+        stagger: 0.1,
+        delay: 0.3, // Start after menu background appears
+      });
+
+      // Animate social links from left to right with stagger
+      gsap.to(socialLinks, {
+        x: 0,
+        opacity: 1,
+        duration: 0.6,
+        ease: "power2.out",
+        stagger: 0.05,
+        delay: 0.7, // Start after navigation links
+      });
+    } else {
+      // Reset all elements immediately when closing
+      gsap.set([navLinks, socialLinks], {
+        y: 0,
+        x: 0,
+        opacity: 0,
+      });
+    }
+  }, [isMobileMenuOpen]);
 
   // Mobile menu functions
   const toggleMobileMenu = () => {
@@ -158,7 +208,7 @@ export default function NavBar({
           }`}
           onClick={(e) => e.stopPropagation()}
         >
-          <nav className="flex flex-col gap-8 text-center">
+          <nav ref={mobileNavLinksRef} className="flex flex-col gap-8 text-center">
             {isHomePage ? (
               <button 
                 onClick={() => scrollToSection('hero')}
@@ -202,7 +252,7 @@ export default function NavBar({
           </nav>
 
           <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 bg-black-400/50">
-            <div className="flex justify-center gap-6 text-sm text-white">
+            <div ref={mobileSocialLinksRef} className="flex justify-center gap-6 text-sm text-white">
               {socialLinks.map((link, index) => (
                 <a 
                   key={index}
