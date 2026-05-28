@@ -272,15 +272,15 @@ export default function NavBar({
       {/* Sticky Navbar */}
       <div
         ref={navRef}
-        className={`sticky top-3 sm:top-5 left-0 w-full z-[1001] ${
+        className={`sticky top-6 sm:top-5 left-0 w-full z-[1001] ${
           isHomePage ? 'bg-transparent' : 'bg-gray-500/50'
         } ${
           isHomePage 
             ? isScrolledPastHero 
-              ? 'mx-3 sm:mx-10 w-[calc(100%-24.1px)] sm:w-[calc(100%-80px)]'
-              : 'mx-0 sm:mx-0 w-full sm:w-full'
-            : 'mx-3 sm:mx-10 w-[calc(100%-24.01px)] sm:w-[calc(100%-80px)]'
-        } backdrop-blur h-fit pb-4 rounded-full px-2 transition-all duration-500 ease-in-out`}
+              ? 'mx-3 sm:mx-10 w-[calc(100%-25px)] sm:w-[calc(100%-80px)]'
+              : 'mx-3 sm:mx-0 w-[calc(100%-32px)] sm:w-full'
+            : 'mx-3 sm:mx-10 w-[calc(100%-32px)] sm:w-[calc(100%-80px)]'
+        } backdrop-blur h-fit pb-4 rounded-full px-3 sm:px-2 transition-all duration-500 ease-in-out`}
       >
         <div 
           className={`absolute top-0 left-0 w-full z-0 transition-all duration-300 ease ${
