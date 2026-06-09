@@ -2,11 +2,10 @@ import type { MetaFunction, LoaderFunction } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
-import type { Ciao, Footer as FooterType } from "~/types/sanity";
+import type { Ciao } from "~/types/sanity";
 import NavBar from "~/components/NavBar";
-import Footer from "~/components/Footer";
 import PixelizeImage from "~/components/PixelizeImage";
-import { getCiao, getFooter } from "./api.sanity";
+import { getCiao } from "./api.sanity";
 import { PortableText } from '@portabletext/react';
 
 export const meta: MetaFunction = () => {
@@ -18,28 +17,23 @@ export const meta: MetaFunction = () => {
 
 export const loader: LoaderFunction = async () => {
   try {
-    const [ciao, footer] = await Promise.all([
-      getCiao(),
-      getFooter()
-    ]);
-    
-    return { 
+    const ciao = await getCiao();
+
+    return {
       ciao: ciao || null,
-      footer: footer || { socialLinks: [] },
-      error: null 
+      error: null
     };
   } catch (error: unknown) {
     console.error('Error fetching CIAO data:', error);
-    return { 
+    return {
       ciao: null,
-      footer: { socialLinks: [] },
-      error: (error as Error).message || 'Failed to fetch data' 
+      error: (error as Error).message || 'Failed to fetch data'
     };
   }
 };
 
 export default function CiaoPage() {
-  const { ciao, footer, error } = useLoaderData<typeof loader>();
+  const { ciao, error } = useLoaderData<typeof loader>();
   const problemCardRef = useRef<HTMLDivElement>(null);
   const solutionCardRef = useRef<HTMLDivElement>(null);
 
@@ -300,8 +294,6 @@ export default function CiaoPage() {
         </div>
       </section>
 
-      {/* White Footer for black background */}
-      <Footer socialLinks={footer?.socialLinks} textColor="white" />
     </div>
   );
 }

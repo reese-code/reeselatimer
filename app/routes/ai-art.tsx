@@ -2,11 +2,10 @@ import type { MetaFunction, LoaderFunction } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { useState, useEffect, useRef } from "react";
 import { gsap } from "gsap";
-import type { AiArt, AiArtImage, AiArtGroup, Footer as FooterType } from "~/types/sanity";
+import type { AiArt, AiArtImage, AiArtGroup } from "~/types/sanity";
 import NavBar from "~/components/NavBar";
-import Footer from "~/components/Footer";
 import PixelizeImage from "~/components/PixelizeImage.jsx";
-import { getAiArt, getFooter } from "./api.sanity";
+import { getAiArt } from "./api.sanity";
 
 export const meta: MetaFunction = () => {
   return [
@@ -17,24 +16,22 @@ export const meta: MetaFunction = () => {
 
 export const loader: LoaderFunction = async () => {
   try {
-    const [aiArt, footer] = await Promise.all([getAiArt(), getFooter()]);
+    const aiArt = await getAiArt();
     return {
       aiArt: aiArt || null,
-      footer: footer || { socialLinks: [] },
       error: null
     };
   } catch (error: unknown) {
     console.error("Error fetching AI Art data:", error);
     return {
       aiArt: null,
-      footer: { socialLinks: [] },
       error: (error as Error).message || "Failed to fetch data"
     };
   }
 };
 
 export default function AiArt() {
-  const { aiArt, footer, error } = useLoaderData<typeof loader>();
+  const { aiArt, error } = useLoaderData<typeof loader>();
   const [activeTab, setActiveTab] = useState<string>("all");
   const [selectedImage, setSelectedImage] = useState<AiArtImage | null>(null);
   const [focusedTab, setFocusedTab] = useState<string | null>(null);
@@ -536,8 +533,6 @@ export default function AiArt() {
         </div>
       </section>
 
-      {/* Footer */}
-      <Footer socialLinks={footer?.socialLinks} textColor="white" />
     </div>
   );
 }

@@ -8,7 +8,6 @@ import type {
   Hero,
   Service,
   About as AboutType,
-  Footer as FooterType,
 } from "~/types/sanity";
 import UnicornStudioEmbed from "~/components/UnicornStudioEmbed.jsx";
 import TargetIcon from "~/components/TargetIcon.jsx";
@@ -17,7 +16,6 @@ import NavBar from "~/components/NavBar";
 import Projects from "~/components/Projects";
 import Services from "~/components/Services";
 import About from "~/components/About";
-import Footer from "~/components/Footer";
 
 export const meta: MetaFunction = () => {
   const canonicalUrl = "https://reeselatimer.com";
@@ -40,41 +38,38 @@ export const meta: MetaFunction = () => {
   ];
 };
 
-import { getProjects, getServices, getAbout, getFooter, getHero } from "./api.sanity";
+import { getProjects, getServices, getAbout, getHero } from "./api.sanity";
 
 export const loader: LoaderFunction = async () => {
   try {
-    const [projects, hero, services, about, footer] = await Promise.all([
+    const [projects, hero, services, about] = await Promise.all([
       getProjects(),
       getHero(),
       getServices(),
       getAbout(),
-      getFooter(),
     ]);
-    
-    return { 
-      projects: projects || [], 
+
+    return {
+      projects: projects || [],
       hero: hero || null,
       services: services || [],
       about: about || null,
-      footer: footer || { socialLinks: [] },
       error: null,
     };
   } catch (error: unknown) {
     console.error("Error fetching data:", error);
-    return { 
-      projects: [], 
+    return {
+      projects: [],
       hero: null,
       services: [],
       about: null,
-      footer: { socialLinks: [] },
       error: (error as Error).message || "Failed to fetch data",
     };
   }
 };
 
 export default function Index() {
-  const { projects, hero, services, about, footer, error } = useLoaderData<typeof loader>();
+  const { projects, hero, services, about, error } = useLoaderData<typeof loader>();
   const buttonRef = useRef<HTMLAnchorElement>(null);
   const heroSectionRef = useRef<HTMLElement>(null);
 
@@ -229,7 +224,6 @@ export default function Index() {
       <Projects projects={projects} error={error} />
       <Services services={services} error={error} />
       <About about={about} error={error} />
-      <Footer socialLinks={footer?.socialLinks} />
     </div>
   );
 }

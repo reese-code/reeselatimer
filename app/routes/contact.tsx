@@ -1,8 +1,5 @@
-import type { MetaFunction, LoaderFunction } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
-import type { Footer as FooterType } from "~/types/sanity";
+import type { MetaFunction } from "@remix-run/node";
 import NavBar from "~/components/NavBar";
-import Footer from "~/components/Footer";
 import { useEffect, useRef, useState } from "react";
 
 export const meta: MetaFunction = () => {
@@ -12,28 +9,7 @@ export const meta: MetaFunction = () => {
   ];
 };
 
-import { getFooter } from "./api.sanity";
-
-export const loader: LoaderFunction = async () => {
-  try {
-    // Use the cached footer data
-    const footer = await getFooter();
-    
-    return { 
-      footer: footer || { socialLinks: [] },
-      error: null 
-    };
-  } catch (error: unknown) {
-    console.error('Error fetching data:', error);
-    return { 
-      footer: { socialLinks: [] },
-      error: (error as Error).message || 'Failed to fetch data' 
-    };
-  }
-};
-
 export default function Contact() {
-  const { footer, error } = useLoaderData<typeof loader>();
   const typeformContainerRef = useRef<HTMLDivElement>(null);
   const [isFormActive, setIsFormActive] = useState(false);
 
@@ -91,8 +67,6 @@ export default function Contact() {
         ></div>
       </div>
 
-      {/* Footer Component */}
-      <Footer socialLinks={footer?.socialLinks} />
     </div>
   );
 }

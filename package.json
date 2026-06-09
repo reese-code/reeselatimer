@@ -18,6 +18,8 @@
     "@remix-run/serve": "^2.13.1",
     "@sanity/client": "^6.22.1",
     "@sanity/image-url": "^1.0.2",
+    "baseline-browser-mapping": "^2.10.35",
+    "caniuse-lite": "^1.0.30001797",
     "gsap": "^3.13.0",
     "isbot": "^4.1.0",
     "locomotive-scroll": "^4.1.4",

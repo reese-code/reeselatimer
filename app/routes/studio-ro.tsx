@@ -2,11 +2,10 @@ import type { MetaFunction, LoaderFunction } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
-import type { StudioRo, Footer as FooterType } from "~/types/sanity";
+import type { StudioRo } from "~/types/sanity";
 import NavBar from "~/components/NavBar";
-import Footer from "~/components/Footer";
 import PixelizeImage from "~/components/PixelizeImage";
-import { getStudioRo, getFooter } from "./api.sanity";
+import { getStudioRo } from "./api.sanity";
 import { PortableText } from '@portabletext/react';
 
 export const meta: MetaFunction = () => {
@@ -18,28 +17,23 @@ export const meta: MetaFunction = () => {
 
 export const loader: LoaderFunction = async () => {
   try {
-    const [studioRo, footer] = await Promise.all([
-      getStudioRo(),
-      getFooter()
-    ]);
-    
-    return { 
+    const studioRo = await getStudioRo();
+
+    return {
       studioRo: studioRo || null,
-      footer: footer || { socialLinks: [] },
-      error: null 
+      error: null
     };
   } catch (error: unknown) {
     console.error('Error fetching Studio RO data:', error);
-    return { 
+    return {
       studioRo: null,
-      footer: { socialLinks: [] },
-      error: (error as Error).message || 'Failed to fetch data' 
+      error: (error as Error).message || 'Failed to fetch data'
     };
   }
 };
 
 export default function StudioRoPage() {
-  const { studioRo, footer, error } = useLoaderData<typeof loader>();
+  const { studioRo, error } = useLoaderData<typeof loader>();
   const problemCardRef = useRef<HTMLDivElement>(null);
   const solutionCardRef = useRef<HTMLDivElement>(null);
 
@@ -300,8 +294,6 @@ export default function StudioRoPage() {
         </div>
       </section>
 
-      {/* White Footer for black background */}
-      <Footer socialLinks={footer?.socialLinks} textColor="white" />
     </div>
   );
 }
